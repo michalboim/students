@@ -1,0 +1,45 @@
+/*header*/
+.navbar{
+    width: 100%;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-around;
+}
+.navbar>*{
+    text-decoration: none;
+    color: black;
+}
+.navbar>a:hover{
+    background-color: rgb(201, 248, 248);
+    border-radius: 2px;
+}
+
+/*courses*/
+.main_courses{
+    display: flex;
+    width: 600px;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+.part_1{
+    background-color: rgb(211, 250, 250);
+}
+.add_course{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
+    position: relative;    
+}
+.add_course>input{
+    border-style: none;
+}
+.show_teacher{
+    width: 200px;
+}
+.note{
+    position: relative;
+    top: 20px;
+    font-size: x-large;
+}
