@@ -27,24 +27,21 @@ def students():
     return render_template('students.html')
 
 @app.route('/courses')
-def courses():
-    teachers=crud.read_all('teachers')
-    teachers_object=[classes.Teacher(teacher[0], teacher[1], teacher[2]) for teacher in teachers]    
-    return render_template('courses.html', teachers_object=teachers_object)
+def courses():  
+    return render_template('courses.html')
 
-@app.route('/add_course')
+@app.route('/add_course', methods=['GET','POST'])
 def add_course():
     teachers=crud.read_all('teachers')
     teachers_object=[classes.Teacher(teacher[0], teacher[1], teacher[2]) for teacher in teachers]   
-    num_courses=len(crud.read_all('courses'))
-    crud.create('courses', 'name, description, teacher_id', f" '{request.args['new_name'].title()}', '{request.args['new_description']}', '{request.args['teacher_tid']}' ")
-    new_num=len(crud.read_all('courses'))
-    if num_courses<new_num:
-        return render_template ('courses.html', teachers_object=teachers_object ,note=f"{request.args['new_name'].title()} course added successfully")
+    if request.method=='POST':  
+        num_courses=len(crud.read_all('courses'))
+        crud.create('courses', 'name, description, teacher_id', f" '{request.form['new_name'].title()}', '{request.form['new_description']}', '{request.form['teacher_tid']}' ")
+        new_num=len(crud.read_all('courses'))
+        if num_courses<new_num:
+            return render_template ('add_course.html', teachers_object=teachers_object ,note=f"{request.form['new_name'].title()} course added successfully")
+        else:
+            return render_template ('add_course.html',teachers_object=teachers_object ,note="A mistake occurred please try again")
     else:
-        return render_template ('courses.html',teachers_object=teachers_object ,note="A mistake occurred please try again")
-#new_name=request.args['new_name'].title()
-#new_description=request.args['new_description']
-#teacher_tid=request.args['teacher_tid']
-#new_course=crud.read_if('*', 'courses', 'name', f"'{request.args['new_name'].title()}'" )
-#course_object=[classes.Course(course[0], course[1], course[2], course[3]) for course in new_course]
+        return render_template('add_course.html', teachers_object=teachers_object)
+

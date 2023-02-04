@@ -1,0 +1,15 @@
+{% include "courses.html" %}
+<div class="main_courses">
+    <form class="add_course" action="" method="POST">
+        New Course Name: <input type="text" name="new_name" placeholder="">
+        New Course Description<input type="text" name="new_description" placeholder="">
+        Choose New Course Teacher:
+            <select class="show_teacher" name="teacher_tid" id="">
+            {% for teacher in teachers_object %}
+                <option name="" value="{{teacher.tid}}">{{teacher.name}}</option>
+            {% endfor %}
+            </select>
+        <input id="submit" type="submit" value="submit">
+    </form>    
+</div>
+<div class="note">{{note}}</div>
