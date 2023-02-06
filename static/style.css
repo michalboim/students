@@ -1,3 +1,4 @@
+/*all*/
 .links{
     display: flex;
     flex-direction: column;
@@ -20,6 +21,13 @@
     font-size: medium;
     font-weight: bolder;
 }
+.note{
+    font-size: x-large;
+    width: 400px;
+    position: relative;  
+    left: 150px;
+}
+
 /*header*/
 .navbar{
     width: 100%;
@@ -37,6 +45,32 @@
 }
 
 /*courses*/
+.courses_list{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    width: 400px;
+    justify-content: space-between;
+    position: relative;  
+    left: 200px;  
+    top: -50px;
+}
+.courses_list>div{
+   border-bottom: solid;
+   border-width: 2px;
+   border-color: rgb(195, 193, 193);
+}
+.course_info{
+    display: flex;
+}
+.course_id{
+    width: 50px;
+}
+.course_name{
+    width: 100px;
+}
+
+/*add_course*/
 .main_courses{
     display: flex;
     width: 400px;
@@ -44,7 +78,6 @@
     position: relative;  
     left: 200px;  
     top: -50px;
-
 }
 .add_course{
     display: flex;
@@ -60,9 +93,50 @@
 .add_course>select{
     border-radius: 10px;
 }
-.note{
-    font-size: x-large;
-    width: 400px;
+
+/*students*/
+.students_list{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    width:600px;
+    justify-content: space-between;
     position: relative;  
-    left: 150px;
+    left: 200px;  
+    top: -50px;
+}
+.students_list>div{
+   border-bottom: solid;
+   border-width: 2px;
+   border-color: rgb(195, 193, 193);
+}
+.student_info{
+    display: flex;
+}
+.student_id{
+    width: 80px;
+}
+.student_name{
+    width:250px;
+}
+
+/*add_student*/
+.main_students{
+    display: flex;
+    width: 400px;
+    justify-content: space-between;
+    position: relative;  
+    left: 200px;  
+    top: -50px;
+}
+.add_student{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
+}
+.add_student>input{
+    border-style: none;
+    background-color: rgb(218, 214, 214);
+    border-radius: 10px;
 }

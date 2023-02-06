@@ -4,5 +4,11 @@
     <a href="/add_course">Add new course</a>
     <a href="/update_course">Update Course</a>
 </div>
-
+<div class="courses_list">
+    {% for course in courses_teachers %}
+    <div class="course_info">
+        <span class="course_id">{{course.tid}}.</span><span class="course_name">{{course.name}}</span><span class="course_teacher">{{course.teacher_id}}</span> 
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

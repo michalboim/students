@@ -3,6 +3,7 @@ app = Flask(__name__)
 from setup_db import query
 import classes
 import crud
+from functions import create_courses_objects, create_students_objects, create_teachers_objects
 
 @app.route('/register/<student_id>/<course_id>')
 def register(student_id, course_id):
@@ -22,26 +23,43 @@ def home():
 def go_home():
     return render_template('home.html')
 
-@app.route('/students')
-def students():
-    return render_template('students.html')
-
 @app.route('/courses')
-def courses():  
-    return render_template('courses.html')
+def courses():
+    courses_teachers=[]
+    for course in create_courses_objects():
+        for teacher in create_teachers_objects():
+            if course.teacher_id==str(teacher.tid):
+                course_teacher=classes.Course(course.tid, course.name, course.description, teacher.name)
+                courses_teachers.append(course_teacher)
+    return render_template('courses.html', courses_teachers=courses_teachers)
 
 @app.route('/add_course', methods=['GET','POST'])
 def add_course():
-    teachers=crud.read_all('teachers')
-    teachers_object=[classes.Teacher(teacher[0], teacher[1], teacher[2]) for teacher in teachers]   
     if request.method=='POST':  
         num_courses=len(crud.read_all('courses'))
         crud.create('courses', 'name, description, teacher_id', f" '{request.form['new_name'].title()}', '{request.form['new_description']}', '{request.form['teacher_tid']}' ")
         new_num=len(crud.read_all('courses'))
         if num_courses<new_num:
-            return render_template ('add_course.html', teachers_object=teachers_object ,note=f"{request.form['new_name'].title()} course added successfully")
+            return render_template ('add_course.html', teachers_object=create_teachers_objects() ,note=f"{request.form['new_name'].title()} course added successfully")
         else:
-            return render_template ('add_course.html',teachers_object=teachers_object ,note="A mistake occurred please try again")
+            return render_template ('add_course.html',teachers_object=create_teachers_objects() ,note="A mistake occurred please try again")
     else:
-        return render_template('add_course.html', teachers_object=teachers_object)
+        return render_template('add_course.html', teachers_object=create_teachers_objects())
+
+@app.route('/students')
+def students():
+    return render_template('students.html', students_objects=create_students_objects())
+
+@app.route('/add_student', methods=['POST','GET'])
+def add_student():
+    if request.method=='POST':
+        num_students=len(crud.read_all('students'))
+        crud.create('students', 'name,email', f"'{request.form['new_name'].title()}','{request.form['new_email']}'")
+        new_num=len(crud.read_all('students'))
+        if new_num>num_students:
+            return render_template('add_student.html', note=f"{request.form['new_name'].title()} added successfully")
+        else:
+            return render_template('add_student.html', note="A mistake occurred please try again")
+    else:
+        return render_template('add_student.html')
 

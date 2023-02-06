@@ -1,1 +1,10 @@
-{% include "header.html" %}
+{% include "students.html" %}
+<div class="main_students">
+    <form class="add_student" action="" method="POST">
+        New Student Name: <input type="text" name="new_name" placeholder="">
+        New Student Email<input type="email" name="new_email" placeholder="">
+        Choose New Course Teacher:
+        <input id="submit" type="submit" value="submit">
+    </form>    
+</div>
+<div class="note">{{note}}</div>
