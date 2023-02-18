@@ -59,7 +59,7 @@
     border-radius: 2px;
 }
 
-/*courses*/
+/*admin_courses*/
 .courses_list{
     display: flex;
     flex-direction: column;
@@ -109,7 +109,7 @@
     border-radius: 10px;
 }
 
-/*students*/
+/*admin_students*/
 .students_list{
     display: flex;
     flex-direction: column;
@@ -118,7 +118,7 @@
     justify-content: space-between;
     position: relative;  
     left: 200px;  
-    top: -150px;
+    top: -185px;
 }
 .students_list>div{
    border-bottom: solid;
@@ -151,6 +151,53 @@
     width: 200px;
 }
 .add_student>input{
+    border-style: none;
+    background-color: rgb(218, 214, 214);
+    border-radius: 10px;
+}
+
+/*admin_teachers*/
+.teachers_list{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    width:600px;
+    justify-content: space-between;
+    position: relative;  
+    left: 200px;  
+    top: -150px;
+}
+.teachers_list>div{
+   border-bottom: solid;
+   border-width: 2px;
+   border-color: rgb(195, 193, 193);
+}
+.teacher_info{
+    display: flex;
+}
+.teacher_id{
+    width: 80px;
+}
+.teacher_name{
+    width:250px;
+}
+
+/*add_teacher*/
+.main_teachers{
+    display: flex;
+    width: 400px;
+    justify-content: space-between;
+    position: relative;  
+    left: 200px;  
+    top: -150px;
+}
+.add_teacher{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
+}
+.add_teacher>input{
     border-style: none;
     background-color: rgb(218, 214, 214);
     border-radius: 10px;

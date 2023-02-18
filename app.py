@@ -67,3 +67,19 @@ def add_student():
     else:
         return render_template('add_student.html')
 
+@app.route('/admin_teachers')
+def admin_teachers():
+    return render_template('admin_teachers.html', teachers_objects=create_teachers_objects())
+
+@app.route('/add_teacher', methods=['POST','GET'])
+def add_teacher():
+    if request.method=='POST':
+        num_teachers=len(crud.read_all('teachers'))
+        crud.create('teachers', 'name, email, phone', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}'")
+        new_num=len(crud.read_all('teachers'))
+        if new_num>num_teachers:
+            return render_template('add_teacher.html', note=f"{request.form['new_name'].title()} added successfully")
+        else:
+            return render_template('add_teacher.html', note="A mistake occurred please try again")
+    else:
+        return render_template('add_teacher.html')
