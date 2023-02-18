@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="links">
-    <a href="/admin_courses">Course</a>
+    <div class="link"><a href="/admin_courses">Course</a></div>
         <div class="more_links">
-            <a href="/add_course">Add New Course</a>
-            <a href="/update_course">Update Course</a>
+            <div class="link"><a href="/add_course">Add New Course</a></div>
+            <div class="link"><a href="/update_course">Update Course</a></div>
         </div>
-    <a href="/admin_students">Students</a>
-    <a href="/admin_teachers">Teachers</a>
+    <div class="link"><a href="/admin_students">Students</a></div>
+    <div class="link"><a href="/admin_teachers">Teachers</a></div>
 </div>
 <div class="courses_list">
     {% for course in courses_teachers %}
