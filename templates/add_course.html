@@ -1,14 +1,24 @@
-{% include "courses.html" %}
+{% include "admin_courses.html" %}
 <div class="main_courses">
     <form class="add_course" action="" method="POST">
-        New Course Name: <input type="text" name="new_name" placeholder="">
-        New Course Description<input type="text" name="new_description" placeholder="">
+        New Course Name: <input type="text" name="new_name" >
+        New Course Description<input type="text" name="new_description" >
         Choose New Course Teacher:
             <select class="show_teacher" name="teacher_tid" id="">
             {% for teacher in teachers_object %}
                 <option name="" value="{{teacher.tid}}">{{teacher.name}}</option>
             {% endfor %}
             </select>
+        New Course Start Date:<input type="date" name="new_start" >
+        New Course Day: <select name="new_day" id="">
+            <option value="sunday">Sunday</option>
+            <option value="monday">Monday</option>
+            <option value="tuesday">Tuesday</option>
+            <option value="wednesday">Wednesday</option>
+            <option value="thursday">Thursday</option>
+            <option value="friday">Friday</option>
+            </select>
+        New Course Time: <input type="time" name="new_time" >
         <input id="submit" type="submit" value="submit">
     </form>    
 </div>

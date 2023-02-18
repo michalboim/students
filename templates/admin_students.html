@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="links">
-    <a href="/add_student">Add Student</a>
-    <a href="/course_student">Add Student to Course</a>
+    <a href="/admin_courses">Course</a>
+    <a href="/admin_students">Students</a>
+        <div class="more_links">
+        <a href="/add_student">Add Student</a>
+        <a href="/course_student">Add Student to Course</a>
+        </div>
+    <a href="/admin_teachers">Teachers</a>
 </div>
 <div class="students_list">
     {% for student in students_objects %}
