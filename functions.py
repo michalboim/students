@@ -15,3 +15,12 @@ def create_students_objects():
     students_list=crud.read_all('students')
     students_objects=[classes.Student(student[0], student[1], student[2], student[3]) for student in students_list]
     return students_objects
+
+def courses_teachers():
+    courses_teachers=[]
+    for course in create_courses_objects():
+        for teacher in create_teachers_objects():
+            if course.teacher_id==str(teacher.tid):
+                course_teacher=classes.Course(course.tid, course.name, course.description, teacher.name, course.start, course.day, course.time)
+                courses_teachers.append(course_teacher)
+    return courses_teachers

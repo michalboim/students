@@ -1,0 +1,21 @@
+{% include "admin_courses.html" %}
+<div class="courses_update">
+    <div class="option">
+        <div>Enter Course Name to Search from the Courses List:</div>        
+        <div>
+            <form action="" method="POST">
+                <input type="text" name="search" placeholder="Enter search">
+                <input type="submit" value="Search">
+            </form>
+        </div>
+        <div class="info_courses_update">{{result}}
+            {% for course in courses_objects %}
+            <div class="info_course_update"><a href="/chosen_course/{{course.tid}}">{{course.name}} {{course.start}}</a></div>
+            {% endfor %}
+            {% for course in courses %}
+            <div class="info_course_update"><a href="/chosen_course/{{course.tid}}">{{course.name}} {{course.start}}</a></div>
+            {% endfor %}
+        </div>
+    </div>   
+</div>   
+

@@ -4,7 +4,7 @@
     <div class="link"><a href="/admin_courses">Course</a></div>
         <div class="more_links">
             <div class="link"><a href="/add_course">Add New Course</a></div>
-            <div class="link"><a href="/update_course">Update Course</a></div>
+            <div class="link"><a href="/update_courses">Update Course</a></div>
         </div>
     <div class="link"><a href="/admin_students">Students</a></div>
     <div class="link"><a href="/admin_teachers">Teachers</a></div>
@@ -12,7 +12,7 @@
 <div class="courses_list">
     {% for course in courses_teachers %}
     <div class="course_info">
-        <span class="course_id">{{course.tid}}.</span><span class="course_name">{{course.name}}</span><span class="course_teacher">{{course.teacher_id}}</span> 
+        <span class="course_name">{{course.name}}:</span><span class="course_start">{{course.start}}</span> <span class="course_teacher">{{course.teacher_id}}</span>
     </div>
     {% endfor %}
 </div>

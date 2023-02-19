@@ -3,17 +3,7 @@ app = Flask(__name__)
 from setup_db import query
 import classes
 import crud
-from functions import create_courses_objects, create_students_objects, create_teachers_objects
-
-@app.route('/register/<student_id>/<course_id>')
-def register(student_id, course_id):
-    query (F"INSERT INTO students_courses (student_id, course_id) VALUES ('{student_id}', '{course_id}')")
-    return redirect(url_for('registations', student_id=student_id))# שליחת המשתנה על הנתיב
-
-@app.route('/registations/<student_id>')
-def registations(student_id):
-    course_ids=query(f"SELECT course_id FROM students_courses WHERE student_id={student_id}")
-    return render_template("registations.html", course_ids=course_ids)
+from functions import create_courses_objects, create_students_objects, create_teachers_objects, courses_teachers
 
 @app.route('/')
 def home():
@@ -29,13 +19,7 @@ def administrator():
 
 @app.route('/admin_courses')
 def admin_courses():
-    courses_teachers=[]
-    for course in create_courses_objects():
-        for teacher in create_teachers_objects():
-            if course.teacher_id==str(teacher.tid):
-                course_teacher=classes.Course(course.tid, course.name, course.description, teacher.name, course.start, course.day, course.time)
-                courses_teachers.append(course_teacher)
-    return render_template('admin_courses.html', courses_teachers=courses_teachers)
+    return render_template('admin_courses.html', courses_teachers=courses_teachers())
 
 @app.route('/add_course', methods=['GET','POST'])
 def add_course():
@@ -49,6 +33,40 @@ def add_course():
             return render_template ('add_course.html',teachers_object=create_teachers_objects() ,note="A mistake occurred please try again")
     else:
         return render_template('add_course.html', teachers_object=create_teachers_objects())
+
+@app.route('/update_courses', methods=['GET', 'POST'])
+def update_courses():
+    if request.method=='POST':
+        courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
+        if len(courses_list)<1:
+            return render_template('update_courses.html', result='No such course was found')
+        if len(courses_list)>=1:
+            course_object=[classes.Course(course[0], course[1], course[2], course[3], course[4], course[5], course[6]) for course in courses_list]  
+            return render_template('update_courses.html',courses_objects=course_object)
+    else:    
+        return render_template('update_courses.html', courses=courses_teachers())
+
+@app.route('/chosen_course/<course_id>', methods=['GET', 'POST'])
+def chosen_course_update(course_id):
+    course_info=crud.read_if('*',"courses","id", course_id)
+    course_object=[classes.Course(course[0], course[1], course[2], course[3], course[4], course[5], course[6]) for course in course_info]
+    teacher_info=[]
+    for course in course_object:
+        for teacher in create_teachers_objects():
+            if course.teacher_id==str(teacher.tid):
+                teacher_info.append(teacher.tid)
+                teacher_info.append(teacher.name)
+    if request.method=='POST':
+        name=request.form['name'].title()
+        description=request.form['description']
+        teacher_id=request.form['teacher_id']
+        start=request.form['start']
+        day=request.form['day']
+        time=request.form['time']
+        crud.update('courses', 'name, description, teacher_id, start, day, time', f"'{name}', '{description}', '{teacher_id}', '{start}', '{day}', '{time}'", course_id)
+        return redirect(url_for('admin_courses'))
+    else:
+        return render_template('chosen_course.html',course_object=course_object, teachers_objects=create_teachers_objects(), teacher_info=teacher_info ) 
 
 @app.route('/admin_students')
 def admin_students():
@@ -83,3 +101,4 @@ def add_teacher():
             return render_template('add_teacher.html', note="A mistake occurred please try again")
     else:
         return render_template('add_teacher.html')
+

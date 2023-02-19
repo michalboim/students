@@ -1,0 +1,32 @@
+{% include "admin_courses.html" %}
+<div class="main_chosen_course">
+    <div class="title_chosen_course">Edit the Changes:</div>
+    <form class="info_chosen_course" action="" method="POST">
+        {% for course in course_object %}
+        Course Name: <input type="text" name="name" value="{{course.name}}" >
+        Course Description<input type="text" name="description" value="{{course.description}}">
+        {% endfor %}
+        Course Teacher:
+            <select class="show_teacher" name="teacher_id" id="">
+                <option name="" value="{{teacher_info[0]}}">{{teacher_info[1]}}</option>
+            {% for teacher in teachers_objects %}
+                <option name="" value="{{teacher.tid}}">{{teacher.name}}</option>
+            {% endfor %}
+            </select>
+            {% for course in course_object %}
+        Course Start Date:<input type="date" name="start" value="{{course.start}}" >
+        Course Day: <select name="day" id="">
+            <option value="{{course.day}}">{{course.day}}</option>
+            <option value="Sunday">Sunday</option>    
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            </select>
+        Course Time: <input type="time" name="time" value="{{course.time}}">
+        <input id="submit" type="submit" value="submit">
+        {% endfor %}
+    </form>    
+</div>
+
