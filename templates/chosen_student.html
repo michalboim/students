@@ -1,0 +1,13 @@
+{% include "admin_courses.html" %}
+<div class="main_chosen_student">
+    <div class="title_chosen_student">Edit the Changes:</div>
+    <form class="info_chosen_student" action="" method="POST">
+        {% for student in student_object %}
+        Student Name: <input type="text" name="name" value="{{student.name}}" >
+        Student Email: <input type="email" name="email" value="{{student.email}}"  title="example@example.com">
+        Student Phone: <input type="tel" name="phone" value="{{student.email}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
+        <input id="submit" type="submit" value="submit">
+        {% endfor %}
+    </form>    
+</div>
+

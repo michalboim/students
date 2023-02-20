@@ -85,6 +85,32 @@ def add_student():
     else:
         return render_template('add_student.html')
 
+@app.route('/update_students', methods=['GET', 'POST'])
+def update_students():
+    if request.method=='POST':
+        students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
+        if len(students_list)<1:
+            return render_template('update_students.html', result='No such course was found')
+        if len(students_list)>=1:
+            student_object=[classes.Student(student[0], student[1], student[2], student[3]) for student in students_list]  
+            return render_template('update_students.html',student_objects=student_object)
+    else:    
+        return render_template('update_students.html', students=create_students_objects())
+
+@app.route('/chosen_student/<student_id>', methods=['GET', 'POST'])
+def chosen_student_update(student_id):
+    student_info=crud.read_if('*',"students","id", student_id)
+    student_object=[classes.Student(student[0], student[1], student[2], student[3]) for student in student_info]
+    if request.method=='POST':
+        name=request.form['name'].title()
+        email=request.form['email']
+        phone=request.form['phone']
+        crud.update('students', 'name, email, phone', f"'{name}', '{email}', '{phone}'", student_id)
+        return redirect(url_for('admin_students'))
+    else:
+        return render_template('chosen_student.html',student_object=student_object) 
+
+
 @app.route('/admin_teachers')
 def admin_teachers():
     return render_template('admin_teachers.html', teachers_objects=create_teachers_objects())
