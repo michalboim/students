@@ -90,7 +90,7 @@ def update_students():
     if request.method=='POST':
         students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
         if len(students_list)<1:
-            return render_template('update_students.html', result='No such course was found')
+            return render_template('update_students.html', result='No such student was found')
         if len(students_list)>=1:
             student_object=[classes.Student(student[0], student[1], student[2], student[3]) for student in students_list]  
             return render_template('update_students.html',student_objects=student_object)
@@ -128,3 +128,27 @@ def add_teacher():
     else:
         return render_template('add_teacher.html')
 
+@app.route('/update_teachers', methods=['GET', 'POST'])
+def update_teachers():
+    if request.method=='POST':
+        teachers_list=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
+        if len(teachers_list)<1:
+            return render_template('update_teachers.html', result='No such teacher was found')
+        if len(teachers_list)>=1:
+            teacher_object=[classes.Teacher(teacher[0], teacher[1], teacher[2], teacher[3]) for teacher in teachers_list]  
+            return render_template('update_teachers.html',teacher_objects=teacher_object)
+    else:    
+        return render_template('update_teachers.html', teachers=create_teachers_objects())
+
+@app.route('/chosen_teacher/<teacher_id>', methods=['GET', 'POST'])
+def chosen_teacher_update(teacher_id):
+    teacher_info=crud.read_if('*',"teachers","id", teacher_id)
+    teacher_object=[classes.Teacher(teacher[0], teacher[1], teacher[2], teacher[3]) for teacher in teacher_info]
+    if request.method=='POST':
+        name=request.form['name'].title()
+        email=request.form['email']
+        phone=request.form['phone']
+        crud.update('teachers', 'name, email, phone', f"'{name}', '{email}', '{phone}'", teacher_id)
+        return redirect(url_for('admin_teachers'))
+    else:
+        return render_template('chosen_teacher.html',teacher_object=teacher_object) 

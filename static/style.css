@@ -252,7 +252,7 @@
     justify-content: space-between;
     position: relative;  
     left: 300px;  
-    top: -150px;
+    top: -180px;
 }
 .title_chosen_student{
     font-weight: bold;
@@ -292,9 +292,7 @@
 .teacher_info{
     display: flex;
 }
-.teacher_id{
-    width: 80px;
-}
+
 .teacher_name{
     width:250px;
 }
@@ -317,5 +315,69 @@
 .add_teacher>input{
     border-style: none;
     background-color: rgb(218, 214, 214);
+    border-radius: 10px;
+}
+
+/*update_teacher*/
+.teachers_update{
+    display: flex;
+    justify-content: space-between;
+    position: relative;  
+    left: 300px;  
+    top: -150px;
+    width: 600px;    
+}
+.teacher_option{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info_teacher_update{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: left;
+}
+.info_teacher_update>div{
+    border-bottom: solid;
+    border-width: 2px;
+    border-color: rgb(195, 193, 193);
+    width: 150px;
+}
+.info_teacher_update>a{
+    text-decoration: none;
+    color: black;
+}
+.info_teacher_update>a:hover{
+    background-color: rgb(236, 234, 234);
+    border-radius: 2px;
+}
+
+/*chosen_teacher*/
+.main_chosen_teacher{
+    display: flex;
+    width: 400px;
+    justify-content: space-between;
+    position: relative;  
+    left: 300px;  
+    top: -150px;
+}
+.title_chosen_teacher{
+    font-weight: bold;
+    font-size: larger;
+}
+.info_chosen_teacher{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
+}
+.info_chosen_teacher>input{
+    border-style: none;
+    background-color: rgb(218, 214, 214);
+    border-radius: 10px;
+}
+.info_chosen_teacher>select{
     border-radius: 10px;
 }

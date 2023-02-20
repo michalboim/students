@@ -1,0 +1,21 @@
+{% include "admin_teachers.html" %}
+<div class="teachers_update">
+    <div class="teacher_option">
+        <div>Enter Teacher Name to Search from the Teachers List:</div>        
+        <div>
+            <form action="" method="POST">
+                <input type="text" name="search" placeholder="Enter search">
+                <input type="submit" value="Search">
+            </form>
+        </div>
+        <div class="info_teacher_update">{{result}}
+            {% for teacher in teacher_objects %}
+            <div class="info_teacher_update"><a href="/chosen_teacher/{{teacher.tid}}">{{teacher.name}} </a></div>
+            {% endfor %}
+            {% for teacher in teachers %}
+            <div class="info_teacher_update"><a href="/chosen_teacher/{{teacher.tid}}">{{teacher.name}} </a></div>
+            {% endfor %}
+        </div>
+    </div>   
+</div>   
+
