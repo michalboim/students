@@ -71,10 +71,13 @@
     display: flex;
 }
 .course_name{
-    width: 200px;
+    width: 150px;
 }
 .course_start{
     width:150px ;
+}
+.course_teacher{
+    width: 250px;
 }
 /*add_course*/
 .main_add_courses{

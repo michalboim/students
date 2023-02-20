@@ -5,7 +5,7 @@
         {% for teacher in teacher_object %}
         Teacher Name: <input type="text" name="name" value="{{teacher.name}}" >
         Teacher Email: <input type="email" name="email" value="{{teacher.email}}"  title="example@example.com">
-        Teacher Phone: <input type="tel" name="phone" value="{{teacher.email}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
+        Teacher Phone: <input type="tel" name="phone" value="{{teacher.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
         <input id="submit" type="submit" value="submit">
         {% endfor %}
     </form>    
