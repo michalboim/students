@@ -13,11 +13,11 @@ def home():
 def go_home():
     return render_template('home.html')
 
-@app.route('/administrator')
+@app.route('/administrator' )
 def administrator():
     return render_template ('administrator.html')
 
-@app.route('/admin_courses')
+@app.route('/admin_courses',methods=['GET', 'POST'])
 def admin_courses():
     return render_template('admin_courses.html', courses_teachers=courses_teachers())
 
@@ -163,3 +163,29 @@ def chosen_teacher_update(teacher_id):
         return redirect(url_for('admin_teachers'))
     else:
         return render_template('chosen_teacher.html',teacher_object=teacher_object) 
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method=='POST':
+        title=['Courses Resulte:', 'Students Resulte:', 'Teachers Resulte:']
+        courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
+        course_object=[]
+        if len(courses_list)==0:
+            course_object=['No results found']
+        else:
+            course_object.append(create_courses_objects(courses_list))
+        students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
+        student_object=[]
+        if len (students_list)==0:
+            student_object=['No results found']
+        else:
+            student_object.append(create_students_objects(students_list))
+        teachers_list=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
+        teacher_object=[]
+        if len(teachers_list)==0:
+            teacher_object=['No results found']
+        if len(teachers_list)>=1:
+            teacher_object.append(create_students_objects(teachers_list)) 
+        return render_template('search.html', title=title ,course_object=course_object, student_object=student_object, teacher_object=teacher_object)
+    else:
+        return render_template('search.html', title='', course_object='')
