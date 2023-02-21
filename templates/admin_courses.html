@@ -9,10 +9,10 @@
     <div class="link"><a href="/admin_students">Students</a></div>
     <div class="link"><a href="/admin_teachers">Teachers</a></div>
 </div>
-<div class="courses_list">
+<div class="courses_list">{{result}}
     {% for course in courses_teachers %}
-    <div class="course_info">
-        <span class="course_name">{{course.tid}} {{course.name}}:</span><span class="course_start">{{course.start}}</span> <span class="course_teacher">{{course.teacher_id}}</span>
+    <div class="info_courses">
+        <span class="course_name"> {{course.name}}:</span><span class="course_start">{{course.start}}</span> <span class="course_teacher">{{course.teacher_id}}</span>
         <a href="/course_info/{{course.tid}}">Information</a>
     </div>
     {% endfor %}
