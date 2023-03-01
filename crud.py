@@ -14,3 +14,8 @@ def create(table, column, values):
 
 def update(table, column, new_value, tid):
     return query(f"UPDATE {table} SET ({column})=({new_value}) WHERE ID='{tid}'")
+
+def student_name(student_id):
+    name=read_if('name', 'students', 'id', student_id)
+    name=name[0][0]
+    return name

@@ -4,6 +4,7 @@ from setup_db import query
 import classes
 import crud
 from functions import create_courses_objects, create_students_objects, create_teachers_objects, courses_teachers
+from collections import namedtuple
 
 @app.route('/')
 def home():
@@ -189,3 +190,43 @@ def search():
         return render_template('search.html', title=title ,course_object=course_object, student_object=student_object, teacher_object=teacher_object)
     else:
         return render_template('search.html', title='', course_object='')
+
+@app.route('/course_student')
+def course_student():
+    students=crud.read_all('students')
+    return render_template('course_student.html', students=create_students_objects(students))
+
+@app.route('/registration/<student_id>',  methods=['GET', 'POST'])
+def registration(student_id):
+    if request.method=='POST':
+        course_id=request.form['course_id']
+        crud.create('students_courses', 'student_id, course_id', f"'{student_id}', '{course_id}'")
+        return render_template('course_student.html')
+    student=crud.read_if('*',"students","id", student_id)
+    student_object=create_students_objects(student)
+    courses=crud.read_all('courses')
+    return render_template('registration.html', student=student_object, courses=create_courses_objects(courses))
+
+@app.route('/teachers')
+def show_teachers():
+    teachers=crud.read_all('teachers')
+    return render_template('teachers.html', teachers=create_teachers_objects(teachers))
+
+@app.route('/teacher/<teacher_id>')
+def teacher_info(teacher_id):
+    teacher=crud.read_if('*',"teachers","id", teacher_id)
+    teacher_object=create_students_objects(teacher)
+    teacher_courses=crud.read_if('*', 'courses', 'teacher_id', teacher_id)
+    teacher_course_object=create_courses_objects(teacher_courses)
+    students_courses=[]
+    for course in teacher_course_object:    
+        students=[]
+        students_info=crud.read_if('student_id, grade', 'students_courses', 'course_id', course.tid )
+        students.append(course.name)
+        for s in students_info:
+             student=namedtuple('C_S', [ 'student', 'grade'])
+             student.student=crud.student_name(s[0])
+             student.grade=s[1]
+             students.append(student)
+        students_courses.append(students)
+    return render_template('teachers.html', teacher=teacher_object, teacher_courses=teacher_course_object, students_courses=students_courses) #students_courses=students_courses)

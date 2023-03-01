@@ -42,6 +42,7 @@ def create_tables():
         id INTEGER PRIMARY KEY,
         student_id INTEGER,
         course_id INTEGER,
+        grade TEXT,
         UNIQUE (student_id, course_id),
         FOREIGN KEY (student_id) REFERENCES students (id),
         FOREIGN KEY (course_id) REFERENCES courses (id)
