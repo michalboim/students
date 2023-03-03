@@ -20,6 +20,15 @@ def administrator():
 
 @app.route('/admin_courses',methods=['GET', 'POST'])
 def admin_courses():
+    if request.method=='POST':
+        courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
+        if len(courses_list)<1:
+            return render_template('admin_courses.html', result='No such course was found')
+        if len(courses_list)>=1:
+            course_object=create_courses_objects(courses_list)
+            for course in course_object:
+                course.teacher_id=crud.teacher_name(course.teacher_id)  
+            return render_template('admin_courses.html',courses_objects=course_object)
     return render_template('admin_courses.html', courses_teachers=courses_teachers())
 
 @app.route('/course_info/<course_id>')
@@ -212,8 +221,13 @@ def show_teachers():
     teachers=crud.read_all('teachers')
     return render_template('teachers.html', teachers=create_teachers_objects(teachers))
 
-@app.route('/teacher/<teacher_id>')
+@app.route('/teacher/<teacher_id>',  methods=['GET', 'POST'])
 def teacher_info(teacher_id):
+    if request.method=='POST':        
+        new_grade=request.form['new_grade']
+        student_id=request.form['student_id']
+        course_id=request.form['course_id']
+        crud.change_grade(new_grade, student_id, course_id)
     teacher=crud.read_if('*',"teachers","id", teacher_id)
     teacher_object=create_students_objects(teacher)
     teacher_courses=crud.read_if('*', 'courses', 'teacher_id', teacher_id)
@@ -224,8 +238,10 @@ def teacher_info(teacher_id):
         students_info=crud.read_if('student_id, grade', 'students_courses', 'course_id', course.tid )
         students.append(course.name)
         for s in students_info:
-             student=namedtuple('C_S', [ 'student', 'grade'])
-             student.student=crud.student_name(s[0])
+             student=namedtuple('C_S', [ 'student_id','student_name','course_id','grade'])
+             student.student_id=s[0]
+             student.student_name=crud.student_name(s[0])
+             student.course_id=course.tid
              student.grade=s[1]
              students.append(student)
         students_courses.append(students)

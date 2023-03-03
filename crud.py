@@ -19,3 +19,11 @@ def student_name(student_id):
     name=read_if('name', 'students', 'id', student_id)
     name=name[0][0]
     return name
+
+def teacher_name(teacher_id):
+    name=read_if('name', 'teachers', 'id', teacher_id)
+    name=name[0][0]
+    return name
+
+def change_grade(new_grade, student_id, course_id ):
+    return query(f"UPDATE students_courses SET grade=({new_grade}) WHERE student_id='{student_id}' and course_id='{course_id}'")
