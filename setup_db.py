@@ -42,12 +42,24 @@ def create_tables():
         id INTEGER PRIMARY KEY,
         student_id INTEGER,
         course_id INTEGER,
-        grade TEXT,
+        grade INTEGER,
         UNIQUE (student_id, course_id),
         FOREIGN KEY (student_id) REFERENCES students (id),
         FOREIGN KEY (course_id) REFERENCES courses (id)
     )
-        """)
+    """)
+    query("""
+    CREATE TABLE IF NOT EXISTS students_attendance (
+        id INTEGER PRIMARY KEY,
+        student_id INTEGER,
+        course_id INTEGER,
+        date TEXT,
+        attendance TEXT,
+        UNIQUE (student_id, course_id, date),
+        FOREIGN KEY (student_id) REFERENCES students (id),
+        FOREIGN KEY (course_id) REFERENCES courses (id)
+    )
+    """)
 
 def create_fake_data(students_num=10, teachers_num=4):
 

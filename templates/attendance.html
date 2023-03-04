@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="main_atten" >
+    <div class="names_courses">
+        <div class="search">
+            {% for form in forms[1:] %}
+            <form action="" method="post">
+                <input type="text" name="search" placeholder="Enter course name">
+                <input type="submit" value="Search">
+            </form>
+            {% endfor %}
+        </div>
+        <div>{{note}}</div>
+        <div class="courses_list">{{result}}
+            {% for course in courses_objects %}
+                <a href="/attendance/{{course.tid}}">{{course.name}}</a>
+            {% endfor %}
+            {% for course in courses %}
+                <a href="/attendance/{{course.tid}}">{{course.name}}</a>
+            {% endfor %}
+        </div>   
+    </div>
+    <div class="course_name_attend" >{{course_name}}</div>
+    <div class="date">{{current_date}}</div>
+    <div class="attend_grid" >
+        <div class="course_attenance">
+            <div class="students" >
+                {% for student in students %}
+                <div class="student_atten">
+                    <form action="" class="atten_details" method="post">
+                        <div class="student_name">{{student.name}}</div>
+                        <div class="answer"> 
+                            <div>Yes<input type="radio" name="attendance" id="" value="yes"></div>
+                            <div>No<input type="radio" name="attendance" id="" value="no" checked></div>
+                            <div><input type="submit" value="Set"></div> 
+                            <input type="hidden" name="student_id" value="{{student.id}}">
+                        </div>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="students" >
+                {% for student in students_attend %}
+                <div class="student_atten">
+                    <form action="" class="atten_details" method="post">
+                        <div class="student_name">{{student.name}}</div>
+                        <div class="answer"> 
+                            <div>Yes<input type="radio" name="attendance" id="" value="yes" {{student.attend.yes}}></div>
+                            <div>No<input type="radio" name="attendance" id="" value="no" {{student.attend.no}}></div>
+                            <div><input type="submit" value="Set"></div> 
+                            <input type="hidden" name="student_id" value="{{student.id}}">
+                        </div>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>               
+        <div class="date_list" >
+            <div>{{title[0]}}</div>
+            {% for t in title[1:] %}
+            <form action="" method="post">
+                <select name="" id="">
+                <option value="">{{title[1]}}</option>
+                </select>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

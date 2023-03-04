@@ -5,6 +5,7 @@ import classes
 import crud
 from functions import create_courses_objects, create_students_objects, create_teachers_objects, courses_teachers
 from collections import namedtuple
+import datetime
 
 @app.route('/')
 def home():
@@ -85,7 +86,7 @@ def chosen_course_update(course_id):
         start=request.form['start']
         day=request.form['day']
         time=request.form['time']
-        crud.update('courses', 'name, description, teacher_id, start, day, time', f"'{name}', '{description}', '{teacher_id}', '{start}', '{day}', '{time}'", course_id)
+        crud.update_if('courses', 'name, description, teacher_id, start, day, time', f"'{name}', '{description}', '{teacher_id}', '{start}', '{day}', '{time}'",'id', course_id)
         return redirect(url_for('admin_courses'))
     else:
         return render_template('chosen_course.html',course_object=course_object, teachers_objects=create_teachers_objects(crud.read_all('teachers')), teacher_info=teacher_info ) 
@@ -127,7 +128,7 @@ def chosen_student_update(student_id):
         name=request.form['name'].title()
         email=request.form['email']
         phone=request.form['phone']
-        crud.update('students', 'name, email, phone', f"'{name}', '{email}', '{phone}'", student_id)
+        crud.update_if('students', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', student_id)
         return redirect(url_for('admin_students'))
     else:
         return render_template('chosen_student.html',student_object=student_object) 
@@ -169,7 +170,7 @@ def chosen_teacher_update(teacher_id):
         name=request.form['name'].title()
         email=request.form['email']
         phone=request.form['phone']
-        crud.update('teachers', 'name, email, phone', f"'{name}', '{email}', '{phone}'", teacher_id)
+        crud.update_if('teachers', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', teacher_id)
         return redirect(url_for('admin_teachers'))
     else:
         return render_template('chosen_teacher.html',teacher_object=teacher_object) 
@@ -245,4 +246,90 @@ def teacher_info(teacher_id):
              student.grade=s[1]
              students.append(student)
         students_courses.append(students)
-    return render_template('teachers.html', teacher=teacher_object, teacher_courses=teacher_course_object, students_courses=students_courses) #students_courses=students_courses)
+    return render_template('teachers.html', teacher=teacher_object, teacher_courses=teacher_course_object, students_courses=students_courses)
+
+@app.route('/attendance', methods=['GET','POST'])
+def attendance():
+    form=['title','form']
+    courses=crud.read_all('courses')
+    courses=create_courses_objects(courses)
+    if request.method=='POST':
+        courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
+        if len(courses_list)<1:
+            return render_template('attendance.html',forms=form, courses=courses ,result='No such course was found', title='')
+        if len(courses_list)>=1:
+            course_object=create_courses_objects(courses_list)
+            return render_template('attendance.html', forms=form ,courses_objects=course_object, title='')
+    return render_template('attendance.html',forms=form ,courses=courses, title='')
+
+@app.route('/attendance/<course_id>', methods=['get', 'post'])
+def course_attendance(course_id):
+    title=['Choose different date:','form']
+    current_date=datetime.date.today()
+    current_date=current_date.strftime("%m/%d/%Y")
+    current_date=current_date.replace('/','-')
+    course_name=crud.course_name(course_id)
+    if request.method=='GET':
+        students_ids=crud.read_if('student_id', 'students_courses', 'course_id', course_id)
+        if len(students_ids)==0:
+            return render_template ('attendance.html',forms='', note=f"There are no students enrolled to {course_name}", title='' )
+        else:
+            answer_attend=crud.read_two_if('date', 'students_attendance', 'course_id', course_id, 'date', current_date)
+            if len(answer_attend)==0:    
+                for s_id in students_ids:
+                    crud.create('students_attendance', 'student_id, course_id, date', f"'{s_id[0]}', '{course_id}', '{current_date}'")
+                students_names_ids=[]
+                for s in students_ids:
+                    student=namedtuple('S_Id', ['name', 'id'])
+                    student.name=f"{crud.student_name(s[0])}:"
+                    student.id=s[0]
+                    students_names_ids.append(student)
+                return render_template ('attendance.html', forms='',course_name=f"Attendance for {course_name}",current_date=f"Date: {current_date}",students=students_names_ids, title=title )
+            else:
+                students_ids_atten=crud.read_two_if('student_id','students_attendance','course_id', course_id, 'date', current_date)
+                if len(students_ids)==len(students_ids_atten):
+                    course_atten=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
+                    students_attend=[]
+                    for s_a in course_atten:
+                        student_a=namedtuple('S_Attend',['id','name','attend'])
+                        student_a.id=s_a[0]
+                        student_a.name=f"{crud.student_name(s_a[0])}:"
+                        student_a.attend={}
+                        if s_a[1]=='yes':
+                            student_a.attend['yes']='checked'
+                            student_a.attend['no']=''
+                        else:
+                            student_a.attend['yes']=''
+                            student_a.attend['no']='checked'
+                        students_attend.append(student_a)
+                    return render_template ('attendance.html',forms='' ,course_name=f"Attendance for {course_name}",current_date=f"Date: {current_date}", students_attend=students_attend, title=title)
+                else:
+                    for s_i in students_ids:
+    
+                            if s_i in students_ids_atten:
+                                pass
+                            else:
+                                crud.create('students_attendance', 'student_id, course_id, date', f"'{s_i[0]}', '{course_id}', '{current_date}'")
+                    course_atten_n=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
+                    students_attend_n=[]
+                    for s_a_n in course_atten_n:
+                        student_a_n=namedtuple('S_Attend',['id','name','attend'])
+                        student_a_n.id=s_a_n[0]
+                        student_a_n.name=f"{crud.student_name(s_a_n[0])}:"
+                        student_a_n.attend={}
+                        if s_a_n[1]=='yes':
+                            student_a_n.attend['yes']='checked'
+                            student_a_n.attend['no']=''
+                        else:
+                            student_a_n.attend['yes']=''
+                            student_a_n.attend['no']='checked'
+                        students_attend_n.append(student_a_n)
+                    return render_template ('attendance.html',forms='' ,course_name=f"Attendance for {course_name}",current_date=f"Date: {current_date}", students_attend=students_attend_n, title=title)
+    else:   
+        if request.method=='POST':
+            answer=request.form['attendance']
+            student_id=request.form['student_id']
+            crud.update_three_if('students_attendance', 'attendance',f"'{answer}'", 'student_id', student_id, 'course_id', course_id, 'date', current_date)    
+            return redirect(url_for('course_attendance',course_id=course_id))
+
+        
