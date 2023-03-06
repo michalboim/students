@@ -250,7 +250,7 @@ def teacher_info(teacher_id):
 
 @app.route('/attendance', methods=['GET','POST'])
 def attendance():
-    form=['title','form']
+    form=['title','create form']
     courses=crud.read_all('courses')
     courses=create_courses_objects(courses)
     if request.method=='POST':
@@ -267,8 +267,10 @@ def course_attendance(course_id):
     title=['Choose different date:','form']
     current_date=datetime.date.today()
     current_date=current_date.strftime("%m/%d/%Y")
+    #current_date=current_date.strftime("%d/%m/%Y")
     current_date=current_date.replace('/','-')
     course_name=crud.course_name(course_id)
+    dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
     if request.method=='GET':
         students_ids=crud.read_if('student_id', 'students_courses', 'course_id', course_id)
         if len(students_ids)==0:
@@ -302,34 +304,38 @@ def course_attendance(course_id):
                             student_a.attend['yes']=''
                             student_a.attend['no']='checked'
                         students_attend.append(student_a)
-                    return render_template ('attendance.html',forms='' ,course_name=f"Attendance for {course_name}",current_date=f"Date: {current_date}", students_attend=students_attend, title=title)
+                    return render_template ('attendance.html',forms='' ,course_name=f"Attendance for {course_name}",current_date=f"Date: {current_date}", students_attend=students_attend, title=title, course_id=course_id, dates=dates)
                 else:
-                    for s_i in students_ids:
-    
+                    for s_i in students_ids:    
                             if s_i in students_ids_atten:
                                 pass
                             else:
                                 crud.create('students_attendance', 'student_id, course_id, date', f"'{s_i[0]}', '{course_id}', '{current_date}'")
-                    course_atten_n=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
-                    students_attend_n=[]
-                    for s_a_n in course_atten_n:
-                        student_a_n=namedtuple('S_Attend',['id','name','attend'])
-                        student_a_n.id=s_a_n[0]
-                        student_a_n.name=f"{crud.student_name(s_a_n[0])}:"
-                        student_a_n.attend={}
-                        if s_a_n[1]=='yes':
-                            student_a_n.attend['yes']='checked'
-                            student_a_n.attend['no']=''
+                    course_atten=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
+                    students_attend=[]
+                    for s_a in course_atten:
+                        student_a=namedtuple('S_Attend',['id','name','attend'])
+                        student_a.id=s_a[0]
+                        student_a.name=f"{crud.student_name(s_a[0])}:"
+                        student_a.attend={}
+                        if s_a[1]=='yes':
+                            student_a.attend['yes']='checked'
+                            student_a.attend['no']=''
                         else:
-                            student_a_n.attend['yes']=''
-                            student_a_n.attend['no']='checked'
-                        students_attend_n.append(student_a_n)
-                    return render_template ('attendance.html',forms='' ,course_name=f"Attendance for {course_name}",current_date=f"Date: {current_date}", students_attend=students_attend_n, title=title)
+                            student_a.attend['yes']=''
+                            student_a.attend['no']='checked'
+                        students_attend.append(student_a)
+                    return render_template ('attendance.html',forms='' ,course_name=f"Attendance for {course_name}",current_date=f"Date: {current_date}", students_attend=students_attend, title=title, course_id=course_id, dates=dates)
     else:   
         if request.method=='POST':
             answer=request.form['attendance']
             student_id=request.form['student_id']
             crud.update_three_if('students_attendance', 'attendance',f"'{answer}'", 'student_id', student_id, 'course_id', course_id, 'date', current_date)    
             return redirect(url_for('course_attendance',course_id=course_id))
+
+@app.route('/attendance/chosen_date/<course_id>')
+def attendance_chosen_date(course_id):
+    date=request.args['chosen_date']
+    return date
 
         

@@ -20,14 +20,14 @@
             {% endfor %}
         </div>   
     </div>
-    <div class="course_name_attend" >{{course_name}}</div>
-    <div class="date">{{current_date}}</div>
-    <div class="attend_grid" >
+    <div class="course_name_attend" >{{course_name}}</div>    
+    <div class="attend_grid" >    
         <div class="course_attenance">
+            <div class="date">{{current_date}}</div>
             <div class="students" >
                 {% for student in students %}
                 <div class="student_atten">
-                    <form action="" class="atten_details" method="post">
+                    <form  class="atten_details" method="post">
                         <div class="student_name">{{student.name}}</div>
                         <div class="answer"> 
                             <div>Yes<input type="radio" name="attendance" id="" value="yes"></div>
@@ -42,7 +42,7 @@
             <div class="students" >
                 {% for student in students_attend %}
                 <div class="student_atten">
-                    <form action="" class="atten_details" method="post">
+                    <form  class="atten_details" method="post">
                         <div class="student_name">{{student.name}}</div>
                         <div class="answer"> 
                             <div>Yes<input type="radio" name="attendance" id="" value="yes" {{student.attend.yes}}></div>
@@ -55,15 +55,21 @@
                 {% endfor %}
             </div>
         </div>               
-        <div class="date_list" >
-            <div>{{title[0]}}</div>
-            {% for t in title[1:] %}
-            <form action="" method="post">
-                <select name="" id="">
-                <option value="">{{title[1]}}</option>
+        <div class="dates_list" >
+            <div class="date">{{title[0]}}</div>
+            <form action="/attendance/chosen_date/{{course_id}}" >
+                {% for t in title[1:] %}
+                <select name="chosen_date" id="">
+                    {% for date in dates %}
+                    <option value="{{date[0]}}">{{date[0]}}</option>
+                    {% endfor %}
                 </select>
+                {% endfor %}
+                {% for t in title[1:] %}
+                <input type="submit" name="" id="" value="Select">
+                {% endfor %}
             </form>
-            {% endfor %}
+            
         </div>
     </div>
 </div>
