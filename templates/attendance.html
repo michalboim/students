@@ -3,7 +3,7 @@
 <div class="main_atten" >
     <div class="names_courses">
         <div class="search">
-            {% for form in forms[1:] %}
+            {% for f in form %}
             <form action="" method="post">
                 <input type="text" name="search" placeholder="Enter course name">
                 <input type="submit" value="Search">
@@ -20,10 +20,10 @@
             {% endfor %}
         </div>   
     </div>
-    <div class="course_name_attend" >{{course_name}}</div>    
+    <div class="course_name_attend" >{{jinja.course_name}}</div>    
     <div class="attend_grid" >    
         <div class="course_attenance">
-            <div class="date">{{current_date}}</div>
+            <div class="date">{{jinja.current_date}}</div>
             <div class="students" >
                 {% for student in students %}
                 <div class="student_atten">
@@ -54,23 +54,42 @@
                 </div>
                 {% endfor %}
             </div>
-        </div>               
-        <div class="dates_list" >
-            <div class="date">{{title[0]}}</div>
-            <form action="/attendance/chosen_date/{{course_id}}" >
-                {% for t in title[1:] %}
-                <select name="chosen_date" id="">
-                    {% for date in dates %}
-                    <option value="{{date[0]}}">{{date[0]}}</option>
+        </div> 
+        <div class="dates_list" >              
+           {% for chose in jinja.chose_date %}
+           <div class="date">{{jinja.chose_date[0]}}</div>
+           <div>           
+                <form class="form_select" action="/attendance_chosen_date/{{jinja.course_id}}" >            
+                    {% for chose in jinja.chose_date %}
+                    <select name="chosen_date" id="">
+                        {% for date in jinja.dates %}
+                        <option value="{{date[0]}}">{{date[0]}}</option>
+                        {% endfor %}
+                    </select>
                     {% endfor %}
-                </select>
-                {% endfor %}
-                {% for t in title[1:] %}
-                <input type="submit" name="" id="" value="Select">
-                {% endfor %}
-            </form>
-            
+                    {% for chose in jinja.chose_date %}
+                    <input type="submit" name="" id="" value="Select">
+                    {% endfor %}
+                </form>
+            </div> 
+            {% endfor %}
+            <div class="chosen_date">{{dates_dict.chosen_date}}</div>
+            <div class="chosen_attend">
+                <div class="yes">
+                    <div>{{dates_dict.yes_title}}</div>
+                    {% for name in dates_dict.attend_date %}
+                    <div>{{name}}</div>
+                    {% endfor %}
+                </div>
+                <div class="no">
+                <div>{{dates_dict.no_title}}</div>
+                    {% for name in dates_dict.not_attend %}
+                    <div>{{name}}</div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
+    
     </div>
 </div>
 {% endblock %}

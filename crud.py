@@ -9,6 +9,9 @@ def read_if(column, table, value, condition):
 def read_two_if(column, table, value1, condition1, value2, condition2):
     return query(f"SELECT {column} FROM {table} WHERE {value1}='{condition1}' and {value2}='{condition2}'")
 
+def read_three_if(column, table, value1, condition1, value2, condition2, value3, condition3):
+    return query(f"SELECT {column} FROM {table} WHERE {value1}='{condition1}' and {value2}='{condition2}' and {value3}='{condition3}'")
+
 def read_like(column, table, value, condition):
     return query(f"SELECT {column} FROM {table} WHERE {value} LIKE '{condition}%'")
 
