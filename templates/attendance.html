@@ -32,13 +32,12 @@
             </div>
             <div class="students_search_list">{{result2}}
                 {% for s in students_objects %}
-                    <a href="/attendance/{{s.tid}}">{{s.name}}</a>
+                    <a href="/students_attendance/{{s.tid}}">{{s.name}}</a>
                 {% endfor %}
                 {% for s in students_search %}
-                    <a href="/attendance/{{s.tid}}">{{s.name}}</a>
+                    <a href="/students_attendance/{{s.tid}}">{{s.name}}</a>
                 {% endfor %}
-            </div>   
-            
+            </div>       
         </div>
     </div>
     <div class="course_name_attend" >{{jinja.course_name}}</div>    

@@ -380,4 +380,12 @@ def attendance_chosen_date(course_id):
     else:
         return redirect(url_for('course_attendance',course_id=course_id))
 
-        
+@app.route('/students_attendance/<student_id>')
+def students_attendance(student_id):
+    student_courses=crud.read_if('course_id', 'students_courses', 'student_id', student_id)
+    courses_ids=[]
+    for c in student_courses:
+        name=crud.course_name(c[0])
+        course_name=[c[0],name]
+        courses_ids.append(course_name)
+    return courses_ids     
