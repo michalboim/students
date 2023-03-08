@@ -253,14 +253,24 @@ def attendance():
     form=['create form']
     courses=crud.read_all('courses')
     courses=create_courses_objects(courses)
+    students_search=crud.read_all('students')
+    students_search=create_students_objects(students_search)
     if request.method=='POST':
-        courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
-        if len(courses_list)<1:
-            return render_template('attendance.html',form=form ,result='No such course was found')
-        if len(courses_list)>=1:
-            course_object=create_courses_objects(courses_list)
-            return render_template('attendance.html',jinja='', dates_dict='', form=form ,courses_objects=course_object)
-    return render_template('attendance.html',jinja='', dates_dict='', form=form ,courses=courses)
+        if 'form1' in request.form:
+            courses_list=crud.read_like('*', 'courses', 'name', request.form['search1'].title())
+            if len(courses_list)<1:
+                return render_template('attendance.html', jinja='', dates_dict='' ,form=form ,result1='No such course was found')
+            if len(courses_list)>=1:
+                course_object=create_courses_objects(courses_list)
+                return render_template('attendance.html',jinja='', dates_dict='', form=form ,courses_objects=course_object, students_search=students_search)
+        elif 'form2' in request.form:
+            students_search_list=crud.read_like('*', 'students', 'name', request.form['search2'].title())
+            if len(students_search_list)<1:
+                return render_template('attendance.html', jinja='', dates_dict='' ,form=form ,result1='No such studentd was found')
+            if len(students_search_list)>=1:
+                student_object=create_students_objects(students_search_list)
+                return render_template('attendance.html',jinja='', dates_dict='', form=form ,students_objects=student_object, courses=courses)
+    return render_template('attendance.html',jinja='', dates_dict='', form=form ,courses=courses, students_search=students_search)
 
 @app.route('/attendance/<course_id>', methods=['get', 'post'])
 def course_attendance(course_id):
@@ -268,8 +278,7 @@ def course_attendance(course_id):
     jinja['course_id']=course_id
     jinja['chose_date']=['Choose different date:']
     current_date=datetime.date.today()
-    current_date=current_date.strftime("%m/%d/%Y")
-    #current_date=current_date.strftime("%d/%m/%Y")
+    current_date=current_date.strftime("%d/%m/%Y")
     current_date=current_date.replace('/','-')
     jinja['current_date']=f"Date: {current_date}"
     course_name=crud.course_name(course_id)
@@ -319,14 +328,12 @@ def course_attendance(course_id):
 
 @app.route('/attendance_chosen_date/<course_id>', methods=['get', 'post'])
 def attendance_chosen_date(course_id):
-    #date=request.args['chosen_date']
     if request.method=='GET':
         jinja={}
         jinja['course_id']=course_id
         jinja['chose_date']=['Choose different date:']
         current_date=datetime.date.today()
-        current_date=current_date.strftime("%m/%d/%Y")
-        #current_date=current_date.strftime("%d/%m/%Y")
+        current_date=current_date.strftime("%d/%m/%Y")
         current_date=current_date.replace('/','-')
         jinja['current_date']=f"Date: {current_date}"
         course_name=crud.course_name(course_id)
@@ -349,26 +356,25 @@ def attendance_chosen_date(course_id):
             students_attend.append(student_a)
         dates_dict={}
         dates_dict['chosen_date']=f"{request.args['chosen_date']} attendance list:"
+        dates_dict['yes_title']='Students who ATTENDED the class:'
+        dates_dict['no_title']='Students who DID NOT attend the class:'
         ids_attend=crud.read_three_if('student_id', 'students_attendance', 'course_id', course_id, 'date', request.args['chosen_date'], 'attendance', 'yes' )
         if len(ids_attend)==0:
-             dates_dict['yes_title']='No students attended the class'
+             dates_dict['attend_date']=['No students found',]
         else:
             names_attend=[]
             for ids in ids_attend:
                 name=crud.student_name(ids[0])
-                names_attend.append(name)
-                dates_dict['yes_title']='Students who ATTENDED the class:'
+                names_attend.append(name)    
             dates_dict['attend_date']=names_attend
         ids_not_attend=crud.read_three_if('student_id', 'students_attendance', 'course_id', course_id, 'date', request.args['chosen_date'], 'attendance', 'no' )
         if len(ids_not_attend)==0:
-             dates_dict['no_title']=''
-             dates_dict['not_attend']=[ ]
+             dates_dict['not_attend']=['No students found']
         else:
             names_not_attend=[]
             for ids in ids_not_attend:
                 name=crud.student_name(ids[0])
-                names_not_attend.append(name)
-            dates_dict['no_title']='Students who DID NOT attend the class:'
+                names_not_attend.append(name)            
             dates_dict['not_attend']=names_not_attend
         return  render_template ('attendance.html', students_attend=students_attend, jinja=jinja, dates_dict=dates_dict)
     else:

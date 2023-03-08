@@ -415,12 +415,19 @@
 .main_atten{
     margin-left: 40px;
 }
+.search_grid{
+    display: grid; 
+    grid-template-columns: max-content max-content ;
+    gap: 200px;
+    margin-left: 20px;
+    margin-top: 20px;
+}
 .names_courses{
+    grid-column: 1;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-left: 20px;
-    margin-top: 20px;
+
 }
 .courses_list>a{
     color: black;
@@ -428,6 +435,26 @@
     width: max-content;
 }
 .courses_list>a:hover{
+    background-color: rgb(236, 234, 234);
+    border-radius: 2px;
+}
+.students_attend_search{
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.students_search_list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.students_search_list>a{
+    color: black;
+    text-decoration: none;
+    width: max-content;
+}
+.students_search_list>a:hover{
     background-color: rgb(236, 234, 234);
     border-radius: 2px;
 }
@@ -439,7 +466,8 @@
 }
 .attend_grid{
     display: grid; 
-    grid-template-columns: 1fr 1fr ;
+    grid-template-columns: max-content max-content ;
+    gap: 200px;
 }
 .course_attenance{
     grid-column: 1;
@@ -476,9 +504,7 @@
     flex-direction: column;
     gap:10px;
 }
-.form_select{
-    text-align: center;
-}
+
 .chosen_date{
     font-size: large;
     font-weight: bold;
@@ -494,7 +520,11 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    border-right: solid;
 }
 .no{
     grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
