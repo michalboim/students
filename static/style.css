@@ -415,116 +415,137 @@
 .main_atten{
     margin-left: 40px;
 }
-.search_grid{
-    display: grid; 
-    grid-template-columns: max-content max-content ;
-    gap: 200px;
-    margin-left: 20px;
-    margin-top: 20px;
-}
-.names_courses{
-    grid-column: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 
-}
-.courses_list>a{
-    color: black;
-    text-decoration: none;
-    width: max-content;
-}
-.courses_list>a:hover{
-    background-color: rgb(236, 234, 234);
-    border-radius: 2px;
-}
-.students_attend_search{
-    grid-column: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.students_search_list{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.students_search_list>a{
-    color: black;
-    text-decoration: none;
-    width: max-content;
-}
-.students_search_list>a:hover{
-    background-color: rgb(236, 234, 234);
-    border-radius: 2px;
-}
-.course_name_attend{
-    font-weight: bolder;
-    font-size:x-large;
-    width: max-content;
-    margin-bottom: 20px;
-}
-.attend_grid{
-    display: grid; 
-    grid-template-columns: max-content max-content ;
-    gap: 200px;
-}
-.course_attenance{
-    grid-column: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+        /*attendance- start search*/
+        .search_grid{
+            display: grid; 
+            grid-template-columns: max-content max-content ;
+            gap: 200px;
+            margin-left: 20px;
+            margin-top: 20px;
+        }
+        
+        /*attendance- course search*/
+        .names_courses{
+            grid-column: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
 
-.date{
-    font-weight: bold;
-    font-size: larger;
-    width: max-content;
-}
-.students{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-.student_atten>*{
-    display: flex;
-}
-.student_name{
-    width:250px;
-    font-size: large;
-}
-.answer{
-    display: flex;
-    width: 200px;
-    justify-content: space-between;
-}
-.dates_list{
-    grid-column: 2;
-    display: flex;
-    flex-direction: column;
-    gap:10px;
-}
+        }
+        .courses_list>a{
+            color: black;
+            text-decoration: none;
+            width: max-content;
+        }
+        .courses_list>a:hover{
+            background-color: rgb(236, 234, 234);
+            border-radius: 2px;
+        }
 
-.chosen_date{
-    font-size: large;
-    font-weight: bold;
-    text-align: center;
-}
-.chosen_attend{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-.yes{
-    grid-column: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    border-right: solid;
-}
-.no{
-    grid-column: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+        /*attendance- student search*/
+        .students_attend_search{
+            grid-column: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .students_search_list{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .students_search_list>a{
+            color: black;
+            text-decoration: none;
+            width: max-content;
+        }
+        .students_search_list>a:hover{
+            background-color: rgb(236, 234, 234);
+            border-radius: 2px;
+        }
+        .student_courses{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .course_dates{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        
+        }
+
+                /*attendance- course current date*/
+                .course_name_attend{
+                    font-weight: bolder;
+                    font-size:x-large;
+                    width: max-content;
+                    margin-bottom: 20px;
+                }
+                .attend_grid{
+                    display: grid; 
+                    grid-template-columns: max-content max-content ;
+                    gap: 200px;
+                }
+                .course_attenance{
+                    grid-column: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+
+                .date{
+                    font-weight: bold;
+                    font-size: larger;
+                    width: max-content;
+                }
+                .students{
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+                .student_atten>*{
+                    display: flex;
+                }
+                .student_name{
+                    width:250px;
+                    font-size: large;
+                }
+                .answer{
+                    display: flex;
+                    width: 200px;
+                    justify-content: space-between;
+                }
+                
+                /*attendance- course date list*/
+                .dates_list{
+                    grid-column: 2;
+                    display: flex;
+                    flex-direction: column;
+                    gap:10px;
+                }
+
+                .chosen_date{
+                    font-size: large;
+                    font-weight: bold;
+                    text-align: center;
+                }
+                .chosen_attend{
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 10px;
+                }
+                .yes{
+                    grid-column: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    border-right: solid;
+                }
+                .no{
+                    grid-column: 2;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                }

@@ -11,7 +11,6 @@
                 </form>
                 {% endfor %}
             </div>
-            <div>{{note1}}</div>
             <div class="courses_list">{{result1}}
                 {% for course in courses_objects %}
                     <a href="/attendance/{{course.tid}}">{{course.name}}</a>
@@ -37,9 +36,44 @@
                 {% for s in students_search %}
                     <a href="/students_attendance/{{s.tid}}">{{s.name}}</a>
                 {% endfor %}
+            </div>
+            <div class="student_courses">
+                <div>{{course_dict.student_name}}</div>
+                <div>
+                    {% for form in course_dict.form %}
+                        <form action="" method="post">
+                            <select name="course_select" id="">
+                                {% for course in course_dict.course_list %}
+                                <option value="{{course[0]}}">{{course[1]}}</option>
+                                {% endfor %}
+                            </select>
+                            <input name="form3" type="submit" value="Select">
+                        </form>
+                    {% endfor %}
+                </div>
+                <div class="course_dates" >
+                    <div>{{course_dates_dict.course_name}}</div>
+                    <div>
+                        {% for form in course_dates_dict.form %}
+                            <form action="" method="post">
+                                <select name="date_select" id="">
+                                    {% for date in course_dates_dict.course_dates %}
+                                    <option value="{{date[0]}}">{{date[0]}}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" name="chosen_course_id" value="{{course_dates_dict.course_id}}">
+                                <input name="form4" type="submit" value="Select">
+                            </form>
+                        {% endfor %}
+                    </div>
+                    <div>{{answer}}</div>
+                </div>
             </div>       
         </div>
     </div>
+    <div>{{note1}}</div>
+    <div>{{note2}}</div>
+    <div>{{note3}}</div>
     <div class="course_name_attend" >{{jinja.course_name}}</div>    
     <div class="attend_grid" >    
         <div class="course_attenance">
