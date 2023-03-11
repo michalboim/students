@@ -1,21 +1,23 @@
-{% include "admin_students.html" %}
-<div class="students_update">
-    <div class="student_option">
-        <div>Enter Student Name to Search from the Students List:</div>        
-        <div>
-            <form action="" method="POST">
-                <input type="text" name="search" placeholder="Enter search">
-                <input type="submit" value="Search">
-            </form>
-        </div>
-        <div class="info_student_update">{{result}}
-            {% for student in student_objects %}
-            <div class="info_student_update"><a href="/chosen_student/{{student.tid}}">{{student.name}} </a></div>
-            {% endfor %}
-            {% for student in students %}
-            <div class="info_student_update"><a href="/chosen_student/{{student.tid}}">{{student.name}} </a></div>
-            {% endfor %}
-        </div>
-    </div>   
-</div>   
+{% include "admin_nav_students.html" %}
+
+    <div class="students_update">
+        <div class="student_option">    
+            <div>
+                <form action="" method="POST">
+                    <input type="text" name="search" placeholder="Enter student name">
+                    <input type="submit" value="Search">
+                </form>
+            </div>
+            <div class="info_student_update">{{result}}
+                {% for student in student_objects %}
+                <div class="info_student_update"><a href="/chosen_student/{{student.tid}}">{{student.name}} </a></div>
+                {% endfor %}
+                {% for student in students %}
+                <div class="info_student_update"><a href="/chosen_student/{{student.tid}}">{{student.name}} </a></div>
+                {% endfor %}
+            </div>
+        </div>   
+    </div>
+</div>     
+
 

@@ -23,13 +23,13 @@ def administrator():
 def admin_courses():
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
-        if len(courses_list)<1:
+        if len(courses_list)==0:
             return render_template('admin_courses.html', result='No such course was found')
-        if len(courses_list)>=1:
-            course_object=create_courses_objects(courses_list)
-            for course in course_object:
+        else:
+            courses_object=create_courses_objects(courses_list)
+            for course in courses_object:
                 course.teacher_id=crud.teacher_name(course.teacher_id)  
-            return render_template('admin_courses.html',courses_objects=course_object)
+            return render_template('admin_courses.html',courses_objects=courses_object)
     return render_template('admin_courses.html', courses_teachers=courses_teachers())
 
 @app.route('/course_info/<course_id>')
@@ -46,35 +46,39 @@ def course_info(course_id):
 
 @app.route('/add_course', methods=['GET','POST'])
 def add_course():
-    if request.method=='POST':  
-        num_courses=len(crud.read_all('courses'))
+    if request.method=='POST':          
         crud.create('courses', 'name, description, teacher_id, start, day, time', f" '{request.form['new_name'].title()}', '{request.form['new_description']}', '{request.form['teacher_tid']}', '{request.form['new_start']}', '{request.form['new_day']}', '{request.form['new_time']}' ")
-        new_num=len(crud.read_all('courses'))
-        if num_courses<new_num:
-            return render_template ('add_course.html', teachers_object=create_teachers_objects(crud.read_all('teachers')) ,note=f"{request.form['new_name'].title()} course added successfully")
-        else:
-            return render_template ('add_course.html',teachers_object=create_teachers_objects(crud.read_all('teachers')) ,note="A mistake occurred please try again")
+        return redirect(url_for('add_course'))
     else:
         return render_template('add_course.html', teachers_object=create_teachers_objects(crud.read_all('teachers')))
 
 @app.route('/update_courses', methods=['GET', 'POST'])
 def update_courses():
+    form=['create']
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
         if len(courses_list)<1:
-            return render_template('update_courses.html', result='No such course was found')
+            return render_template('update_courses.html', form=form, chosen_course='', result='No such course was found')
         if len(courses_list)>=1:
             course_object=create_courses_objects(courses_list)  
-            return render_template('update_courses.html',courses_objects=course_object)
+            return render_template('update_courses.html', form=form, chosen_course='',teacher_info='', courses_objects=course_object)
     else:    
-        return render_template('update_courses.html', courses=courses_teachers())
+        return render_template('update_courses.html', form=form, chosen_course='',teacher_info='', courses=courses_teachers())
 
 @app.route('/chosen_course/<course_id>', methods=['GET', 'POST'])
 def chosen_course_update(course_id):
-    course_info=crud.read_if('*',"courses","id", course_id)
-    course_object=create_courses_objects(course_info)
+    form2=['create']
+    chosen_course={}
+    chosen_course['title_chosen']='Edit the Changes:'
+    course=crud.read_if('*',"courses","id", course_id)
+    course_info=create_courses_objects(course)
+    for c in course_info:
+        c.start=crud.read_if('start',"courses","id", course_id)[0]
+    chosen_course['course_info']=course_info
+    chosen_course['titles']=['Course Name: ','Course Description: ','Course Teacher: ', 'Course Start Date: ','Course Day: ', 'Course Time:  ']
+    chosen_course['teachers']=create_teachers_objects(crud.read_all('teachers'))
     teacher_info=[]
-    for course in course_object:
+    for course in course_info:
         for teacher in create_teachers_objects(crud.read_all('teachers')):
             if course.teacher_id==str(teacher.tid):
                 teacher_info.append(teacher.tid)
@@ -89,11 +93,18 @@ def chosen_course_update(course_id):
         crud.update_if('courses', 'name, description, teacher_id, start, day, time', f"'{name}', '{description}', '{teacher_id}', '{start}', '{day}', '{time}'",'id', course_id)
         return redirect(url_for('admin_courses'))
     else:
-        return render_template('chosen_course.html',course_object=course_object, teachers_objects=create_teachers_objects(crud.read_all('teachers')), teacher_info=teacher_info ) 
+        return render_template('update_courses.html', form='', form2=form2 ,chosen_course=chosen_course, teacher_info=teacher_info) 
 
-@app.route('/admin_students')
+@app.route('/admin_students', methods=['GET', 'POST'])
 def admin_students():
-    return render_template('admin_students.html', students_objects=create_students_objects(crud.read_all('students')))
+    if request.method=='POST':
+        students=crud.read_like('*', 'students', 'name', request.form['search'].title())
+        if len(students)==0:
+            return render_template('admin_students.html',result='No such studentd was found')
+        else:
+            student_object=create_students_objects(students)
+            return render_template('admin_students.html', students_objects=student_object)
+    return render_template('admin_students.html', students=create_students_objects(crud.read_all('students')))
 
 @app.route('/add_student', methods=['POST','GET'])
 def add_student():

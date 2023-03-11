@@ -82,7 +82,7 @@
                 {% for student in students %}
                 <div class="student_atten">
                     <form  class="atten_details" method="post">
-                        <div class="student_name">{{student.name}}</div>
+                        <div class="student_name_attend">{{student.name}}</div>
                         <div class="answer"> 
                             <div>Yes<input type="radio" name="attendance" id="" value="yes"></div>
                             <div>No<input type="radio" name="attendance" id="" value="no" checked></div>
@@ -97,7 +97,7 @@
                 {% for student in students_attend %}
                 <div class="student_atten">
                     <form  class="atten_details" method="post">
-                        <div class="student_name">{{student.name}}</div>
+                        <div class="student_name_attend">{{student.name}}</div>
                         <div class="answer"> 
                             <div>Yes<input type="radio" name="attendance" id="" value="yes" {{student.attend.yes}}></div>
                             <div>No<input type="radio" name="attendance" id="" value="no" {{student.attend.no}}></div>

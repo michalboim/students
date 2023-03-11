@@ -1,20 +1,25 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="links">
-    <div class="link"><a href="/admin_courses">Course</a></div>
-    <div class="link"><a href="/admin_students">Students</a></div>
-        <div class="more_links">
-            <div class="link"><a href="/add_student">Add Student</a></div>
-            <div class="link"><a href="/update_students">Update Student</a></div>
-            <div class="link"><a href="/course_student">Add Student to Course</a></div>
-        </div>
-    <div class="link"><a href="/admin_teachers">Teachers</a></div>
-</div>
-<div class="students_list">
-    {% for student in students_objects %}
-    <div class="student_info">
-        <span class="student_id"></span><span class="student_name">{{student.name}}</span><span class="student_email">{{student.email}}</span> 
+{% include "admin_nav_students.html" %}
+
+    <div class="admin_students_main">
+    <div class="student_search">
+        <form action="" method="POST">
+            <input type="text" name="search" placeholder="Enter student name">
+            <input type="submit" value="Search">
+        </form>
     </div>
-    {% endfor %}
+    <div class="students_list">
+        {{result}}
+        {% for student in students_objects %}
+        <div class="student_info">
+            <span class="student_name">{{student.name}}</span>
+            <a href="/student_info/{{student.tid}}">Information</a>
+        </div>
+        {% endfor %}
+        {% for student in students %}
+        <div class="student_info">
+            <span class="student_name">{{student.name}}</span>
+            <a href="/student_info/{{student.tid}}">Information</a>
+        </div>
+        {% endfor %}
+    </div>
 </div>
-{% endblock %}

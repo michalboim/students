@@ -2,19 +2,61 @@
 <div class="courses_update">
     <div class="course_option">        
         <div>
+            {% for f in form %}
             <form action="" method="POST">
                 <input type="text" name="search" placeholder="Enter course name">
                 <input type="submit" value="Search">
             </form>
+            {% endfor %}
         </div>
         <div class="info_courses_update">{{result}}
             {% for course in courses_objects %}
-            <div class="info_course_update"><a href="/chosen_course/{{course.tid}}">{{course.name}} {{course.start}}</a></div>
+            <div class="info_course_update">                
+                <a class="course_link" href="/chosen_course/{{course.tid}}">
+                    <div>{{course.name}}</div>
+                    <div>{{course.start}}</div></a>
+            </div>
             {% endfor %}
             {% for course in courses %}
-            <div class="info_course_update"><a href="/chosen_course/{{course.tid}}">{{course.name}} {{course.start}}</a></div>
+            <div class="info_course_update">
+                <a class="course_link" href="/chosen_course/{{course.tid}}">
+                    <div class="link_name">{{course.name}}</div>
+                    <div>{{course.start}}</div></a>
+            </div>
             {% endfor %}
         </div>
+    </div>
+    <div class="main_chosen_course">
+        <div class="title_chosen_course">{{chosen_course.title_chosen}}</div>
+        <form class="info_chosen_course" action="" method="POST">
+            {% for course in chosen_course.course_info %}
+            {{chosen_course.titles[0]}} <input type="text" name="name" value="{{course.name}}" >
+            {{chosen_course.titles[1]}} <input type="text" name="description" value="{{course.description}}">
+            {{chosen_course.titles[2]}}
+            {% endfor %}
+            {% for f in form2 %}
+                <select name="teacher_id" id="">
+                    <option value="{{teacher_info[0]}}">{{teacher_info[1]}}</option>
+                {% for teacher in chosen_course.teachers %}
+                    <option name="" value="{{teacher.tid}}">{{teacher.name}}</option>
+                {% endfor %}
+                </select>
+            {% endfor %}
+                {% for course in chosen_course.course_info %}
+            {{chosen_course.titles[3]}} <input type="date" name="start" value="{{course.start[0]}}" >
+            {{chosen_course.titles[4]}} <select name="day" id="">
+                <option value="{{course.day}}">{{course.day}}</option>
+                <option value="Sunday">Sunday</option>    
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                </select>
+            {{chosen_course.titles[5]}} <input type="time" name="time" value="{{course.time}}">
+            <input id="submit" type="submit" value="submit">
+            {% endfor %}
+        </form>    
     </div>   
 </div>   
 

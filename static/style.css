@@ -3,9 +3,11 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-
     margin-left: 20px;
+    grid-column: 1;
+
 }
+
 .link>*{
     text-decoration: none;
     color: black;
@@ -22,9 +24,8 @@
 }
 .note{
     font-size: x-large;
-    width: 400px;
-    position: relative;  
-    left: 400px;
+    width: max-content;
+
 }
 .more_links{
     display: flex;
@@ -32,6 +33,7 @@
     gap: 20px;
     margin-left: 20px;
     font-size:small;
+    width: max-content;
 }
 
 
@@ -69,30 +71,24 @@
 .admin_pages{
     display: grid;
     grid-template-columns: max-content max-content;
-    gap:10vh;
-    margin-top: 5vh;
+    gap: 100px;;
+    margin-top: 20px;
+    margin-left: 20px;
 }
-.links{
-    grid-column: 1;
-}
+
 
 /*admin_courses*/
 .admin_courses_main{
     grid-column: 2;
     display: flex;
     flex-direction: column;
-    gap:20px;
-    width:600px;
-    justify-content: space-between;
+    gap:10px;
 }
 
-.course_search{
-    border-bottom: none;
-}
 .courses_list{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap:10px;
 }
 .course_info{
     display: flex;
@@ -102,13 +98,11 @@
     border-width: 2px;
     border-color: rgb(195, 193, 193);
 }
-
 .course_info>a{
     text-decoration: none;
     color: black;
     background-color: rgb(209, 206, 206);
 }
-
 .course_name{
     width: 150px;
 }
@@ -157,7 +151,7 @@
     border-bottom: solid;
     border-width: 2px;
     border-color: rgb(195, 193, 193);
-    width: 150px;
+    width: 250px;
 }
 .info_course_update>a{
     text-decoration: none;
@@ -167,11 +161,18 @@
     background-color: rgb(236, 234, 234);
     border-radius: 2px;
 }
-
+.course_link{
+    display: flex;
+    gap:10px
+}
+.link_name{
+    width: 150px;
+}
 /*chosen_course*/
 .main_chosen_course{
     display: flex;
-    width: 400px;
+
+    flex-direction: column;
 
 }
 .title_chosen_course{
@@ -194,15 +195,18 @@
 }
 
 /*admin_students*/
+.admin_students_main{
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
 .students_list{
     display: flex;
     flex-direction: column;
-    gap:20px;
-    width:600px;
+    gap:10px;
     justify-content: space-between;
-    position: relative;  
-    left: 300px;  
-    top: -185px;
+
 }
 .students_list>div{
    border-bottom: solid;
@@ -212,6 +216,11 @@
 .student_info{
     display: flex;
 }
+.student_info>a{
+    text-decoration: none;
+    color: black;
+    background-color: rgb(209, 206, 206);
+}
 
 .student_name{
     width:250px;
@@ -219,12 +228,10 @@
 
 /*add_student*/
 .main_students{
+    grid-column: 2;
     display: flex;
-    width: 400px;
     justify-content: space-between;
-    position: relative;  
-    left: 300px;  
-    top: -185px;
+
 }
 .add_student{
     display: flex;
@@ -240,12 +247,10 @@
 
 /*update_student*/
 .students_update{
+    grid-column: 2;
     display: flex;
     justify-content: space-between;
-    position: relative;  
-    left: 300px;  
-    top: -180px;
-    width: 600px;    
+
 }
 .student_option{
     display: flex;
@@ -304,15 +309,13 @@
 
 /*admin_teachers*/
 .teachers_list{
+    grid-column: 2;
     display: flex;
     flex-direction: column;
-    gap:20px;
-    width:600px;
-    justify-content: space-between;
-    position: relative;  
-    left: 300px;  
-    top: -150px;
+    gap: 10px;
+
 }
+
 .teachers_list>div{
    border-bottom: solid;
    border-width: 2px;
@@ -328,12 +331,9 @@
 
 /*add_teacher*/
 .main_teachers{
+    grid-column: 2;
     display: flex;
-    width: 400px;
     justify-content: space-between;
-    position: relative;  
-    left: 300px;  
-    top: -150px;
 }
 .add_teacher{
     display: flex;
@@ -349,12 +349,10 @@
 
 /*update_teacher*/
 .teachers_update{
+    grid-column: 2;
     display: flex;
     justify-content: space-between;
-    position: relative;  
-    left: 300px;  
-    top: -150px;
-    width: 600px;    
+ 
 }
 .teacher_option{
     display: flex;
@@ -508,7 +506,7 @@
                 .student_atten>*{
                     display: flex;
                 }
-                .student_name{
+                .student_name_attend{
                     width:250px;
                     font-size: large;
                 }

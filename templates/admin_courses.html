@@ -7,19 +7,27 @@
                 <input type="submit" value="Search">
             </form>
         </div>
-        <div class="courses_list">{{result}}
+        <div class="courses_list">
+        {{result}}
         {% for course in courses_objects %}            
             <div class="course_info">
-                <span class="course_name"> {{course.name}}:</span><span class="course_start">{{course.start}}</span> <span class="course_teacher">{{course.teacher_id}}</span>
+                <span class="course_name"> {{course.name}}:</span>
+                <span class="course_start">{{course.start}}</span>
+                <span class="course_teacher">{{course.teacher_id}}</span>
                 <a href="/course_info/{{course.tid}}">Information</a>
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>        
+        <div class="courses_list">
         {% for course in courses_teachers %}            
             <div class="course_info">
-                <span class="course_name"> {{course.name}}:</span><span class="course_start">{{course.start}}</span> <span class="course_teacher">{{course.teacher_id}}</span>
+                <span class="course_name"> {{course.name}}:</span>
+                <span class="course_start">{{course.start}}</span>
+                <span class="course_teacher">{{course.teacher_id}}</span>
                 <a href="/course_info/{{course.tid}}">Information</a>
             </div>
         {% endfor %}
         </div>
     </div>
 </div>
+

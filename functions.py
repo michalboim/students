@@ -3,6 +3,8 @@ import crud
 
 def create_courses_objects(courses: list):
     courses_objects=[classes.Course(course[0], course[1], course[2], course[3], course[4], course[5], course[6] ) for course in courses]
+    for c in courses_objects:
+        c.start=f'{c.start[8:]}-{c.start[5:7]}-{c.start[0:4]}'
     return courses_objects
 
 def create_teachers_objects(teachers: list):

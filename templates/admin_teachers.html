@@ -1,19 +1,10 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="links">
-    <div class="link"><a href="/admin_courses">Course</a></div>
-    <div class="link"><a href="/admin_students">Students</a></div>
-    <div class="link"><a href="/admin_teachers">Teachers</a></div>
-    <div class="more_links">
-        <div class="link"><a href="/add_teacher">Add Teacher</a></div>
-        <div class="link"><a href="/update_teachers">Update Teacher</a></div>
+{% include "admin_nav_teachers.html" %}
+
+    <div class="teachers_list">
+        {% for teacher in teachers_objects %}
+        <div class="teacher_info">
+            <span class="teacher_id"></span><span class="teacher_name">{{teacher.name}}</span><span class="teacher_email">{{teacher.email}}</span> 
+        </div>
+        {% endfor %}
     </div>
 </div>
-<div class="teachers_list">
-    {% for teacher in teachers_objects %}
-    <div class="teacher_info">
-        <span class="teacher_id"></span><span class="teacher_name">{{teacher.name}}</span><span class="teacher_email">{{teacher.email}}</span> 
-    </div>
-    {% endfor %}
-</div>
-{% endblock %}

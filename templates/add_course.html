@@ -1,25 +1,25 @@
 {% include "admin_nav_courses.html" %}
-<div class="main_add_courses">
-    <form class="add_course" action="" method="POST">
-        New Course Name: <input type="text" name="new_name" >
-        New Course Description<input type="text" name="new_description" >
-        Choose New Course Teacher:
-            <select class="show_teacher" name="teacher_tid" id="">
-            {% for teacher in teachers_object %}
-                <option name="" value="{{teacher.tid}}">{{teacher.name}}</option>
-            {% endfor %}
-            </select>
-        New Course Start Date:<input type="date" name="new_start" >
-        New Course Day: <select name="new_day" id="">
-            <option value="Sunday">Sunday</option>
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-            <option value="Wednesday">Wednesday</option>
-            <option value="Thursday">Thursday</option>
-            <option value="Friday">Friday</option>
-            </select>
-        New Course Time: <input type="time" name="new_time" >
-        <input id="submit" type="submit" value="submit">
-    </form>    
+    <div class="main_add_courses">
+        <form class="add_course" action="" method="POST">
+            New Course Name: <input type="text" name="new_name" >
+            New Course Description<input type="text" name="new_description" >
+            Choose New Course Teacher:
+                <select class="show_teacher" name="teacher_tid" id="">
+                {% for teacher in teachers_object %}
+                    <option name="" value="{{teacher.tid}}">{{teacher.name}}</option>
+                {% endfor %}
+                </select>
+            New Course Start Date:<input type="date" name="new_start" >
+            New Course Day: <select name="new_day" id="">
+                <option value="Sunday">Sunday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                </select>
+            New Course Time: <input type="time" name="new_time" >
+            <input id="submit" type="submit" value="submit">
+        </form> 
+    </div>
 </div>
-<div class="note">{{note}}</div>
