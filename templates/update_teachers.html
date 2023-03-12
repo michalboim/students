@@ -1,21 +1,35 @@
 {% include "admin_nav_teachers.html" %}
-
-    <div class="teachers_update">
-        <div class="teacher_option">     
-            <div>
-                <form action="" method="POST">
-                    <input type="text" name="search" placeholder="Enter teacher name">
-                    <input type="submit" value="Search">
-                </form>
-            </div>
-            <div class="info_teacher_update">{{result}}
-                {% for teacher in teacher_objects %}
-                <div class="info_teacher_update"><a href="/chosen_teacher/{{teacher.tid}}">{{teacher.name}} </a></div>
+    <div class="main_update_teacher" >
+        <div class="teachers_update">
+            <div class="teacher_option">     
+                <div>
+                    {% for f in form1 %}
+                    <form action="" method="POST">
+                        <input type="text" name="search" placeholder="Enter teacher name">
+                        <input type="submit" value="Search">
+                    </form>
+                    {% endfor %}
+                </div>
+                <div class="info_teacher_update">{{result}}
+                    {% for teacher in teacher_objects %}
+                    <div class="info_teacher_update"><a href="/chosen_teacher/{{teacher.tid}}">{{teacher.name}} </a></div>
+                    {% endfor %}
+                    {% for teacher in teachers %}
+                    <div class="info_teacher_update"><a href="/chosen_teacher/{{teacher.tid}}">{{teacher.name}} </a></div>
+                    {% endfor %}
+                </div>
+            </div>   
+        </div>
+        <div class="main_chosen_teacher">
+            <div class="title_chosen_teacher">{{title}}</div>
+            <form class="info_chosen_teacher" action="" method="POST">
+                {% for teacher in teacher_object %}
+                Teacher Name: <input type="text" name="name" value="{{teacher.name}}" >
+                Teacher Email: <input type="email" name="email" value="{{teacher.email}}"  title="example@example.com">
+                Teacher Phone: <input type="tel" name="phone" value="{{teacher.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
+                <input id="submit" type="submit" value="submit">
                 {% endfor %}
-                {% for teacher in teachers %}
-                <div class="info_teacher_update"><a href="/chosen_teacher/{{teacher.tid}}">{{teacher.name}} </a></div>
-                {% endfor %}
-            </div>
-        </div>   
-    </div>   
+            </form>    
+        </div>
+    </div> 
 </div>
