@@ -75,7 +75,6 @@ def chosen_course_update(course_id):
     for c in course_info:
         c.start=crud.read_if('start',"courses","id", course_id)[0]
     chosen_course['course_info']=course_info
-    chosen_course['titles']=['Course Name: ','Course Description: ','Course Teacher: ', 'Course Start Date: ','Course Day: ', 'Course Time:  ']
     chosen_course['teachers']=create_teachers_objects(crud.read_all('teachers'))
     teacher_info=[]
     for course in course_info:
@@ -121,15 +120,16 @@ def add_student():
 
 @app.route('/update_students', methods=['GET', 'POST'])
 def update_students():
+    form1=['create']
     if request.method=='POST':
         students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
-        if len(students_list)<1:
-            return render_template('update_students.html', result='No such student was found')
-        if len(students_list)>=1:
+        if len(students_list)==0:
+            return render_template('update_students.html', form1=form1, form2='', result='No such student was found')
+        else:
             student_object=create_students_objects(students_list) 
-            return render_template('update_students.html',student_objects=student_object)
+            return render_template('update_students.html',form1=form1, student_objects=student_object)
     else:    
-        return render_template('update_students.html', students=create_students_objects(crud.read_all('students')))
+        return render_template('update_students.html', form1=form1, students=create_students_objects(crud.read_all('students')))
 
 @app.route('/chosen_student/<student_id>', methods=['GET', 'POST'])
 def chosen_student_update(student_id):
@@ -142,10 +142,17 @@ def chosen_student_update(student_id):
         crud.update_if('students', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', student_id)
         return redirect(url_for('admin_students'))
     else:
-        return render_template('chosen_student.html',student_object=student_object) 
+        return render_template('update_students.html',title='Edit the Changes:', student_object=student_object) 
 
-@app.route('/admin_teachers')
+@app.route('/admin_teachers',methods=['GET', 'POST'])
 def admin_teachers():
+    if request.method=='POST':
+        teachers=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
+        if len(teachers)==0:
+            return render_template('admin_teachers.html',result='No such teacher was found')
+        else:
+            teachers_object=create_students_objects(teachers)
+            return render_template('admin_teachers.html', teachers_objects=teachers_object)
     return render_template('admin_teachers.html', teachers_objects=create_teachers_objects(crud.read_all('teachers')))
 
 @app.route('/add_teacher', methods=['POST','GET'])
@@ -163,15 +170,16 @@ def add_teacher():
 
 @app.route('/update_teachers', methods=['GET', 'POST'])
 def update_teachers():
+    form1=['create']
     if request.method=='POST':
         teachers_list=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
-        if len(teachers_list)<1:
-            return render_template('update_teachers.html', result='No such teacher was found')
-        if len(teachers_list)>=1:
+        if len(teachers_list)==0:
+            return render_template('update_teachers.html', form1=form1, result='No such teacher was found')
+        else:
             teacher_object=create_teachers_objects(teachers_list)   
-            return render_template('update_teachers.html',teacher_objects=teacher_object)
+            return render_template('update_teachers.html',form1=form1, teacher_objects=teacher_object)
     else:    
-        return render_template('update_teachers.html', teachers=create_teachers_objects(crud.read_all('teachers')))
+        return render_template('update_teachers.html', form1=form1, teachers=create_teachers_objects(crud.read_all('teachers')))
 
 @app.route('/chosen_teacher/<teacher_id>', methods=['GET', 'POST'])
 def chosen_teacher_update(teacher_id):
@@ -184,7 +192,7 @@ def chosen_teacher_update(teacher_id):
         crud.update_if('teachers', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', teacher_id)
         return redirect(url_for('admin_teachers'))
     else:
-        return render_template('chosen_teacher.html',teacher_object=teacher_object) 
+        return render_template('update_teachers.html',title='Edit the Changes:' ,teacher_object=teacher_object) 
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():

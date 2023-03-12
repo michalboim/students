@@ -1,23 +1,36 @@
 {% include "admin_nav_students.html" %}
-
-    <div class="students_update">
-        <div class="student_option">    
-            <div>
-                <form action="" method="POST">
-                    <input type="text" name="search" placeholder="Enter student name">
-                    <input type="submit" value="Search">
-                </form>
-            </div>
-            <div class="info_student_update">{{result}}
-                {% for student in student_objects %}
-                <div class="info_student_update"><a href="/chosen_student/{{student.tid}}">{{student.name}} </a></div>
+    <div class="'main_student_update" >
+        <div class="students_update">
+            <div class="student_option">    
+                <div>
+                    {% for f in form1 %}
+                    <form action="" method="POST">
+                        <input type="text" name="search" placeholder="Enter student name">
+                        <input type="submit" value="Search">
+                    </form>
+                    {% endfor %}
+                </div>
+                <div class="info_student_update">{{result}}
+                    {% for student in student_objects %}
+                    <div class="info_student_update"><a href="/chosen_student/{{student.tid}}">{{student.name}} </a></div>
+                    {% endfor %}
+                    {% for student in students %}
+                    <div class="info_student_update"><a href="/chosen_student/{{student.tid}}">{{student.name}} </a></div>
+                    {% endfor %}
+                </div>
+            </div>   
+        </div>
+        <div class="main_chosen_student">
+            <div class="title_chosen_student">{{title}}</div>
+            <form class="info_chosen_student" action="" method="POST">
+                {% for student in student_object %}
+                Student Name: <input type="text" name="name" value="{{student.name}}" >
+                Student Email: <input type="email" name="email" value="{{student.email}}"  title="example@example.com">
+                Student Phone: <input type="tel" name="phone" value="{{student.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
+                <input id="submit" type="submit" value="submit">
                 {% endfor %}
-                {% for student in students %}
-                <div class="info_student_update"><a href="/chosen_student/{{student.tid}}">{{student.name}} </a></div>
-                {% endfor %}
-            </div>
-        </div>   
-    </div>
-</div>     
-
+            </form>    
+        </div>
+    </div>     
+</div>
 

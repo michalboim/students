@@ -21,9 +21,9 @@
         <div class="courses_list">
         {% for course in courses_teachers %}            
             <div class="course_info">
-                <span class="course_name"> {{course.name}}:</span>
-                <span class="course_start">{{course.start}}</span>
-                <span class="course_teacher">{{course.teacher_id}}</span>
+                <div class="course_name"> {{course.name}}:</div>
+                <div class="course_start">{{course.start}}</div>
+                <div class="course_teacher">{{course.teacher_id}}</div>
                 <a href="/course_info/{{course.tid}}">Information</a>
             </div>
         {% endfor %}
