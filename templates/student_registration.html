@@ -1,0 +1,49 @@
+{% include "admin_nav_students.html" %}
+
+    <div class="main_student_registration">
+        <div class="students_regist">  
+            <div>
+                {% for f in form %}
+                <form action="" method="POST">
+                    <input type="text" name="search" placeholder="Enter student name">
+                    <input name="form1" type="submit" value="Search">
+                </form>
+                {% endfor %}
+            </div>
+            {{result1}}
+            {% for student in student_objects %}
+            <form class="info_student_regist" action="student_id_registration/{{student.tid}}" >
+                <div class="student_name_regist">{{student.name}}</div>
+                <input  type="submit" value="Choose">
+            </form>
+            {% endfor %}
+            {% for student in students %}
+            <form class="info_student_regist" action="student_id_registration/{{student.tid}}"  >
+                <div class="student_name_regist">{{student.name}}</div>
+                <input  type="submit" value="Choose">
+            </form>
+            {% endfor %}         
+        </div>
+        <div class="chosen_student_regist">
+            <div>{{student_dict.student_title}}</div>
+            {% for f in student_dict.form %}
+            <form action="" method="POST">
+                <input type="text" name="search" placeholder="Enter course name">
+                <input name="form2" type="submit" value="Search Course">
+            </form>
+            {% endfor %}
+            {{result2}}
+            {% for f in student_dict.form %}
+            <form class="choose_course" action="" method="post">
+                {% for course in student_dict.courses %}
+                    <div>
+                        <input class="student_course_regist" type="checkbox" name="course_id" value="{{course.tid}}">{{course.name}}
+                    </div>        
+                {% endfor %}
+                <input name="form3" type="submit" value="Choose">
+            </form>
+            {% endfor %}
+            {{error}}
+        </div>
+    </div>
+</div>

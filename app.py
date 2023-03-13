@@ -144,6 +144,49 @@ def chosen_student_update(student_id):
     else:
         return render_template('update_students.html',title='Edit the Changes:', student_object=student_object) 
 
+@app.route('/student_registration', methods=['GET', 'POST'])
+def student_registrationt():
+    form=['create']
+    if request.method=='POST':
+        students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
+        if len(students_list)==0:
+            return render_template('student_registration.html', form=form, student_dict='', result1='No such student was found')
+        else:
+            student_object=create_students_objects(students_list) 
+            return render_template('student_registration.html',form=form, student_dict='', student_objects=student_object)
+    else:    
+        return render_template('student_registration.html', form=form, student_dict='', students=create_students_objects(crud.read_all('students')))
+
+@app.route('/student_id_registration/<student_id>',  methods=['GET', 'POST'])
+def student_id_registration(student_id):
+    form=['create']
+    student_dict={}
+    student_dict['form']=['create']
+    courses=crud.read_all('courses')
+    courses=create_courses_objects(courses)
+    student_dict['courses']=courses
+    student_dict['student_title']=f'Choose course for {crud.student_name(student_id)}:'
+    if request.method=='POST':
+        if 'form1' in request.form:
+            return redirect(url_for('student_registrationt'))
+        if 'form2' in request.form:
+            courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
+            if len(courses_list)==0:
+                return render_template('student_registration.html', form=form, student_dict=student_dict, result2='No such course was found')
+            else:
+                courses_object=create_courses_objects(courses_list)
+                student_dict['courses']=courses_object
+                return render_template('student_registration.html', form=form, student_dict=student_dict)
+        if 'form3' in request.form:
+            courses_ids=request.form.getlist('course_id')
+            for course in courses_ids:
+                try:
+                    crud.create('students_courses', 'student_id, course_id', f'{student_id}, {course}')
+                except:
+                    return render_template('student_registration.html', form=form, student_dict='', error=f'{crud.student_name(student_id)} is already registered to {crud.course_name(course)} course')
+            return redirect(url_for('student_registrationt'))
+    return render_template('student_registration.html', form=form, student_dict=student_dict)
+
 @app.route('/admin_teachers',methods=['GET', 'POST'])
 def admin_teachers():
     if request.method=='POST':
@@ -219,22 +262,6 @@ def search():
         return render_template('search.html', title=title ,course_object=course_object, student_object=student_object, teacher_object=teacher_object)
     else:
         return render_template('search.html', title='', course_object='')
-
-@app.route('/course_student')
-def course_student():
-    students=crud.read_all('students')
-    return render_template('course_student.html', students=create_students_objects(students))
-
-@app.route('/registration/<student_id>',  methods=['GET', 'POST'])
-def registration(student_id):
-    if request.method=='POST':
-        course_id=request.form['course_id']
-        crud.create('students_courses', 'student_id, course_id', f"'{student_id}', '{course_id}'")
-        return render_template('course_student.html')
-    student=crud.read_if('*',"students","id", student_id)
-    student_object=create_students_objects(student)
-    courses=crud.read_all('courses')
-    return render_template('registration.html', student=student_object, courses=create_courses_objects(courses))
 
 @app.route('/teachers')
 def show_teachers():
@@ -420,7 +447,7 @@ def students_attendance(student_id):
     else:
         course_dict['course_list']=courses_ids
     if request.method=='POST':
-        if 'form2' in request.form:
+        if 'form2' in request.form or 'form1' in request.form:
             return redirect(url_for('attendance'))
         if 'form3' in request.form:            
             chosen_course_id=request.form['course_select']

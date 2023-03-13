@@ -33,7 +33,7 @@
     gap: 20px;
     margin-left: 20px;
     font-size:small;
-    width: max-content;
+    width: 120px;
 }
 
 
@@ -71,7 +71,7 @@
 .admin_pages{
     display: grid;
     grid-template-columns: max-content max-content;
-    gap: 100px;;
+    gap: 90px;
     margin-top: 20px;
     margin-left: 20px;
 }
@@ -310,6 +310,40 @@
     border-radius: 10px;
 }
 
+/*student_registration*/
+.main_student_registration{
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.students_regist{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.info_student_regist{
+    display: flex;
+}
+.student_name_regist{
+    width:200px;
+}
+.chosen_student_regist{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.choose_course{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.student_course_regist{
+    width: 70px;
+}
+.choose_course>input{
+    width: 180px;    
+}
 /*admin_teachers*/
 .admin_teachers_main{
     grid-column: 2;
