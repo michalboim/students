@@ -195,6 +195,40 @@
     border-radius: 10px;
 }
 
+/*course_registration*/
+.main_course_registration{
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.course_regist{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.info_course_regist{
+    display: flex;
+}
+.course_name_regist{
+    width:150px;
+}
+.chosen_course_regist{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.choose_student{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.course_student_regist{
+    width: 70px;
+}
+.choose_student>input{
+    width: 180px;    
+}
 /*admin_students*/
 .admin_students_main{
     grid-column: 2;
