@@ -5,7 +5,6 @@
     gap: 20px;
     margin-left: 20px;
     grid-column: 1;
-
 }
 
 .link>*{
@@ -76,13 +75,12 @@
     margin-left: 20px;
 }
 
-
 /*admin_courses*/
 .admin_courses_main{
     grid-column: 2;
     display: flex;
     flex-direction: column;
-    gap:10px;
+    gap:20px;
 }
 
 .courses_list{
@@ -112,6 +110,51 @@
 .course_teacher{
     width: 250px;
 }
+.info_course_name{
+    font-size: xx-large;
+    font-weight: bolder;
+}
+.main_course_info{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap:60px;
+}
+.basic_course_info{
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: larger;    
+}
+.title_course{
+    font-size: large;
+    font-weight: bold;
+    
+    width: 400px;
+}
+.info_course_teacher>a{
+    text-decoration: none;
+    color: black;
+}
+.info_course_teacher>a:hover{
+    width: max-content;
+    background-color: rgb(209, 206, 206);
+}
+.info_course_students{
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: larger;
+}
+.info_course_students>a{
+    text-decoration: none;
+    color: black;
+}
+.info_course_students>a:hover{
+    width: max-content;
+    background-color: rgb(209, 206, 206);
+}
 /*add_course*/
 .main_add_courses{
     display: flex;
@@ -140,7 +183,7 @@
 .course_option{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 .info_courses_update{
     display: flex;
@@ -174,7 +217,6 @@
     display: flex;
     flex-direction: column;
     gap:10px;
-
 }
 .title_chosen_course{
     font-weight: bold;
@@ -234,7 +276,7 @@
     grid-column: 2;
     display: flex;
     flex-direction: column;
-    gap:10px;
+    gap:20px;
 }
 .students_list{
     display: flex;
@@ -293,7 +335,7 @@
 .student_option{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 
 .info_student_update{
@@ -383,7 +425,7 @@
     grid-column: 2;
     display: flex;
     flex-direction: column;
-    gap:10px;
+    gap:20px;
 }
 .teachers_list{
     display: flex;
@@ -440,7 +482,7 @@
 .teacher_option{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 
 .info_teacher_update{

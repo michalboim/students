@@ -8,11 +8,16 @@
     <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/babel" src="/static/messages.js"></script>
  <div class="navbar">
     <a href="/home">Home</a>
     <a href="/teachers">Teachers</a>
     <a href="/administrator">Administrator</a>
-    <form action="" method="post">
+    <form action="/search" method="">
         <input type="text" name="search" placeholder="Enter Search">
         <input type="submit" value="Search">
     </form>

@@ -15,34 +15,67 @@ def home():
 def go_home():
     return render_template('home.html')
 
+@app.route('/search')
+def search():
+    title=['Courses Resulte:', 'Students Resulte:', 'Teachers Resulte:']
+    courses_list=crud.read_like('*', 'courses', 'name', request.args['search'].title())
+    course_object=[]
+    if len(courses_list)==0:
+        course_object=['No results found']
+    else:
+        course_object.append(create_courses_objects(courses_list))
+    students_list=crud.read_like('*', 'students', 'name', request.args['search'].title())
+    student_object=[]
+    if len (students_list)==0:
+        student_object=['No results found']
+    else:
+        student_object.append(create_students_objects(students_list))
+    teachers_list=crud.read_like('*', 'teachers', 'name', request.args['search'].title())
+    teacher_object=[]
+    if len(teachers_list)==0:
+        teacher_object=['No results found']
+    if len(teachers_list)>=1:
+        teacher_object.append(create_students_objects(teachers_list)) 
+    return render_template('search.html', title=title ,course_object=course_object, student_object=student_object, teacher_object=teacher_object)
+
 @app.route('/administrator' )
 def administrator():
     return render_template ('administrator.html')
 
 @app.route('/admin_courses',methods=['GET', 'POST'])
 def admin_courses():
+    form=['create']
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
         if len(courses_list)==0:
-            return render_template('admin_courses.html', result='No such course was found')
+            return render_template('admin_courses.html',course_dict='', form=form, result='No such course was found')
         else:
             courses_object=create_courses_objects(courses_list)
             for course in courses_object:
                 course.teacher_id=crud.teacher_name(course.teacher_id)  
-            return render_template('admin_courses.html',courses_objects=courses_object)
-    return render_template('admin_courses.html', courses_teachers=courses_teachers())
+            return render_template('admin_courses.html',course_dict='', form=form, courses_objects=courses_object)
+    return render_template('admin_courses.html',course_dict='', form=form, courses_teachers=courses_teachers())
 
 @app.route('/course_info/<course_id>')
 def course_info(course_id):
+    course_dict={}
+    course_dict['description']='Description: '
+    course_dict['teacher']='Teacher: '
+    course_dict['start']='Start: '
+    course_dict['day']='Day:  '
+    course_dict['time']='Time: '
+    course_dict['students_title']='Students: '
+    students=crud.read_if('student_id','students_courses', 'course_id', course_id)
+    if len(students)==0:
+        course_dict['students']=[['There are no students enrolled to the course']]
+    else:
+        students_name=[[crud.student_name(student[0]),student[0]] for student in students]
+        course_dict['students']=students_name
     course=crud.read_if('*',"courses","id", course_id)
     course_object=create_courses_objects(course)
-    teacher_info=[]
     for course in course_object:
-        for teacher in create_teachers_objects(crud.read_all('teachers')):
-            if course.teacher_id==str(teacher.tid):
-                teacher_info.append(teacher.tid)
-                teacher_info.append(teacher.name)
-    return render_template ('course_info.html', course_object=course_object, teacher_info=teacher_info )
+        course.teacher_id=[course.teacher_id, crud.teacher_name(course.teacher_id)]
+    return render_template ('admin_courses.html', course_object=course_object, course_dict=course_dict )
 
 @app.route('/add_course', methods=['GET','POST'])
 def add_course():
@@ -136,7 +169,6 @@ def course_id_registration(course_id):
                     #return render_template('course_registration.html', form=form, course_dict='', error=f'{crud.student_name(student)} is already registered to {crud.course_name(course_id)} course')
             return redirect(url_for('course_registrationt'))
     return render_template('course_registration.html', form=form, course_dict=course_dict)
-
 
 @app.route('/admin_students', methods=['GET', 'POST'])
 def admin_students():
@@ -280,32 +312,6 @@ def chosen_teacher_update(teacher_id):
         return redirect(url_for('admin_teachers'))
     else:
         return render_template('update_teachers.html',title='Edit the Changes:' ,teacher_object=teacher_object) 
-
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-    if request.method=='POST':
-        title=['Courses Resulte:', 'Students Resulte:', 'Teachers Resulte:']
-        courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
-        course_object=[]
-        if len(courses_list)==0:
-            course_object=['No results found']
-        else:
-            course_object.append(create_courses_objects(courses_list))
-        students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
-        student_object=[]
-        if len (students_list)==0:
-            student_object=['No results found']
-        else:
-            student_object.append(create_students_objects(students_list))
-        teachers_list=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
-        teacher_object=[]
-        if len(teachers_list)==0:
-            teacher_object=['No results found']
-        if len(teachers_list)>=1:
-            teacher_object.append(create_students_objects(teachers_list)) 
-        return render_template('search.html', title=title ,course_object=course_object, student_object=student_object, teacher_object=teacher_object)
-    else:
-        return render_template('search.html', title='', course_object='')
 
 @app.route('/teachers')
 def show_teachers():
@@ -519,3 +525,9 @@ def students_attendance(student_id):
             return  render_template('attendance.html',jinja='', form=form, dates_dict='' ,courses=courses, course_dict=course_dict, course_dates_dict=course_dates_dict, answer=answer) 
     else:
         return render_template('attendance.html',jinja='', form=form, dates_dict='' ,courses=courses, course_dict=course_dict, course_dates_dict='' )  
+    
+@app.route('/messages')
+def messages():
+    all_messages=crud.read_all('messages')
+    messages_list=[message[0] for message in all_messages]
+    return messages_list

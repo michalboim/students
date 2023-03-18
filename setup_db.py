@@ -60,7 +60,11 @@ def create_tables():
         FOREIGN KEY (course_id) REFERENCES courses (id)
     )
     """)
-
+    query("""
+    CREATE TABLE IF NOT EXISTS messages (
+        message TEXT
+    )
+    """)
 def create_fake_data(students_num=10, teachers_num=4):
 
     fake=faker.Faker()
@@ -72,7 +76,9 @@ def create_fake_data(students_num=10, teachers_num=4):
     for course in courses:
         trachers_ids=[tup[0] for tup in query("SELECT id FROM teachers")] #[(1,),(2,)]
         query(f"INSERT INTO courses (name, teacher_id, start) VALUES ('{course.title()}', '{random.choice(trachers_ids)}','2000-01-01' )")
-
+    messages=['message 1', 'message 2', 'message 3']
+    for message in messages:
+        query(f"INSERT INTO messages (message) VALUES ('{message}')")
 
 if __name__=="__main__":
     create_tables()
