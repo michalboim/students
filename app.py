@@ -1,11 +1,13 @@
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, session
 app = Flask(__name__)
 from setup_db import query
 import classes
 import crud
-from functions import create_courses_objects, create_students_objects, create_teachers_objects, courses_teachers
+from functions import create_courses_objects, create_students_objects, create_teachers_objects, courses_teachers, authenticate
 from collections import namedtuple
 import datetime
+
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @app.route('/')
 def home():
@@ -37,6 +39,25 @@ def search():
     if len(teachers_list)>=1:
         teacher_object.append(create_students_objects(teachers_list)) 
     return render_template('search.html', title=title ,course_object=course_object, student_object=student_object, teacher_object=teacher_object)
+
+@app.route('/login', methods=['get','post'])
+def login():
+    if request.method=='POST':
+        auth=authenticate(request.form['email'], request.form['password'])
+        if auth=='student':
+            session['role']='student'
+            session['id']=crud.student_id(request.form['email'])
+            session['name']=crud.student_name(session['id'])
+        if auth=='teacher':
+            session['role']='teacher'
+            session['id']=crud.teacher_id(request.form['email'])
+            session['name']=crud.teacher_name(session['id'])
+        if auth=='admin':
+            session['role']='admin'
+
+
+
+    return render_template('login.html')
 
 @app.route('/administrator' )
 def administrator():
@@ -90,9 +111,9 @@ def update_courses():
     form=['create']
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
-        if len(courses_list)<1:
+        if len(courses_list)==0:
             return render_template('update_courses.html', form=form, chosen_course='', result='No such course was found')
-        if len(courses_list)>=1:
+        else:
             course_object=create_courses_objects(courses_list)  
             return render_template('update_courses.html', form=form, chosen_course='',teacher_info='', courses_objects=course_object)
     else:    
@@ -185,10 +206,14 @@ def admin_students():
 def add_student():
     if request.method=='POST':
         num_students=len(crud.read_all('students'))
-        crud.create('students', 'name, email, phone', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}'")
+        try:
+            crud.create('students', 'name, email, phone', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}'")
+            crud.create('users', 'student_user, role', f"'{request.form['new_email']}', 'student'" )
+        except:
+            return render_template('add_student.html', note="Email or Mobile number already exists")
         new_num=len(crud.read_all('students'))
         if new_num>num_students:
-            return render_template('add_student.html', note=f"{request.form['new_name'].title()} added successfully")
+            return redirect(url_for("admin_students"))
         else:
             return render_template('add_student.html', note="A mistake occurred please try again")
     else:
@@ -196,16 +221,16 @@ def add_student():
 
 @app.route('/update_students', methods=['GET', 'POST'])
 def update_students():
-    form1=['create']
+    form=['create']
     if request.method=='POST':
         students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
         if len(students_list)==0:
-            return render_template('update_students.html', form1=form1, form2='', result='No such student was found')
+            return render_template('update_students.html', form=form, result='No such student was found')
         else:
             student_object=create_students_objects(students_list) 
-            return render_template('update_students.html',form1=form1, student_objects=student_object)
+            return render_template('update_students.html',form=form, student_objects=student_object)
     else:    
-        return render_template('update_students.html', form1=form1, students=create_students_objects(crud.read_all('students')))
+        return render_template('update_students.html', form=form, students=create_students_objects(crud.read_all('students')))
 
 @app.route('/chosen_student/<student_id>', methods=['GET', 'POST'])
 def chosen_student_update(student_id):
@@ -215,7 +240,10 @@ def chosen_student_update(student_id):
         name=request.form['name'].title()
         email=request.form['email']
         phone=request.form['phone']
-        crud.update_if('students', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', student_id)
+        try:
+            crud.update_if('students', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', student_id)
+        except:
+          return render_template('update_students.html',title='Edit the Changes:', student_object=student_object, note="Email or Mobile number already exists")  
         return redirect(url_for('admin_students'))
     else:
         return render_template('update_students.html',title='Edit the Changes:', student_object=student_object) 
@@ -278,10 +306,14 @@ def admin_teachers():
 def add_teacher():
     if request.method=='POST':
         num_teachers=len(crud.read_all('teachers'))
-        crud.create('teachers', 'name, email, phone', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}'")
+        try:
+            crud.create('teachers', 'name, email, phone', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}'")
+            crud.create('users', 'teacher_user, role', f"'{request.form['new_email']}', 'teacher'" )
+        except:
+            return render_template('add_teacher.html', note="Email or Mobile number already exists")
         new_num=len(crud.read_all('teachers'))
         if new_num>num_teachers:
-            return render_template('add_teacher.html', note=f"{request.form['new_name'].title()} added successfully")
+            return redirect(url_for("admin_teachers"))
         else:
             return render_template('add_teacher.html', note="A mistake occurred please try again")
     else:
@@ -308,7 +340,10 @@ def chosen_teacher_update(teacher_id):
         name=request.form['name'].title()
         email=request.form['email']
         phone=request.form['phone']
-        crud.update_if('teachers', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', teacher_id)
+        try:
+            crud.update_if('teachers', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', teacher_id)
+        except:
+            return render_template('update_teachers.html',title='Edit the Changes:' ,teacher_object=teacher_object, note="Email or Mobile number already exists")
         return redirect(url_for('admin_teachers'))
     else:
         return render_template('update_teachers.html',title='Edit the Changes:' ,teacher_object=teacher_object) 

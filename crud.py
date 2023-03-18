@@ -39,5 +39,15 @@ def course_name(course_id):
     name=name[0][0]
     return name
 
+def student_id(email):
+    name=read_if('id', 'students', 'email', email)
+    name=name[0][0]
+    return name
+
+def teacher_id(email):
+    name=read_if('id', 'teachers', 'email', email)
+    name=name[0][0]
+    return name
+
 def change_grade(new_grade, student_id, course_id ):
     return query(f"UPDATE students_courses SET grade=({new_grade}) WHERE student_id='{student_id}' and course_id='{course_id}'")

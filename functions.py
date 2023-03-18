@@ -23,3 +23,15 @@ def courses_teachers():
                 course_teacher=classes.Course(course.tid, course.name, course.description, teacher.name, course.start, course.day, course.time)
                 courses_teachers.append(course_teacher)
     return courses_teachers
+
+def authenticate(email, password):
+    student_auth=crud.read_two_if('role', 'users', 'student_user', email, 'password', password)
+    if len(student_auth)!=0:
+        return student_auth[0][0]
+    teacher_auth=crud.read_two_if('role', 'users', 'teacher_user', email, 'password', password)
+    if len(teacher_auth)!=0:
+        return teacher_auth[0][0]
+    admin_auth=crud.read_two_if('role', 'users', 'admin_user', email, 'password', password)
+    if len(admin_auth)!=0:
+        return admin_auth[0][0]
+    return []
