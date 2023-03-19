@@ -39,6 +39,11 @@ def course_name(course_id):
     name=name[0][0]
     return name
 
+def admin_name(admin_id):
+    name=read_if('name', 'administrators', 'id', admin_id)
+    name=name[0][0]
+    return name
+
 def student_id(email):
     name=read_if('id', 'students', 'email', email)
     name=name[0][0]
@@ -46,6 +51,11 @@ def student_id(email):
 
 def teacher_id(email):
     name=read_if('id', 'teachers', 'email', email)
+    name=name[0][0]
+    return name
+
+def admin_id(email):
+    name=read_if('id', 'administrators', 'email', email)
     name=name[0][0]
     return name
 
