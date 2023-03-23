@@ -1,25 +1,71 @@
 {% include "admin_nav_students.html" %}
 
     <div class="admin_students_main">
-    <div class="student_search">
-        <form action="" method="POST">
-            <input type="text" name="search" placeholder="Enter student name">
-            <input type="submit" value="Search">
-        </form>
+        <div class="main_student_search">
+            <div class="student_search">
+                {% for f in form %}
+                <form action="" method="POST">
+                    <input type="text" name="search" placeholder="Enter student name">
+                    <input type="submit" value="Search">
+                </form>
+                {% endfor %}
+            </div>
+            <div class="students_list">
+                {{result}}
+                {% for student in students_objects %}
+                <div class="student_info">
+                    <span class="student_name">{{student.name}}</span>
+                    <a href="/student_info/{{student.tid}}">Information</a>
+                </div>
+                {% endfor %}
+                {% for student in students %}
+                <div class="student_info">
+                    <div class="student_name">{{student.name}}</div>
+                    <a href="/student_info/{{student.tid}}">Information</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="main_student_info">
+            {% for student in student_object %}
+            <div class="title_info_student">
+                <div class="info_student_name">{{student.name}}</div>       
+            </div>
+            {% endfor %}
+            <div class="main_course_detail">
+                <div class="basic_course_info" >
+                    {% for student in student_object %}
+                    <div class="info_student_email"><span class="title_student">Email: </span>{{student.email}}</div>
+                    <div class="info_student_phone"><span class="title_student">Phone: </span>{{student.phone}}</div>
+                    {% endfor %}
+                </div>
+                <div class="info_student_courses">
+                    <div class="title_student" style="margin-bottom: 10px;">{{student_dict.courses_title}}</div>
+                    {% for f in student_dict.form %}
+                    <div class="title_course_name">{{student_dict.course_name}}</div>
+                    <div class="title_student_grade">{{student_dict.course_grade}}</div>
+                    {% endfor %}
+                    <div class="student_course_name">
+                        {% for course in student_dict.courses %}
+                        <div><a href="/course_info/{{course.id}}">{{course.name}}</a></div>
+                        {% endfor %}
+                    </div>
+                    <div class="student_grade">
+                        {% for course in student_dict.courses %}
+                        <div class="">{{course.grade}}</div>
+                        {% endfor %}                    
+                    </div> 
+                    <div class="no_student_courses">{{student_dict.no_courses}}</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="students_list">
-        {{result}}
-        {% for student in students_objects %}
-        <div class="student_info">
-            <span class="student_name">{{student.name}}</span>
-            <a href="/student_info/{{student.tid}}">Information</a>
+    <div>
+        {% for l in student_dict.link %}
+        <div class="info_more_links">
+            <a href="/chosen_student/{{student_dict.id}}">Update</a>
+            <a href="/delete_student/{{student_dict.id}}">Delete</a>         
         </div>
-        {% endfor %}
-        {% for student in students %}
-        <div class="student_info">
-            <div class="student_name">{{student.name}}</div>
-            <a href="/student_info/{{student.tid}}">Information</a>
-        </div>
-        {% endfor %}
+        {% endfor %} 
     </div>
 </div>

@@ -1,15 +1,23 @@
 function Messages(props){
+
+    const [messages, setMessages]=React.useState([])
+
+    const getData=()=>{axios.get('/messages').then(response=>{
+        setMessages(response.data);
+    })
+    }
+
+    React.useEffect(()=>{
+        getData(); //קריאה לפונצקיה של המידע בפעם הראשונה ע"מ שלא יהיה דיליי
+        setInterval(getData,props.interval);
+    }, []
+    )
     return <div>
-        {props.messages.map((message)=>
+        {messages.map((message)=>
             <div>{message}</div>)}
     </div>
 }
-function getData(){axios.get('/messages').then(response=>{
-    let message=response.data;
-    ReactDOM.render(<Messages messages={message}/>, document.getElementById('messages'))
-} 
-    )
 
-}
-getData()
-setInterval(getData,3000)
+ReactDOM.render(<Messages start={''} interval={5000}/>, document.getElementById('messages'))
+
+

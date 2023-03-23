@@ -2,38 +2,40 @@
 {% include "admin_nav_courses.html" %}
     
     <div class="admin_courses_main">
-        <div class="main_course__search">
-        <div class="course_search">
-            {% for f in form %}
-            <form action="" method="POST">
-                <input type="text" name="search" placeholder="Enter course name">
-                <input type="submit" value="Search">
-            </form>
-            {% endfor %}
-        </div>
-        <div class="courses_list">
-        {{result}}
-            {% for course in courses_objects %}            
-            <div class="course_info">
-                <span class="course_name"> {{course.name}}:</span>
-                <span class="course_start">{{course.start}}</span>
-                <span class="course_teacher">{{course.teacher_id}}</span>
-                <a href="/course_info/{{course.tid}}">Information</a>
+        <div class="main_course_search">
+            <div class="course_search">
+                {% for f in form %}
+                <form action="" method="POST">
+                    <input type="text" name="search" placeholder="Enter course name">
+                    <input type="submit" value="Search">
+                </form>
+                {% endfor %}
             </div>
-            {% endfor %}
-            {% for course in courses_teachers %}            
-            <div class="course_info">
-                <div class="course_name"> {{course.name}}:</div>
-                <div class="course_start">{{course.start}}</div>
-                <div class="course_teacher">{{course.teacher_id}}</div>
-                <a href="/course_info/{{course.tid}}">Information</a>
+            <div class="courses_list">
+            {{result}}
+                {% for course in courses_objects %}            
+                <div class="course_info">
+                    <span class="course_name"> {{course.name}}:</span>
+                    <span class="course_start">{{course.start}}</span>
+                    <span class="course_teacher">{{course.teacher_id}}</span>
+                    <a href="/course_info/{{course.tid}}">Information</a>
+                </div>
+                {% endfor %}
+                {% for course in courses_teachers %}            
+                <div class="course_info">
+                    <div class="course_name"> {{course.name}}:</div>
+                    <div class="course_start">{{course.start}}</div>
+                    <div class="course_teacher">{{course.teacher_id}}</div>
+                    <a href="/course_info/{{course.tid}}">Information</a>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
         </div>
         {% for course in course_object %}
         <div class="main_course_info">
-            <div class="info_course_name">{{course.name}}</div>
+            <div class= "title_info_course">
+                <div class="info_course_name">{{course.name}}</div>
+            </div>     
             {% endfor %}
             <div class="main_course_detail">
                 <div class="basic_course_info" >
@@ -46,14 +48,33 @@
                     {% endfor %}
                 </div>
                 <div class="info_course_students">
-                    <span class="title_course">{{course_dict.students_title}}</span> 
-                    {% for student in course_dict.students %}   
-                        <a href="/student_info/{{student[0]}}">{{student[1]}}</a>
+                    <div class="title_course" style="margin-bottom: 10px;">{{course_dict.students_title}}</div>
+                    {% for f in  course_dict.form %}
+                    <div class="title_student_name">{{course_dict.student_name}}</div>
+                    <div class="title_course_grade">{{course_dict.student_grade}}</div>
                     {% endfor %}
-                        <div>{{course_dict.no_students}}</div>
+                    <div class="course_student_name">
+                        {% for student in course_dict.students %}
+                        <div><a href="/student_info/{{student.id}}">{{student.name}}</a></div>
+                        {% endfor %}
+                    </div>
+                    <div class="course_grade">
+                        {% for student in course_dict.students %}
+                        <div class="">{{student.grade}}</div>
+                        {% endfor %}                    
+                    </div> 
+                    <div class="no_course_students">{{course_dict.no_students}}</div>
                 </div>
             </div>
+        </div>                    
+    </div>
+    <div>
+        {% for l in course_dict.link %}
+        <div class="info_more_links">
+            <a href="/chosen_course/{{course_dict.id}}">Update</a>
+            <a href="/delete_course/{{course_dict.id}}">Delete</a>         
         </div>
+        {% endfor %}  
     </div>
 </div>
 

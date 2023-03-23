@@ -1,25 +1,62 @@
 {% include "admin_nav_teachers.html" %}
 
     <div class="admin_teachers_main">
-    <div class="teacher_search">
-        <form action="" method="POST">
-            <input type="text" name="search" placeholder="Enter student name">
-            <input type="submit" value="Search">
-        </form>
+        <div class="main_teacher_search">
+            <div class="teacher_search">
+                {% for f in form %}
+                <form action="" method="POST">
+                    <input type="text" name="search" placeholder="Enter teacher name">
+                    <input type="submit" value="Search">
+                </form>
+                {% endfor %}
+            </div>
+            <div class="teachers_list">
+                {{result}}
+                {% for teacher in teachers_objects %}
+                <div class="teacher_info">
+                    <span class="teacher_name">{{teacher.name}}</span>
+                    <a href="/teacher_info/{{teacher.tid}}">Information</a>
+                </div>
+                {% endfor %}
+                {% for teacher in teachers %}
+                <div class="teacher_info">
+                    <div class="teacher_name">{{teacher.name}}</div>
+                    <a href="/teacher_info/{{teacher.tid}}">Information</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="main_teacher_info">
+            {% for teacher in teacher_object %}
+            <div class="title_info_teacher">
+                <div class="info_teacher_name">{{teacher.name}}</div>       
+            </div>
+            {% endfor %}
+            <div class="main_teacher_detail">
+                <div class="basic_teacher_info" >
+                    {% for teacher in teacher_object %}
+                    <div class="info_teacher_email"><span class="title_teacher">Email: </span>{{teacher.email}}</div>
+                    <div class="info_teacher_phone"><span class="title_teacher">Phone: </span>{{teacher.phone}}</div>
+                    {% endfor %}
+                </div>
+                <div class="info_teacher_courses">
+                    <div class="title_teacher" style="margin-bottom: 10px;">{{teacher_dict.courses_title}}</div>
+                    <div class="teacher_course_name">
+                        {% for course in teacher_dict.courses %}
+                        <div><a href="/course_info/{{course[0]}}">{{course[1]}}</a></div>
+                        {% endfor %}
+                    </div>
+                    <div class="no_teacher_courses">{{teacher_dict.no_courses}}</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="teachers_list">
-        {{result}}
-        {% for teacher in teachers_objects %}
-        <div class="teacher_info">
-            <span class="teacher_name">{{teacher.name}}</span>
-            <a href="/teacher_info/{{teacher.tid}}">Information</a>
+    <div>
+        {% for l in teacher_dict.link %}
+        <div class="info_more_links">
+            <a href="/chosen_teacher/{{teacher_dict.id}}">Update</a>
+            <a href="/delete_teacher/{{teacher_dict.id}}">Delete</a>         
         </div>
-        {% endfor %}
-        {% for teacher in teachers %}
-        <div class="teacher_info">
-            <div class="teacher_name">{{teacher.name}}</div>
-            <a href="/teacher_info/{{teacher.tid}}">Information</a>
-        </div>
-        {% endfor %}
+        {% endfor %} 
     </div>
 </div>

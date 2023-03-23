@@ -128,6 +128,7 @@
             </div> 
             {% endfor %}
             <div class="chosen_date">{{dates_dict.chosen_date}}</div>
+            {% for f in dates_dict.form %}
             <div class="chosen_attend">
                 <div class="yes">
                     <div class="yes_title" >{{dates_dict.yes_title}}</div>
@@ -138,12 +139,12 @@
                 <div class="no">
                 <div class="no_title" >{{dates_dict.no_title}}</div>
                     {% for name in dates_dict.not_attend %}
-                    <div>{{name}}</div>
+                    <div class="no_students">{{name}}</div>
                     {% endfor %}
                 </div>
             </div>
-        </div>
-    
+            {% endfor %}
+        </div>    
     </div>
 </div>
 {% endblock %}

@@ -61,3 +61,6 @@ def admin_id(email):
 
 def change_grade(new_grade, student_id, course_id ):
     return query(f"UPDATE students_courses SET grade=({new_grade}) WHERE student_id='{student_id}' and course_id='{course_id}'")
+
+def delete(table, value, condition):
+    return query(f"DELETE FROM {table} WHERE {value}='{condition}'")

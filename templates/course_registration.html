@@ -12,8 +12,8 @@
             </div>
             {{result1}}
             {% for course in course_objects %}
-            <form class="info_corse_regist" action="course_id_registration/{{course.tid}}" >
-                <div class="courset_name_regist">{{courset.name}}</div>
+            <form class="info_course_regist" action="course_id_registration/{{course.tid}}" >
+                <div class="course_name_regist">{{course.name}}</div>
                 <input  type="submit" value="Choose">
             </form>
             {% endfor %}
