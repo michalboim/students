@@ -75,6 +75,7 @@ def search():
 def login():
     log=check_log()
     admin_dict=chek_admin()
+    form1=['create']
     if request.method=='POST':
         auth=authenticate(request.form['email'], request.form['password'])
         if auth=='student':
@@ -93,8 +94,8 @@ def login():
             session['name']=crud.admin_name(session['id'])
             return redirect(url_for('administrator', admin_id=session['id']))
         else:
-            return render_template('login.html', log=log, admin_dict=admin_dict, note='Incorrect username or password' )
-    return render_template('login.html', log=log, admin_dict=admin_dict)
+            return render_template('login.html', log=log, admin_dict=admin_dict, form1=form1, note='Incorrect username or password' )
+    return render_template('login.html', log=log, form1=form1, admin_dict=admin_dict)
 
 @app.route('/logout')
 def logout():
@@ -724,14 +725,34 @@ def messages():
     messages_list=[message[0] for message in all_messages]
     return messages_list
 
-@app.route('/student_profile/<student_id>')
+@app.route('/student_profile/<student_id>', methods=['get', 'post'])
 def student_profile(student_id):
     log=check_log()
     admin_dict=chek_admin()
-    return render_template('home.html', log=log, admin_dict=admin_dict, hello= f"hello {crud.student_name(student_id)}") 
+    form2=["create"]
+    email=crud.read_if('email','students', 'id', student_id)
+    if request.method=='POST':
+        new_password=request.form['new_password']
+        crud.update_if('users', 'password', new_password, 'student_user', email[0][0])
+        return redirect(url_for('student_profile', student_id=student_id))
+    else:
+        password=crud.read_if('password', 'users', 'student_user', email[0][0])
+        if password[0][0]=='123456':
+            return render_template('login.html', log=log, admin_dict=admin_dict, form2=form2, note='You need to change the initial password you received:')
+        return render_template('home.html', log=log, admin_dict=admin_dict, hello= f"hello {crud.student_name(student_id)}") 
 
-@app.route('/teacher_profile/<teacher_id>')
+@app.route('/teacher_profile/<teacher_id>', methods=['get', 'post'])
 def teacher_profile(teacher_id):
     log=check_log()
     admin_dict=chek_admin()
-    return render_template('home.html', log=log, admin_dict=admin_dict, hello= f"hello {crud.student_name(teacher_id)}") 
+    form2=["create"]
+    email=crud.read_if('email','teachers', 'id', teacher_id)
+    if request.method=='POST':
+        new_password=request.form['new_password']
+        crud.update_if('users', 'password', new_password, 'teacher_user', email[0][0])
+        return redirect(url_for('teacher_profile', teacher_id=teacher_id))
+    else:
+        password=crud.read_if('password', 'users', 'teacher_user', email[0][0])
+        if password[0][0]=='123456':
+            return render_template('login.html', log=log, admin_dict=admin_dict, form2=form2, note='You need to change the initial password you received:')
+        return render_template('home.html', log=log, admin_dict=admin_dict, hello= f"hello {crud.teacher_name(teacher_id)}") 
