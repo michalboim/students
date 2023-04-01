@@ -1,3 +1,20 @@
+function AddMessagesForm(){
+
+    const handleSubmit=(event)=>{
+        event.preventDefault();
+        const newMessage=event.target.elements.message.value;
+        axios.post("/add", {message:newMessage}).then(
+            response=>console.log(response.data)
+        )
+    }
+    return (
+        <form onSubmit={handleSubmit}>
+            <input type='text' name='message'/>
+            <input type='submit' value='add'/>
+        </form>
+    )
+}
+
 function Messages(props){
 
     const [messages, setMessages]=React.useState([])
@@ -18,6 +35,6 @@ function Messages(props){
     </div>
 }
 
-ReactDOM.render(<Messages start={''} interval={5000}/>, document.getElementById('messages'))
-
+ReactDOM.render(<Messages start={''} interval={3000}/>, document.getElementById('messages'))
+ReactDOM.render(<AddMessagesForm />, document.getElementById('add'))
 

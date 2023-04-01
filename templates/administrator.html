@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="admin_pages">
-    <div class="links">
+<h4>{{admin_dict.hello}}</h4>
+<div class="admin_pages">  
+    <div class="links">        
         <div class="link"><a href="/admin_courses">Courses</a></div>
         <div class="link"><a href="/admin_students">Students</a></div>
         <div class="link"><a href="/admin_teachers">Teachers</a></div>    
     </div>
-    <div>{{name}}</div>
 {% endblock %}

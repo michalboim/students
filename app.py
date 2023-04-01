@@ -9,7 +9,7 @@ import datetime
 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-def check_log():
+def check_log(): #check if user is loged in or not
     log_result={}
     if "name" in session:
         link='/logout'
@@ -24,13 +24,14 @@ def check_log():
         log_result['log']=log
         return log_result
 
-def chek_admin():
+def chek_admin():#chech if user is admin or not
     if "role" in session:
         if session['role']=='admin':
             admin_dict={}
             admin_dict['id']=session['id']
             admin_dict['link']=f"/administrator/{session['id']}"
             admin_dict['word']='Administrator'
+            admin_dict['hello']=f"Hello {session['name']}- what do you whant to do?"
             return admin_dict
         else:
             admin_dict=''
@@ -108,11 +109,10 @@ def logout():
 def administrator(admin_id):
     log=check_log()
     admin_dict=chek_admin()
-    name=crud.admin_name(admin_id)
-    return render_template ('administrator.html',log=log, admin_dict=admin_dict, name=f"Hello {name} what do you whant to do?")
+    return render_template ('administrator.html',log=log, admin_dict=admin_dict)
 
 @app.route('/admin_courses',methods=['GET', 'POST'])
-def admin_courses():
+def admin_courses(): # courses information and actions for admin
     log=check_log()
     admin_dict=chek_admin()
     form=['create']
@@ -170,7 +170,7 @@ def add_course():
         return render_template('add_course.html', log=log, admin_dict=admin_dict, teachers_object=create_teachers_objects(crud.read_all('teachers')))
 
 @app.route('/update_courses', methods=['GET', 'POST'])
-def update_courses():
+def update_courses(): # chose course to update 
     log=check_log()
     admin_dict=chek_admin()
     form=['create']
@@ -267,7 +267,7 @@ def course_id_registration(course_id):
     return render_template('course_registration.html', log=log, admin_dict=admin_dict, form=form, course_dict=course_dict)
 
 @app.route('/admin_students', methods=['GET', 'POST'])
-def admin_students():
+def admin_students(): # students information and actions for admin
     log=check_log()
     admin_dict=chek_admin()
     form=['create']
@@ -330,7 +330,7 @@ def add_student():
         return render_template('add_student.html', log=log, admin_dict=admin_dict)
 
 @app.route('/update_students', methods=['GET', 'POST'])
-def update_students():
+def update_students(): # chose student to update
     log=check_log()
     admin_dict=chek_admin()
     form=['create']
@@ -408,7 +408,7 @@ def student_id_registration(student_id):
     return render_template('student_registration.html', log=log, admin_dict=admin_dict, form=form, student_dict=student_dict)
 
 @app.route('/admin_teachers',methods=['GET', 'POST'])
-def admin_teachers():
+def admin_teachers(): # teachers information and actions for admin
     log=check_log()
     admin_dict=chek_admin()
     form=['create']
@@ -461,7 +461,7 @@ def add_teacher():
         return render_template('add_teacher.html', log=log, admin_dict=admin_dict)
 
 @app.route('/update_teachers', methods=['GET', 'POST'])
-def update_teachers():
+def update_teachers(): # chose teacher to update
     log=check_log()
     admin_dict=chek_admin()
     form1=['create']
@@ -719,11 +719,6 @@ def students_attendance(student_id):
     else:
         return render_template('attendance.html',log=log, admin_dict=admin_dict, jinja='', form=form, dates_dict='' ,courses=courses, course_dict=course_dict, course_dates_dict='' )  
     
-@app.route('/messages')
-def messages():
-    all_messages=crud.read_all('messages')
-    messages_list=[message[0] for message in all_messages]
-    return messages_list
 
 @app.route('/student_profile/<student_id>', methods=['get', 'post'])
 def student_profile(student_id):
@@ -756,3 +751,18 @@ def teacher_profile(teacher_id):
         if password[0][0]=='123456':
             return render_template('login.html', log=log, admin_dict=admin_dict, form2=form2, note='You need to change the initial password you received:')
         return render_template('home.html', log=log, admin_dict=admin_dict, hello= f"hello {crud.teacher_name(teacher_id)}") 
+
+@app.route('/messages')
+def messages():
+    all_messages=crud.read_all('messages')
+    messages_list=[message[0] for message in all_messages]
+    return messages_list
+
+@app.route('/add', methods=['post'])
+def add():
+    crud.create('messages', 'message',request.json['message'] ) 
+    return 'ok'
+
+@app.route('/num_messages')
+def num_messages():
+    return str(len(crud.read_all('messages')))
