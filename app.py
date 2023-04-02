@@ -319,11 +319,11 @@ def admin_students(): # students information and actions for admin
     if request.method=='POST':
         students=crud.read_like('*', 'students', 'name', request.form['search'].title())
         if len(students)==0:
-            return render_template('admin_students.html', log=log, admin_dict=admin_dict, form=form, student_dict='', result='No such studentd was found')
+            return render_template('admin_students.html', log=log, admin_dict=admin_dict, form=form, student_attend='', student_dict='', result='No such studentd was found')
         else:
             student_object=create_students_objects(students)
-            return render_template('admin_students.html', log=log, admin_dict=admin_dict, form=form, student_dict='', students_objects=student_object)
-    return render_template('admin_students.html', log=log, admin_dict=admin_dict, form=form, student_dict='', students=create_students_objects(crud.read_all('students')))
+            return render_template('admin_students.html', log=log, admin_dict=admin_dict, form=form, student_attend='', student_dict='', students_objects=student_object)
+    return render_template('admin_students.html', log=log, admin_dict=admin_dict, form=form, student_attend='', student_dict='', students=create_students_objects(crud.read_all('students')))
 
 @app.route('/student_info/<student_id>')
 def student_info(student_id):
@@ -353,7 +353,58 @@ def student_info(student_id):
         student_dict['courses']=courses_names
         student_dict['no_courses']=''
         student_dict['form']=['create']
-    return render_template('admin_students.html', log=log, admin_dict=admin_dict, student_object=student_object, student_dict=student_dict)
+    return render_template('admin_students.html', log=log, admin_dict=admin_dict, student_object=student_object, student_dict=student_dict, student_attend='')
+
+@app.route('/attendance_student/<student_id>', methods=['get','post'])
+def attendance_student(student_id): # View attendance for a specific student
+    log=check_log()
+    admin_dict=chek_admin()
+    student_attend={}
+    student_attend['student_id']=student_id
+    courses=crud.read_if('course_id', 'students_courses', 'student_id', student_id)
+    courses_names=[]
+    for c in courses:
+            name=crud.course_name(c[0])
+            course_name=[c[0],name]
+            courses_names.append(course_name)
+    student_attend['student_name']=f"{crud.student_name(student_id)} courses:"        
+    student_attend['form1']=['create']
+    student_attend['form2']=[]   
+    student_attend['course_list']=courses_names
+    if request.method=='POST':
+        student_attend['form1']=['create']
+        student_attend['form2']=['create']
+        if 'form1' in request.form:
+            course_id=request.form['course_select']
+            student_attend['course_id']=course_id
+            course_dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
+            if len(course_dates)==0:
+                student_attend['course_name']=f'No lessons were found in the system for {crud.course_name(course_id)}'
+                student_attend['form2']=[]
+            else:
+                student_attend['course_name']=f'{crud.course_name(course_id)} dates:'
+                student_attend['course_dates']=course_dates
+            return render_template('admin_students.html', log=log, admin_dict=admin_dict, student_object='', student_attend=student_attend, student_dict='')
+        elif 'form2' in request.form:
+            chosen_course_id=request.form['chosen_course_id']
+            student_attend['course_id']=chosen_course_id
+            course_dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', chosen_course_id)
+            student_attend['course_dates']=course_dates            
+            date=request.form['date_select']
+            student_attend['course_name']=f'{crud.course_name(chosen_course_id)} dates:'
+            student_answer=crud.read_three_if('attendance','students_attendance', 'student_id', student_id, 'course_id', chosen_course_id, 'date', date)
+            if student_answer[0][0]=='yes':
+                student_attend['answer']=f'The student attended in {date} lesson'
+            elif student_answer[0][0]=='no':
+                student_attend['answer']=f'The student did not attend in {date} lesson'
+            else:
+                student_attend['answer']=f"There is no reference to the student's participation in {date} lesson in the system"
+            return render_template('admin_students.html', log=log, admin_dict=admin_dict, student_object='', student_attend=student_attend, student_dict='')
+    else:
+        return render_template('admin_students.html', log=log, admin_dict=admin_dict, student_object='', student_attend=student_attend, student_dict='')
+    
+
+
 
 @app.route('/add_student', methods=['POST','GET'])
 def add_student():

@@ -26,6 +26,38 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="student_courses">
+            <div>{{student_attend.student_name}}</div>
+            <div>
+                {% for form in student_attend.form1 %}
+                    <form action="" method="post">
+                        <select name="course_select" id="">
+                            {% for course in student_attend.course_list %}
+                            <option value="{{course[0]}}">{{course[1]}}</option>
+                            {% endfor %}
+                        </select>
+                        <input name="form1" type="submit" value="Select">
+                    </form>
+                {% endfor %}
+            </div>
+            <div class="course_dates" >
+                <div>{{student_attend.course_name}}</div>
+                <div>
+                    {% for form in student_attend.form2 %}
+                        <form action="" method="post">
+                            <select name="date_select" id="">
+                                {% for date in student_attend.course_dates %}
+                                <option value="{{date[0]}}">{{date[0]}}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="chosen_course_id" value="{{student_attend.course_id}}">
+                            <input name="form2" type="submit" value="Select">
+                        </form>
+                    {% endfor %}
+                </div>
+                <div>{{student_attend.answer}}</div>
+            </div>
+        </div>  
         <div class="main_student_info">
             {% for student in student_object %}
             <div class="title_info_student">
@@ -60,12 +92,13 @@
             </div>
         </div>
     </div>
-    <div>
+    <div class="info_more_links">
         {% for l in student_dict.link %}
-        <div class="info_more_links">
             <a href="/chosen_student/{{student_dict.id}}">Update</a>
-            <a href="/delete_student/{{student_dict.id}}">Check Attendance</a>         
-        </div>
+        {% endfor %}
+        {% for l in student_dict.form %}
+            <a href="/attendance_student/{{student_dict.id}}">Check Attendance</a>                
         {% endfor %} 
     </div>
 </div>
+

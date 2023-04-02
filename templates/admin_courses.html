@@ -103,16 +103,14 @@
                     <div class="no_course_students">{{course_dict.no_students}}</div>
                 </div>
             </div>
-        </div>  
-    </div>
-    {% for l in course_dict.link %}
+        </div>
+    </div>  
     <div class="info_more_links">
+    {% for l in course_dict.link %}
         <a href="/chosen_course/{{course_dict.id}}">Update</a>
     {% endfor %}
     {% for l in course_dict.form %}
-    <div class="info_more_links">
         <a href="/attendance_course/{{course_dict.id}}">Check Attendance</a>         
-    </div>
     {% endfor %} 
+    </div>        
 </div>
-
