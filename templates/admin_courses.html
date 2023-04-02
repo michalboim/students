@@ -36,7 +36,7 @@
             <div class="info_course_name">{{course_attend.course_name}}</div>
             <div class="date">{{course_attend.chose_date[0]}}</div>
             <div>           
-                 <form class="form_select_attend" action="//attendance_chosen_date/{{course_attend.course_id}}" >            
+                 <form class="form_select_attend" action="", method="post" >            
                      {% for chose in course_attend.chose_date %}
                      <select name="chosen_date" id="">
                          {% for date in course_attend.dates %}
@@ -50,18 +50,18 @@
                  </form>
              </div> 
              {% endfor %}
-             <div class="chosen_date_attend">{{dates_dict.chosen_date}}</div>
-             {% for f in dates_dict.form %}
+             <div class="chosen_date_attend">{{course_attend.chosen_date}}</div>
+             {% for f in course_attend.form %}
              <div class="chosen_attend_attend">
                  <div class="yes">
-                     <div class="yes_title" >{{dates_dict.yes_title}}</div>
-                     {% for name in dates_dict.attend_date %}
+                     <div class="yes_title" >{{course_attend.yes_title}}</div>
+                     {% for name in course_attend.attend_date %}
                      <div>{{name}}</div>
                      {% endfor %}
                  </div>
                  <div class="no">
-                 <div class="no_title" >{{dates_dict.no_title}}</div>
-                     {% for name in dates_dict.not_attend %}
+                 <div class="no_title" >{{course_attend.no_title}}</div>
+                     {% for name in course_attend.not_attend %}
                      <div class="no_students">{{name}}</div>
                      {% endfor %}
                  </div>
