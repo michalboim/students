@@ -37,14 +37,14 @@
             <div class="date">{{course_attend.chose_date[0]}}</div>
             <div>           
                  <form class="form_select_attend" action="", method="post" >            
-                     {% for chose in course_attend.chose_date %}
+                     {% for chose in course_attend.select %}
                      <select name="chosen_date" id="">
                          {% for date in course_attend.dates %}
                          <option value="{{date[0]}}">{{date[0]}}</option>
                          {% endfor %}
                      </select>
                      {% endfor %}
-                     {% for chose in course_attend.chose_date %}
+                     {% for chose in course_attend.select %}
                      <input type="submit" name="" id="" value="Select">
                      {% endfor %}
                  </form>

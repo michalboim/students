@@ -167,8 +167,15 @@ def attendance_course(course_id): # View attendance for a specific course
     course_attend['form']=[]
     course_attend['course_id']=course_id   
     course_attend['course_name']=f"Attendance for {crud.course_name(course_id)}"  
-    course_attend['chose_date']=['Choose a lesson:']
-    course_attend['dates']=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
+    dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
+    if len(dates)==0:
+        course_attend['chose_date']=['No lesson found in the system']
+        course_attend['dates']=''
+        course_attend['select']=[]
+    else:
+        course_attend['chose_date']=['Choose a lesson:']
+        course_attend['dates']=dates
+        course_attend['select']=['create']
     if request.method=='GET':
         return render_template ('admin_courses.html', log=log, admin_dict=admin_dict, course_attend=course_attend, course_dict='')
     else:
