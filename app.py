@@ -119,13 +119,13 @@ def admin_courses(): # courses information and actions for admin
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
         if len(courses_list)==0:
-            return render_template('admin_courses.html',log=log, admin_dict=admin_dict, course_dict='', form=form, result='No such course was found')
+            return render_template('admin_courses.html',log=log, admin_dict=admin_dict, course_dict='', course_attend='', dates_dict='', form=form, result='No such course was found')
         else:
             courses_object=create_courses_objects(courses_list)
             for course in courses_object:
                 course.teacher_id=crud.teacher_name(course.teacher_id)  
-            return render_template('admin_courses.html',log=log, admin_dict=admin_dict, course_dict='', form=form, courses_objects=courses_object)
-    return render_template('admin_courses.html', log=log, admin_dict=admin_dict, course_dict='', form=form, courses_teachers=courses_teachers())
+            return render_template('admin_courses.html',log=log, admin_dict=admin_dict, course_dict='', course_attend='', dates_dict='', form=form, courses_objects=courses_object)
+    return render_template('admin_courses.html', log=log, admin_dict=admin_dict, course_dict='', course_attend='', dates_dict='', form=form, courses_teachers=courses_teachers())
 
 @app.route('/course_info/<course_id>')
 def course_info(course_id):
@@ -157,7 +157,24 @@ def course_info(course_id):
         course_dict['students']=students_names
         course_dict['no_students']=''
         course_dict['form']=['create']
-    return render_template ('admin_courses.html', log=log, admin_dict=admin_dict, course_object=course_object, course_dict=course_dict )
+    return render_template ('admin_courses.html', log=log, admin_dict=admin_dict, course_object=course_object, course_dict=course_dict, course_attend='', dates_dict='')
+
+@app.route('/attendance_course/<course_id>')
+def attendance_course(course_id): # View attendance for a specific course
+    log=check_log()
+    admin_dict=chek_admin()
+    course_attend={}
+    course_attend['course_id']=course_id   
+    course_attend['course_name']=f"Attendance for {crud.course_name(course_id)}"
+    students_ids=crud.read_if('student_id', 'students_courses', 'course_id', course_id)
+    if len(students_ids)==0:
+        course_attend['chose_date']=[f"There are no students enrolled to {crud.course_name(course_id)}"]
+        course_attend['dates']=[]
+    else:
+        course_attend['chose_date']=['Choose a lesson:']
+        dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
+        course_attend['dates']=dates
+    return render_template ('admin_courses.html', log=log, admin_dict=admin_dict, course_attend=course_attend,  dates_dict='', course_dict='')
 
 @app.route('/add_course', methods=['GET','POST'])
 def add_course():

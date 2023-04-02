@@ -68,7 +68,7 @@
 /*admin*/
 .admin_pages{
     display: grid;
-    grid-template-columns: max-content max-content 1fr;
+    grid-template-columns: max-content max-content max-content;
     gap: 70px;
     margin-top: 20px;
     margin-left: 20px;
@@ -210,6 +210,44 @@
     grid-column: 1;
     grid-row: 2;
 }
+                /*attendance- course date list*/
+                .dates_list_attend{
+                    display: flex;
+                    flex-direction: column;
+                    gap:10px;
+                }
+                .chosen_date_attend{
+                    font-size: large;
+                    font-weight: bold;
+                    text-align: center;
+                }
+                .chosen_attend_attend{
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                }
+                .yes{
+                    grid-column: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    border-right: solid black 1px;
+                }
+                .yes_title{
+                    border-bottom: solid black 1px;
+                }
+                .no{
+                    grid-column: 2;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+                .no_title{
+                    padding-left: 10px;
+                    border-bottom: solid black 1px;
+                }
+                .no_students{
+                    padding-left: 10px;
+                }
 /*add_course*/
 .main_add_courses{
     display: flex;

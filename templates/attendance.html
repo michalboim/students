@@ -37,7 +37,7 @@
                     <a href="/students_attendance/{{s.tid}}">{{s.name}}</a>
                 {% endfor %}
             </div>
-           / <div class="student_courses">
+            <div class="student_courses">
                 <div>{{course_dict.student_name}}</div>
                 <div>
                     {% for form in course_dict.form %}
@@ -109,7 +109,7 @@
                 {% endfor %}
             </div>
         </div> 
-        <div class="dates_list" >              
+        /<div class="dates_list" >              
            {% for chose in jinja.chose_date %}
            <div class="date">{{jinja.chose_date[0]}}</div>
            <div>           

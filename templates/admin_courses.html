@@ -31,6 +31,43 @@
                 {% endfor %}
             </div>
         </div>
+        <div class="dates_list_attend" >              
+            {% for chose in course_attend.chose_date %}
+            <div class="info_course_name">{{course_attend.course_name}}</div>
+            <div class="date">{{course_attend.chose_date[0]}}</div>
+            <div>           
+                 <form class="form_select_attend" action="//attendance_chosen_date/{{course_attend.course_id}}" >            
+                     {% for chose in course_attend.chose_date %}
+                     <select name="chosen_date" id="">
+                         {% for date in course_attend.dates %}
+                         <option value="{{date[0]}}">{{date[0]}}</option>
+                         {% endfor %}
+                     </select>
+                     {% endfor %}
+                     {% for chose in course_attend.chose_date %}
+                     <input type="submit" name="" id="" value="Select">
+                     {% endfor %}
+                 </form>
+             </div> 
+             {% endfor %}
+             <div class="chosen_date_attend">{{dates_dict.chosen_date}}</div>
+             {% for f in dates_dict.form %}
+             <div class="chosen_attend_attend">
+                 <div class="yes">
+                     <div class="yes_title" >{{dates_dict.yes_title}}</div>
+                     {% for name in dates_dict.attend_date %}
+                     <div>{{name}}</div>
+                     {% endfor %}
+                 </div>
+                 <div class="no">
+                 <div class="no_title" >{{dates_dict.no_title}}</div>
+                     {% for name in dates_dict.not_attend %}
+                     <div class="no_students">{{name}}</div>
+                     {% endfor %}
+                 </div>
+             </div>
+             {% endfor %}
+         </div> 
         {% for course in course_object %}
         <div class="main_course_info">
             <div class= "title_info_course">
@@ -66,15 +103,16 @@
                     <div class="no_course_students">{{course_dict.no_students}}</div>
                 </div>
             </div>
-        </div>                    
+        </div>  
     </div>
-    <div>
-        {% for l in course_dict.link %}
-        <div class="info_more_links">
-            <a href="/chosen_course/{{course_dict.id}}">Update</a>
-            <a href="/delete_course/{{course_dict.id}}">Attendance</a>         
-        </div>
-        {% endfor %}  
+    {% for l in course_dict.link %}
+    <div class="info_more_links">
+        <a href="/chosen_course/{{course_dict.id}}">Update</a>
+    {% endfor %}
+    {% for l in course_dict.form %}
+    <div class="info_more_links">
+        <a href="/attendance_course/{{course_dict.id}}">Check Attendance</a>         
     </div>
+    {% endfor %} 
 </div>
 
