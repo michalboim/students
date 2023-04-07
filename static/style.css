@@ -216,6 +216,10 @@
                     flex-direction: column;
                     gap:10px;
                 }
+                .course_attend{
+                    display: flex;
+                    justify-content: space-between;
+                }
                 .chosen_date_attend{
                     font-size: large;
                     font-weight: bold;
@@ -223,7 +227,7 @@
                 }
                 .chosen_attend_attend{
                     display: grid;
-                    grid-template-columns: 1fr 1fr;
+                    grid-template-columns: max-content max-content max-content;
                 }
                 .yes{
                     grid-column: 1;
@@ -231,22 +235,40 @@
                     flex-direction: column;
                     gap: 5px;
                     border-right: solid black 1px;
+                    
                 }
                 .yes_title{
                     border-bottom: solid black 1px;
+                    padding-right: 5px;
                 }
                 .no{
                     grid-column: 2;
                     display: flex;
                     flex-direction: column;
                     gap: 5px;
+                    border-right: solid black 1px;
                 }
                 .no_title{
                     padding-left: 10px;
                     border-bottom: solid black 1px;
+                    padding-right: 5px;
                 }
                 .no_students{
                     padding-left: 10px;
+                }
+                .unknown{
+                    grid-column: 3;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+                .unknown_title{
+                    padding-left: 10px;
+                    border-bottom: solid black 1px;
+                }
+                .unknown_students{
+                    padding-left: 10px;
+                    padding-right: 10px;                    
                 }
 /*add_course*/
 .main_add_courses{

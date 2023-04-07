@@ -183,26 +183,30 @@ def attendance_course(course_id): # View attendance for a specific course
         course_attend['chosen_date']=f"{request.form['chosen_date']} attendance list:"        
         course_attend['yes_title']='Students who ATTENDED the class:'
         course_attend['no_title']='Students who DID NOT attend the class:'
-        ids_attend=crud.read_three_if('student_id', 'students_attendance', 'course_id', course_id, 'date', request.form['chosen_date'], 'attendance', 'yes' )
-        if len(ids_attend)==0:
-            course_attend['attend_date']=['No students found',]
-        else:
-            names_attend=[]
-            for ids in ids_attend:
-                name=crud.student_name(ids[0])
-                names_attend.append(name)    
-            course_attend['attend_date']=names_attend
-        ids_not_attend=crud.read_three_if('student_id', 'students_attendance', 'course_id', course_id, 'date', request.form['chosen_date'], 'attendance', 'no' )
-        if len(ids_not_attend)==0:
-                course_attend['not_attend']=['No students found']
-        else:
-            names_not_attend=[]
-            for ids in ids_not_attend:
-                name=crud.student_name(ids[0])
-                names_not_attend.append(name)            
-            course_attend['not_attend']=names_not_attend
+        course_attend['unknown_title']='Unknown:'
+        studens_ids=crud.read_two_if('student_id, attendance', 'students_attendance', 'course_id', course_id, 'date', request.form['chosen_date'],)
+        course_attend['attend']=[]
+        course_attend['not_attend']=[]
+        course_attend['unknown']=[]
+        for student in studens_ids:
+            if student[1]=='yes':
+                s=(student[0],crud.student_name(student[0]))
+                course_attend['attend'].append(s)
+            if student[1]=='no':
+                s=(student[0],crud.student_name(student[0]))
+                course_attend['not_attend'].append(s)
+            if student[1]=='unknown':
+                s=(student[0],crud.student_name(student[0]))
+                course_attend['unknown'].append(s)
+        if len(course_attend['attend'])==0:
+            course_attend['attend']=[['','No students found']]
+        if len(course_attend['not_attend'])==0:
+            course_attend['not_attend']=[['','No students found']]
+        if len(course_attend['unknown'])==0:
+            course_attend['unknown']=[['','No students found']]        
         return render_template ('admin_courses.html', log=log, admin_dict=admin_dict, course_attend=course_attend, course_dict='')
-
+def course_attend_average(course_id):
+    return 'hello'
 
 @app.route('/add_course', methods=['GET','POST'])
 def add_course():
@@ -403,9 +407,6 @@ def attendance_student(student_id): # View attendance for a specific student
     else:
         return render_template('admin_students.html', log=log, admin_dict=admin_dict, student_object='', student_attend=student_attend, student_dict='')
     
-
-
-
 @app.route('/add_student', methods=['POST','GET'])
 def add_student():
     log=check_log()
@@ -489,6 +490,7 @@ def student_id_registration(student_id):
         if 'form2' in request.form:
             courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
             if len(courses_list)==0:
+                student_dict['courses']=[]
                 return render_template('student_registration.html', log=log, admin_dict=admin_dict, form=form, student_dict=student_dict, result2='No such course was found')
             else:
                 courses_object=create_courses_objects(courses_list)
@@ -501,7 +503,9 @@ def student_id_registration(student_id):
                     crud.create('students_courses', 'student_id, course_id', f'{student_id}, {course}')
                 except:
                     pass
-    return render_template('student_registration.html', log=log, admin_dict=admin_dict, form=form, student_dict=student_dict)
+            return redirect(url_for('student_info',student_id=student_id))
+    else:
+        return render_template('student_registration.html', log=log, admin_dict=admin_dict, form=form, student_dict=student_dict)
 
 @app.route('/admin_teachers',methods=['GET', 'POST'])
 def admin_teachers(): # teachers information and actions for admin
@@ -694,9 +698,12 @@ def course_attendance(course_id):
                 if s_a[1]=='yes':
                     student_a.attend['yes']='checked'
                     student_a.attend['no']=''
-                else:
+                elif s_a[1]=='no':
                     student_a.attend['yes']=''
                     student_a.attend['no']='checked'
+                else:
+                    student_a.attend['yes']=''
+                    student_a.attend['no']=''
                 students_attend.append(student_a)
             return render_template ('attendance.html', log=log, admin_dict=admin_dict, students_attend=students_attend, jinja=jinja, dates_dict='', course_dict='', course_dates_dict='')
     else:   
@@ -730,11 +737,14 @@ def attendance_chosen_date(course_id):
             student_a.name=f"{crud.student_name(s_a[0])}:"
             student_a.attend={}
             if s_a[1]=='yes':
-                student_a.attend['yes']='checked'
-                student_a.attend['no']=''
-            else:
+                    student_a.attend['yes']='checked'
+                    student_a.attend['no']=''
+            elif s_a[1]=='no':
                 student_a.attend['yes']=''
                 student_a.attend['no']='checked'
+            else:
+                student_a.attend['yes']=''
+                student_a.attend['no']=''
             students_attend.append(student_a)
         dates_dict={}
         dates_dict['form']=['create']
@@ -815,7 +825,6 @@ def students_attendance(student_id):
     else:
         return render_template('attendance.html',log=log, admin_dict=admin_dict, jinja='', form=form, dates_dict='' ,courses=courses, course_dict=course_dict, course_dates_dict='' )  
     
-
 @app.route('/student_profile/<student_id>', methods=['get', 'post'])
 def student_profile(student_id):
     log=check_log()

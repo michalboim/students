@@ -63,7 +63,7 @@ def create_tables():
         id INTEGER PRIMARY KEY,
         student_id INTEGER,
         course_id INTEGER,
-        grade INTEGER,
+        grade INTEGER DEFAULT "unknown",
         UNIQUE (student_id, course_id),
         FOREIGN KEY (student_id) REFERENCES students (id),
         FOREIGN KEY (course_id) REFERENCES courses (id)
@@ -75,7 +75,7 @@ def create_tables():
         student_id INTEGER,
         course_id INTEGER,
         date TEXT,
-        attendance TEXT,
+        attendance TEXT DEFAULT "unknown",
         UNIQUE (student_id, course_id, date),
         FOREIGN KEY (student_id) REFERENCES students (id),
         FOREIGN KEY (course_id) REFERENCES courses (id)
