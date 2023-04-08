@@ -272,11 +272,6 @@ def chosen_course_update(course_id):
     else:
         return render_template('update_courses.html', log=log, admin_dict=admin_dict, form='', form2=form2 ,chosen_course=chosen_course, teacher_info=teacher_info) 
 
-@app.route('/delete_course/<course_id>')
-def course_delete(course_id):
-    #crud.delete('courses', 'id', course_id)
-    return redirect(url_for('course_info', course_id=course_id))
-
 @app.route('/course_registration', methods=['GET', 'POST'])
 def course_registrationt():
     log=check_log()
@@ -379,7 +374,7 @@ def attendance_student(student_id): # View attendance for a specific student
             name=crud.course_name(c[0])
             course_name=[c[0],name]
             courses_names.append(course_name)
-    student_attend['student_name']=f"{crud.student_name(student_id)} courses:"        
+    student_attend['student_name']=f"{crud.student_name(student_id)} attendance"        
     student_attend['form1']=['create']
     student_attend['form2']=[]   
     student_attend['course_list']=courses_names
@@ -387,24 +382,26 @@ def attendance_student(student_id): # View attendance for a specific student
         student_attend['form1']=['create']
         student_attend['form2']=['create']
         if 'form1' in request.form:
-            course_id=request.form['course_select']
-            student_attend['course_id']=course_id
-            course_dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
+            student_attend['course_id']=request.form['course_select']
+            course_dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', request.form['course_select'])
             if len(course_dates)==0:
-                student_attend['course_name']=f'No lessons were found in the system for {crud.course_name(course_id)}'
+                student_attend['course_name']=f"No lessons were found in the system for {crud.course_name(request.form['course_select'])} course"
                 student_attend['form2']=[]
             else:
-                student_attend['course_name']=f'{crud.course_name(course_id)} dates:'
+                student_attend['course_name']=f"Choose a lesson for {crud.course_name(request.form['course_select'])}:"
                 student_attend['course_dates']=course_dates
+                attend=crud.read_three_if('date','students_attendance', 'student_id', student_id, 'course_id', request.form['course_select'], 'attendance', 'yes')
+                student_attend['average_attend']=f"attendance average in {crud.course_name(request.form['course_select'])} course: {round(len(attend)*100/len(course_dates))}%"
             return render_template('admin_students.html', log=log, admin_dict=admin_dict, student_object='', student_attend=student_attend, student_dict='')
         elif 'form2' in request.form:
-            chosen_course_id=request.form['chosen_course_id']
-            student_attend['course_id']=chosen_course_id
-            course_dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', chosen_course_id)
-            student_attend['course_dates']=course_dates            
+            student_attend['course_id']=request.form['chosen_course_id']
+            course_dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', request.form['chosen_course_id'])
+            student_attend['course_dates']=course_dates
+            attend=crud.read_three_if('date','students_attendance', 'student_id', student_id, 'course_id', student_attend['course_id'], 'attendance', 'yes')
+            student_attend['average_attend']=f"attendance average in {crud.course_name(student_attend['course_id'])} course: {round(len(attend)*100/len(course_dates))}%"            
             date=request.form['date_select']
-            student_attend['course_name']=f'{crud.course_name(chosen_course_id)} dates:'
-            student_answer=crud.read_three_if('attendance','students_attendance', 'student_id', student_id, 'course_id', chosen_course_id, 'date', date)
+            student_attend['course_name']=f"Choose a lesson for {crud.course_name(request.form['chosen_course_id'])}:"
+            student_answer=crud.read_three_if('attendance','students_attendance', 'student_id', student_id, 'course_id', request.form['chosen_course_id'], 'date', date)
             if student_answer[0][0]=='yes':
                 student_attend['answer']=f'The student attended in {date} lesson'
             elif student_answer[0][0]=='no':

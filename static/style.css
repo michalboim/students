@@ -510,7 +510,22 @@
     grid-column: 1;
     grid-row: 2;
 }
-
+.student_courses{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: large;
+    font-weight: bold;
+}
+.student_average_attend{
+    margin-bottom: 10px;
+    font-size: larger;
+}
+.student_attend_answer{
+    font-size: large;
+    font-weight: 5px;
+    margin-top: 10px;
+}
 /*add_student*/
 .main_students{
     grid-column: 2;
