@@ -77,16 +77,16 @@
     grid-column: 3;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 }
 .info_more_links>a{
     text-decoration: none;
-    color: black;
-    border-style: solid;
-    border-width: 1px;
+
+    border-width: 0.5px;
     padding: 1px 3px 1px 2px;
     background-color: rgb(233, 229, 229);
-    width: max-content;
+    font-size:small;
+    width: 100px;
     text-align: center;
 }
 /*admin_courses*/
@@ -146,8 +146,7 @@
     grid-column: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    font-size: larger;    
+    gap: 10px; 
 }
 .title_course{
     font-size: large;
@@ -166,12 +165,12 @@
     display: grid;
     grid-template-columns: max-content max-content;
     grid-template-rows: max-content max-content max-content max-content max-content ;
-    font-size: larger;
 }
 .title_student_name{
     grid-column: 1;
     grid-row: 2;
     border-bottom: solid black 1px;
+    font-weight: bold;
 }
 .title_course_grade{
     grid-column: 2;
@@ -179,6 +178,7 @@
     padding-left: 5px;
     border-bottom: solid black 1px;
     border-left: solid black 1px;
+    font-weight: bold;
 }
 .course_student_name{
     grid-column: 1;
@@ -283,6 +283,13 @@
                 .unknown_students{
                     padding-left: 10px;
                     padding-right: 10px;                    
+                }
+
+                /*update course attendance*/
+                .update_attend{
+                    display: flex;
+                    flex-direction: column;
+                    gap:15px;
                 }
 /*add_course*/
 .main_add_courses{
