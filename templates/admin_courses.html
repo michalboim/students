@@ -83,7 +83,7 @@
             <div class= "title_info_course">
                 <div class="info_course_name">{{course.name}}</div>
             </div>     
-            {% endfor %}
+        {% endfor %}
             <div class="main_course_detail">
                 <div class="basic_course_info" >
                     {% for course in course_object %}
@@ -109,18 +109,21 @@
                         {% for student in course_dict.students %}
                         <div class="">{{student.grade}}</div>
                         {% endfor %}                    
-                    </div> 
+                    </div>
+                    <div class="no_lesson">{{course_dict.no_lesson}}</div>
+
                     <div class="no_course_students">{{course_dict.no_students}}</div>
                 </div>
             </div>
         </div>
     </div>  
     <div class="info_more_links">
-    {% for l in course_dict.link %}
+    {% for l in course_dict.link1 %}
         <a href="/chosen_course/{{course_dict.id}}">Update</a>
     {% endfor %}
-    {% for l in course_dict.form %}
-        <a href="/attendance_course/{{course_dict.id}}">Check Attendance</a>         
+    {% for l in course_dict.link2 %}
+        <a href="/attendance_course/{{course_dict.id}}">Check Attendance</a>
+        <a href="/update_course_attendance/{{course_dict.id}}">Update Attendance</a>           
     {% endfor %} 
     </div>        
 </div>

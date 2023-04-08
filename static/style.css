@@ -165,8 +165,8 @@
     grid-column: 2;
     display: grid;
     grid-template-columns: max-content max-content;
-    grid-template-rows: max-content max-content max-content;
-    font-size: larger; 
+    grid-template-rows: max-content max-content max-content max-content max-content ;
+    font-size: larger;
 }
 .title_student_name{
     grid-column: 1;
@@ -199,11 +199,18 @@
 .course_grade{
     grid-column: 2;
     grid-row: 3;
+
 }
 .course_grade>div{
     border-left: solid black 1px;
     padding-left: 15px;
     padding-bottom: 5px;
+}
+.no_lesson{
+    grid-column:span 2;
+    grid-row: 4;
+    margin-top: 20px;
+    font-weight: bold;   
 }
 .no_course_students{
     grid-column: 1;
