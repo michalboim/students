@@ -5,7 +5,7 @@ import classes
 import crud
 from functions import create_courses_objects, create_students_objects, create_teachers_objects, courses_teachers, authenticate
 from collections import namedtuple
-import datetime
+import datetime, statistics
 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
@@ -170,12 +170,23 @@ def attendance_course(course_id): # View attendance for a specific course
     dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
     if len(dates)==0:
         course_attend['chose_date']=['No lesson found in the system']
-        course_attend['dates']=''
-        course_attend['select']=[]
     else:
         course_attend['chose_date']=['Choose a lesson:']
         course_attend['dates']=dates
         course_attend['select']=['create']
+        average_attend=[]
+        average_not_attend=[]
+        average_unknown=[]
+        attend=crud.read_if('student_id, date, attendance', 'students_attendance', 'course_id', course_id)
+        for a in attend:
+            if a[2]=='yes':
+                average_attend.append(a)
+            if a[2]=='no':
+                average_not_attend.append(a)
+            if a[2]=='unknown':
+                average_unknown.append(a)
+        course_attend['average_attend']=f"Course attendance average:  {round(len(average_attend)*100/(len(average_attend)+len(average_not_attend)))}%"
+        course_attend['average_note']='*Excludes students with unknown status'
     if request.method=='GET':
         return render_template ('admin_courses.html', log=log, admin_dict=admin_dict, course_attend=course_attend, course_dict='')
     else:
@@ -184,18 +195,17 @@ def attendance_course(course_id): # View attendance for a specific course
         course_attend['yes_title']='Students who ATTENDED the class:'
         course_attend['no_title']='Students who DID NOT attend the class:'
         course_attend['unknown_title']='Unknown:'
-        studens_ids=crud.read_two_if('student_id, attendance', 'students_attendance', 'course_id', course_id, 'date', request.form['chosen_date'],)
         course_attend['attend']=[]
         course_attend['not_attend']=[]
         course_attend['unknown']=[]
-        for student in studens_ids:
-            if student[1]=='yes':
+        for student in attend:
+            if student[1]==request.form['chosen_date'] and student[2]=='yes': 
                 s=(student[0],crud.student_name(student[0]))
                 course_attend['attend'].append(s)
-            if student[1]=='no':
+            if student[1]==request.form['chosen_date'] and student[2]=='no':
                 s=(student[0],crud.student_name(student[0]))
                 course_attend['not_attend'].append(s)
-            if student[1]=='unknown':
+            if student[1]==request.form['chosen_date'] and student[2]=='unknown':
                 s=(student[0],crud.student_name(student[0]))
                 course_attend['unknown'].append(s)
         if len(course_attend['attend'])==0:
@@ -205,8 +215,7 @@ def attendance_course(course_id): # View attendance for a specific course
         if len(course_attend['unknown'])==0:
             course_attend['unknown']=[['','No students found']]        
         return render_template ('admin_courses.html', log=log, admin_dict=admin_dict, course_attend=course_attend, course_dict='')
-def course_attend_average(course_id):
-    return 'hello'
+
 
 @app.route('/add_course', methods=['GET','POST'])
 def add_course():

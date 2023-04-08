@@ -34,10 +34,11 @@
         <div class="dates_list_attend" >              
             {% for chose in course_attend.chose_date %}
             <div class="info_course_name">{{course_attend.course_name}}</div>
-            <div class="course_attend">
-                <div class="date">{{course_attend.chose_date[0]}}</div>
-                <div class="course_attend_average">%</div>
+            <div class="average_course_attend">
+                <div class="date_attend">{{course_attend.average_attend}}</div>
+                <div class="average_course_attend_note">{{course_attend.average_note}}</div>
             </div>
+                <div class="date_attend">{{course_attend.chose_date[0]}}</div>
             <div>           
                  <form class="form_select_attend" action="", method="post" >            
                      {% for chose in course_attend.select %}

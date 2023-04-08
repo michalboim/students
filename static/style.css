@@ -137,7 +137,6 @@
     font-weight:bolder;
     text-decoration: underline;
 }
-
 .main_course_detail{
     display: grid;
     grid-template-columns: max-content max-content;
@@ -214,11 +213,19 @@
                 .dates_list_attend{
                     display: flex;
                     flex-direction: column;
-                    gap:10px;
+                    gap:15px;
                 }
-                .course_attend{
+                .average_course_attend{
                     display: flex;
-                    justify-content: space-between;
+                    flex-direction: column;
+                    gap: 5px;
+                }
+                .average_course_attend_note{
+                    font-size: smaller;
+                }
+                .date_attend{
+                    font-weight: bold;
+                    font-size: larger;
                 }
                 .chosen_date_attend{
                     font-size: large;
