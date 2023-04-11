@@ -68,7 +68,7 @@
 /*admin*/
 .admin_pages{
     display: grid;
-    grid-template-columns: max-content max-content max-content;
+    grid-template-columns: max-content 600px max-content;
     gap: 70px;
     margin-top: 20px;
     margin-left: 20px;
@@ -80,9 +80,12 @@
     gap: 5px;
 }
 .info_more_links>a{
+    color: black;
     text-decoration: none;
-
     border-width: 0.5px;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: gray;
     padding: 1px 3px 1px 2px;
     background-color: rgb(233, 229, 229);
     font-size:small;
@@ -248,8 +251,7 @@
                     display: flex;
                     flex-direction: column;
                     gap: 5px;
-                    border-right: solid black 1px;
-                    
+                    border-right: solid black 1px;  
                 }
                 .yes_title{
                     border-bottom: solid black 1px;
@@ -286,11 +288,45 @@
                 }
 
                 /*update course attendance*/
-                .update_attend{
+                .update_course_attend{
                     display: flex;
                     flex-direction: column;
                     gap:15px;
                 }
+                .course_lessons{
+                    display: flex;
+                    gap: 10px;
+                }
+                .course_lessons>a{
+                    color: black;
+                    text-decoration: none;
+                    border-width: 0.5px;
+                    border-style: solid;
+                    border-radius: 3px;
+                    border-color: black;
+                    padding: 1px 3px 1px 2px;
+                    background-color: rgb(248, 242, 242);
+                    width: max-content;
+                    text-align: center;
+                }
+                .atten_details{
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;          
+                }
+                .student_atten>*{
+                    display: flex;
+                }
+                .update_name_attend{
+                    width:200px;
+                    margin-left: 30px;  
+                }
+                .answer_update{
+                    display: flex;
+                    width: 150px;
+                    justify-content: space-between;
+                }
+                
 /*add_course*/
 .main_add_courses{
     display: flex;

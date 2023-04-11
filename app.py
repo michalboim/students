@@ -235,8 +235,8 @@ def attendance_course(course_id): # View attendance for a specific course
             course_attend['unknown']=[['','No students found']]        
         return render_template ('admin_courses.html', log=log, admin_dict=admin_dict, course_attend=course_attend, course_dict=course_dict, attend_update='', attend_date_update='')
 
-@app.route('/update_course_attendance/<course_id>') #methods=['get','post'])
-def update_course_attendance(course_id):
+@app.route('/update_course_attendance/<course_id>') 
+def update_course_attendance(course_id): # chose lesson date to update attendance
     log=check_log()
     admin_dict=chek_admin()
     course_dict={}
@@ -250,7 +250,6 @@ def update_course_attendance(course_id):
     dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
     attend_update['chose_date']=['Choose a lesson:']
     attend_update['dates']=dates
-    #attend_update['select']=['create']
     return render_template('admin_courses.html', log=log, admin_dict=admin_dict, course_attend='', course_dict=course_dict, attend_update=attend_update, attend_date_update='')
                  
 @app.route('//update_course_date_attendance/course_id=<course_id>date=<date>', methods=['get','post'])
@@ -268,8 +267,8 @@ def update_course_date_attendance(course_id, date):
     dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
     attend_update['chose_date']=['Choose a lesson:']
     attend_update['dates']=dates
-    #attend_update['select']=['create']
     attend_date_update={}
+    attend_date_update['select']=['create']
     attend_date_update['title_date']=f"Attendance for {date}:"
     if request.method=='GET':
         current_attend=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', date)
