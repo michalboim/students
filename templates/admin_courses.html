@@ -81,24 +81,15 @@
         <div class="update_attend">
         {% for chose in attend_update.chose_date %}
             <div class="info_course_name">{{attend_update.course_name}}</div>
-            <div class="date_attend">{{attend_update.chose_date[0]}}        
-                <form class="form_select_attend" action="", method="post" >            
-                    {% for chose in attend_update.select %}
-                        <select name="chosen_date" id="">
-                            {% for date in attend_update.dates %}
-                                <option value="{{date[0]}}">{{date[0]}}</option>
-                            {% endfor %}
-                        </select>
-                    {% endfor %}
-                    {% for chose in attend_update.select %}
-                        <input type="hidden" name="coourse_id" value="{{attend_update.id}}">
-                        <input name="form1" type="submit" name="" id="" value="Select">
-                    {% endfor %}
-                </form>
+            <div class="date_attend">{{attend_update.chose_date[0]}}</div>      
+            <div>
+                {% for date in attend_update.dates %}
+                    <a href="/update_course_date_attendance/course_id={{attend_update.id}}date={{date[0]}}">{{date[0]}}</a>
+                {% endfor %}
             </div>
-            <div class="date_attend">{{attend_update.chosen_date}}</div>
-            <div class="students" >
-                {% for student in attend_update.students_attend %}
+            <div class="date_attend">{{attend_date_update.title_date}}</div>
+            <div class="students">
+                {% for student in attend_date_update.students_attend %}
                 <div class="student_atten">
                     <form  class="atten_details" method="post">
                         <div class="student_name_attend">{{student.name}}</div>
@@ -106,14 +97,13 @@
                             <div>Yes<input type="radio" name="attendance" id="" value="yes" {{student.attend.yes}}></div>
                             <div>No<input type="radio" name="attendance" id="" value="no" {{student.attend.no}}></div>
                             <div><input name="form2" type="submit" value="Set"></div> 
-                            <input type="hidden" name="student_id" value="{{student.id}}">
-                            <input type="hidden" name="date" value="{{attend_update.date}}">
+                            <input type="hidden" name="student_id" value="{{student.id}}"> 
+                            <!-- <input type="hidden" name="chosen_date" value="{{attend_date_update.date}}">  -->
                         </div>
                     </form>
                 </div>
                 {% endfor %}
             </div>
-
         {% endfor %}
         </div> 
         {% for c in course_dict.course %}
