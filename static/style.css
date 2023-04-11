@@ -246,9 +246,23 @@
                     font-weight: bold;
                     text-align: center;
                 }
+                .chosen_date_attend>a{
+                    color:black
+                }
+                .chosen_date_attend>a:hover{
+                    background-color: rgb(209, 206, 206);
+                    width: max-content;
+                }
                 .chosen_attend_attend{
                     display: grid;
                     grid-template-columns: max-content max-content max-content;
+                }
+                .chosen_attend_attend>a{
+                    color:black
+                }
+                .chosen_attend_attend>a:hover{
+                    background-color: rgb(209, 206, 206);
+                    width: max-content;
                 }
                 .yes{
                     grid-column: 1;
@@ -289,6 +303,10 @@
                 .unknown_students{
                     padding-left: 10px;
                     padding-right: 10px;                    
+                }
+                .answer_attend{
+                    color: black;
+                    text-decoration: none;
                 }
 
                 /*update course attendance*/

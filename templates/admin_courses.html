@@ -54,25 +54,33 @@
                     </form>
                 </div> 
             {% endfor %}
-            <div class="chosen_date_attend">{{course_attend.chosen_date}}</div>
+            <div class="chosen_date_attend">
+                <a href="/update_course_date_attendance/course_id={{course_attend.course_id}}date={{course_attend.date}}">{{course_attend.chosen_date}}</a>
+            </div>
             {% for f in course_attend.form %}
             <div class="chosen_attend_attend">
                 <div class="yes">
                     <div class="yes_title" >{{course_attend.yes_title}}</div>
                     {% for name in course_attend.attend %}
-                    <div>{{name[1]}}</div>
+                    <div >
+                        <a class="answer_attend" href="{{name[0]}}">{{name[1]}}</a>
+                    </div>
                     {% endfor %}
                 </div>
                 <div class="no">
                     <div class="no_title" >{{course_attend.no_title}}</div>
                     {% for name in course_attend.not_attend %}
-                        <div class="no_students">{{name[1]}}</div>
+                        <div class="no_students">
+                            <a class="answer_attend" href="{{name[0]}}">{{name[1]}}</a>
+                        </div>
                     {% endfor %}
                 </div>
                 <div class="unknown">
                     <div class="unknown_title" >{{course_attend.unknown_title}}</div>
                     {% for name in course_attend.unknown %}
-                        <div class="unknown_students">{{name[1]}}</div>
+                        <div class="unknown_students">
+                            <a class="answer_attend" href="{{name[0]}}">{{name[1]}}</a>
+                        </div>
                     {% endfor %}
                 </div>
              </div>

@@ -41,6 +41,11 @@
                 {% endfor %}
             </div>
             <div class="student_average_attend">{{student_attend.average_attend}}</div>
+            {% for lesson in student_attend.lesson_info %}
+                <div>{{lesson.date}}</div>
+                <div>{{lesson.c_id}}</div>
+                <div>{{lesson.attend}}</div>
+            {% endfor %}
             <div class="course_dates" >
                 <div>{{student_attend.course_name}}</div>
                 <div>
