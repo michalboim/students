@@ -143,7 +143,10 @@
 .info_course_name{
     font-size:x-large;
     font-weight:bolder;
-    text-decoration: underline;
+    text-decoration: underline;    
+}
+.info_course_name>a{
+    color: black;
 }
 .main_course_detail{
     display: grid;
@@ -457,6 +460,10 @@
     flex-direction: column;
     gap: 10px;
 }
+.title_regist{
+    text-decoration: underline;
+    font-weight: bold;
+}
 .choose_student{
     display: flex;
     flex-direction: column;
@@ -510,6 +517,9 @@
     font-size:x-large;
     font-weight:bolder;
     text-decoration: underline;
+}
+.info_student_name>a{
+    color: black;
 }
 .main_student_detail{
     display: grid;
@@ -692,6 +702,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+.title_regist{
+    text-decoration: underline;
+    font-weight: bold;
 }
 .choose_course{
     display: flex;

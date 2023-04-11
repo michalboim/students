@@ -452,6 +452,7 @@ def attendance_student(student_id): # View attendance for a specific student
     student_dict['link1']=['create']
     student_dict['link2']=[]
     student_dict['link3']=['create']
+    student_dict['id']=student_id
     student_attend={}
     student_attend['student_id']=student_id
     courses=crud.read_if('course_id', 'students_courses', 'student_id', student_id)
@@ -479,7 +480,7 @@ def attendance_student(student_id): # View attendance for a specific student
                     student_attend['average_attend']=f"attendance average in {crud.course_name(request.form['course_select'])} course: {round(len(attend)*100/len(course_dates))}%"
                 except:
                     student_attend['average_attend']='No record was found in the system for student attendance or non-attendance'
-                student_attend['average_note']='*Excludes students with udnknown status'
+                student_attend['average_note']='*Excludes lessons with udnknown status'
                 student_attend['table_title']=f"Dates and attendance at {crud.course_name(request.form['course_select'])} course:"
                 student_attend['date_title']='Dates'
                 student_attend['attend_title']='Attendance'
