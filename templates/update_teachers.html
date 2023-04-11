@@ -30,5 +30,12 @@
             </form>
             <div class="note">{{note}}</div>    
         </div>
+    </div>
+    <div class="info_more_links">
+        {% for l in teacher_dict.link %}
+        <div>
+            <a href="/chosen_teacher/{{teacher_dict.id}}">Update</a>
+        </div>           
+        {% endfor %}
     </div> 
 </div>

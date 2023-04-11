@@ -1,7 +1,7 @@
 
 {% include "admin_nav_courses.html" %}
     
-    <div class="admin_courses_main">
+    <div class="admin_courses_main">        
         <div class="main_course_search">
             <div class="course_search">
                 {% for f in form %}
@@ -140,14 +140,20 @@
         {% endfor %}
     </div>  
     <div class="info_more_links">
-    {% for l in course_dict.link1 %}
-        <a href="/chosen_course/{{course_dict.id}}">Update course</a>
-    {% endfor %}
-    {% for l in course_dict.link2 %}
-        <a href="/attendance_course/{{course_dict.id}}">Check Attendance</a>
-    {% endfor %}
-    {% for l in course_dict.link3 %}
-        <a href="/update_course_attendance/{{course_dict.id}}">Update Attendance</a>           
-    {% endfor %} 
-    </div>        
+        {% for l in course_dict.link1 %}
+        <div>
+            <a href="/chosen_course/{{course_dict.id}}">Update course</a>
+        {% endfor %}
+        </div>
+        <div>
+        {% for l in course_dict.link2 %}
+            <a href="/attendance_course/{{course_dict.id}}">Check Attendance</a>
+        {% endfor %}
+        </div>
+        <div>
+        {% for l in course_dict.link3 %}
+            <a href="/update_course_attendance/{{course_dict.id}}">Update Attendance</a>           
+        {% endfor %} 
+        </div>
+    </div>  
 </div>

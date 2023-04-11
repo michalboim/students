@@ -11,8 +11,8 @@ function User(){
         , [] 
         )
         return (
-            <div>
-                <h4>Hello {user}- what do you want to do?</h4> 
+            <div class='hello_admin'>
+                Hello {user}- what do you want to do?
             </div>
         );
 }
