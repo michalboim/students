@@ -529,6 +529,7 @@
 .info_student_courses{
     grid-column: 2;
     display: grid;
+    align-self: center;
     grid-template-columns: max-content max-content;
     grid-template-rows: max-content max-content max-content;
 }
@@ -578,13 +579,11 @@
 .student_courses{
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    font-size: large;
-    font-weight: bold;
+    gap: 20px;
 }
 .student_average_attend{
     margin-bottom: 10px;
-    font-size: larger;
+    font-size: large;
 }
 .student_attend_answer{
     font-size: large;
@@ -913,7 +912,7 @@
         .student_courses{
             display: flex;
             flex-direction: column;
-            gap: 10px;
+
         }
         .course_dates{
             display: flex;

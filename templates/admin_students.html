@@ -40,16 +40,41 @@
                     </form>
                 {% endfor %}
             </div>
-            <div class="student_average_attend">{{student_attend.average_attend}}</div>
+            <div class="average_course_attend">
+                <div class="date_attend">{{student_attend.average_attend}}</div>
+                <div class="average_course_attend_note">{{student_attend.average_note}}</div>
+            </div>
+            <div class="title_student" >{{student_attend.table_title}}</div>
+            <div class="info_student_courses">
+                
+                {% for form in student_attend.form2 %}
+                    <div class="title_course_name">{{student_attend.date_title}}</div>
+                    <div class="title_student_grade">{{student_attend.attend_title}}</div>
+                {% endfor %}
+                <div class="student_course_name">
+                    {% for lesson in student_attend.lesson_info %}
+                    <div><a href="">{{lesson.date}}</a></div>
+                    {% endfor %}
+                </div>
+                <div class="student_grade">
+                    {% for lesson in student_attend.lesson_info %}
+                    <div class="">{{lesson.attend}}</div>
+                    {% endfor %}                    
+                </div> 
+
+            </div>
+
+
             {% for lesson in student_attend.lesson_info %}
-                <div>{{lesson.date}}</div>
+
                 <div>{{lesson.c_id}}</div>
-                <div>{{lesson.attend}}</div>
+         
             {% endfor %}
+            </div>
             <div class="course_dates" >
-                <div>{{student_attend.course_name}}</div>
+                <div></div>
                 <div>
-                    {% for form in student_attend.form2 %}
+                    {% for form in student_attend.form3 %}
                         <form action="" method="post">
                             <select name="date_select" id="">
                                 {% for date in student_attend.course_dates %}
@@ -63,13 +88,12 @@
                 </div>
                 <div class="student_attend_answer">{{student_attend.answer}}</div>
             </div>
-        </div>  
-        <div class="main_student_info">
-            {% for student in student_object %}
+        
+        {% for student in student_object %}  
+        <div class="main_student_info">           
             <div class="title_info_student">
                 <div class="info_student_name">{{student.name}}</div>       
-            </div>
-            {% endfor %}
+            </div>            
             <div class="main_course_detail">
                 <div class="basic_course_info" >
                     {% for student in student_object %}
@@ -97,6 +121,7 @@
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
     <div class="info_more_links">
         {% for l in student_dict.link1 %}
