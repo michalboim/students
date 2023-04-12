@@ -38,7 +38,7 @@
                             <option value="{{course[0]}}">{{course[1]}}</option>
                             {% endfor %}
                         </select>
-                        <input name="form1" type="submit" value="Select">
+                        <input type="submit" value="Select">
                     </form>
                 {% endfor %}
             </div>
@@ -46,16 +46,17 @@
                 <div class="date_attend">{{student_attend.average_attend}}</div>
                 <div class="average_course_attend_note">{{student_attend.average_note}}</div>
             </div>
-            <div class="title_student" >{{student_attend.table_title}}</div>
-            <div class="info_student_courses">
-                
+            <div class="title_student" >
+                <a href="/course_info/{{student_attend.course_id}}">{{student_attend.table_title}}</a>
+            </div>
+            <div class="info_student_courses">              
                 {% for form in student_attend.form2 %}
                     <div class="title_course_name">{{student_attend.date_title}}</div>
                     <div class="title_student_grade">{{student_attend.attend_title}}</div>
                 {% endfor %}
                 <div class="student_course_name">
                     {% for lesson in student_attend.lesson_info %}
-                    <div><a href="">{{lesson.date}}</a></div>
+                    <div><a href="/update_student_course_attendance/student_id={{student_dict.id}}course={{lesson.c_id}}">{{lesson.date}}</a></div>
                     {% endfor %}
                 </div>
                 <div class="student_grade">
@@ -63,34 +64,39 @@
                     <div class="">{{lesson.attend}}</div>
                     {% endfor %}                    
                 </div> 
-
             </div>
-
-
-            {% for lesson in student_attend.lesson_info %}
-
-                <div>{{lesson.c_id}}</div>
-         
-            {% endfor %}
+        </div>
+        <div class="update_course_attend">
+        {% for chose in student_attend.courses_title %}
+            <div class="info_course_name">
+                <a href="/student_info/{{student_dict.id}}">{{student_attend.update_title}}</a>
             </div>
-            <div class="course_dates" >
-                <div></div>
-                <div>
-                    {% for form in student_attend.form3 %}
-                        <form action="" method="post">
-                            <select name="date_select" id="">
-                                {% for date in student_attend.course_dates %}
-                                <option value="{{date[0]}}">{{date[0]}}</option>
-                                {% endfor %}
-                            </select>
-                            <input type="hidden" name="chosen_course_id" value="{{student_attend.course_id}}">
-                            <input name="form2" type="submit" value="Select">
-                        </form>
-                    {% endfor %}
+            <div class="date_attend">{{student_attend.courses_title[0]}}</div>      
+            <div class="choosing_course">
+                {% for course in student_attend.courses %}
+                    <a href="/update_student_course_attendance/student_id={{student_dict.id}}course={{course[0]}}">{{course[1]}}</a>
+                {% endfor %}
+            </div>
+            <div class="date_attend">
+                <a href="/course_info/student_attend.course_id">{{student_attend.attend_title}}</a>
+            </div>
+            <div class="atten_details">
+                {% for date in student_attend.date_attend %}
+                <div class="student_atten">
+                    <form method="post">
+                        <div class="update_name_attend">{{date.date}}</div>
+                        <div class="answer_update"> 
+                            <div>Yes<input type="radio" name="attendance" id="" value="yes" {{date.attend.yes}}></div>
+                            <div>No<input type="radio" name="attendance" id="" value="no" {{date.attend.no}}></div>
+                            <div><input name="form2" type="submit" value="Set"></div> 
+                            <input type="hidden" name="date" value="{{date.date}}"> 
+                        </div>
+                    </form>
                 </div>
-                <div class="student_attend_answer">{{student_attend.answer}}</div>
+                {% endfor %}
             </div>
-        
+        {% endfor %}
+        </div>        
         {% for student in student_object %}  
         <div class="main_student_info">           
             <div class="title_info_student">

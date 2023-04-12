@@ -16,4 +16,4 @@ function User(){
             </div>
         );
 }
-ReactDOM.render(<User/>, document.getElementById('hello'))
+ReactDOM.render(<User/>, document.getElementById('helloAdmin'))
