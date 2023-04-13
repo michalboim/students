@@ -26,7 +26,7 @@ def create_tables():
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        phone TEXT
+        phone TEXT UNIQUE
         ) 
     """) 
     query("""
@@ -34,7 +34,7 @@ def create_tables():
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        phone TEXT
+        phone TEXT UNIQUE
         )
     """)
     query("""

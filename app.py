@@ -546,9 +546,7 @@ def update_student_course_attendance(student_id, course_id): # update attendance
     else:
         date=request.form['date']
         crud.update_three_if('students_attendance', 'attendance', f"'{request.form['attendance']}'", 'student_id', student_id, 'course_id', course_id, 'date', request.form['date'])        
-        return redirect(url_for('update_student_course_attendance', student_id=student_id, course_id=course_id))
-        
-        
+        return redirect(url_for('update_student_course_attendance', student_id=student_id, course_id=course_id))        
         
 @app.route('/add_student', methods=['POST','GET'])
 def add_student():
@@ -594,11 +592,20 @@ def chosen_student_update(student_id):
         name=request.form['name'].title()
         email=request.form['email']
         phone=request.form['phone']
-        try:
-            crud.update_if('students', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', student_id)
-        except:
-          return render_template('update_students.html', log=log, admin_dict=admin_dict, student_dict='', title='Edit the Changes:', student_object=student_object, note="Email or Mobile number already exists")  
-        return redirect(url_for('student_info', student_id=student_id))
+        if student_object[0].name!=name:
+            crud.update_if('students', 'name', f"'{name}'", 'id', student_id)
+        if student_object[0].email!=email:
+            try:
+                crud.update_if('users', 'student_user', f"'{email}'", 'student_user', student_object[0].email)
+                crud.update_if('students', 'email', f"'{email}'",'id', student_id)
+            except:
+                return render_template('update_students.html', log=log, admin_dict=admin_dict, student_dict='', title='Edit the Changes:', student_object=student_object, note="Email already exists")  
+        if student_object[0].phone!=phone:
+            try:
+                crud.update_if('students', 'phone', f"'{phone}'",'id', student_id)
+            except:
+                return render_template('update_students.html', log=log, admin_dict=admin_dict, student_dict='', title='Edit the Changes:', student_object=student_object, note="Mobile number already exists")  
+        return redirect(url_for('student_info', student_id=student_id)) 
     else:
         return render_template('update_students.html', log=log, admin_dict=admin_dict, student_dict='', title='Edit the Changes:', student_object=student_object) 
 
@@ -741,10 +748,19 @@ def chosen_teacher_update(teacher_id):
         name=request.form['name'].title()
         email=request.form['email']
         phone=request.form['phone']
-        try:
-            crud.update_if('teachers', 'name, email, phone', f"'{name}', '{email}', '{phone}'",'id', teacher_id)
-        except:
-            return render_template('update_teachers.html', log=log, admin_dict=admin_dict, teacher_dict='', title='Edit the Changes:' ,teacher_object=teacher_object, note="Email or Mobile number already exists")
+        if teacher_object[0].name!=name:
+                crud.update_if('teachers', 'name', f"'{name}'", 'id', teacher_id)
+        if teacher_object[0].email!=email:
+            try:
+                crud.update_if('users', 'teacher_user', f"'{email}'", 'teacher_user', teacher_object[0].email)
+                crud.update_if('teachers', 'email', f"'{email}'",'id', teacher_id)
+            except:
+                return render_template('update_teachers.html', log=log, admin_dict=admin_dict, teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Email already exists")  
+        if teacher_object[0].phone!=phone:
+            try:
+                crud.update_if('teachers', 'phone', f"'{phone}'",'id', teacher_id)
+            except:
+                return render_template('update_teachers.html', log=log, admin_dict=admin_dict, teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Mobile number already exists")  
         return redirect(url_for('teacher_info', teacher_id=teacher_id))
     else:
         return render_template('update_teachers.html', log=log, admin_dict=admin_dict, teacher_dict='', title='Edit the Changes:' ,teacher_object=teacher_object) 
