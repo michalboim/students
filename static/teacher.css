@@ -74,3 +74,7 @@
     width: max-content;
     background-color: rgb(233, 229, 229);
 }
+.course_information{
+    display: flex;
+    gap: 15px;
+}

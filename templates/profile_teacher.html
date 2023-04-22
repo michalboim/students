@@ -15,6 +15,16 @@
             {% endfor %}
             <div>{{jinja.no_courses}}</div>
         </div>
+        <div class="course_information">
+        {% for course in jinja.course_info %}
+            <div>{{course.name}}:</div>
+            <div>{{course.start}}</div>
+            <div>{{course.day}}</div>
+            <div>{{course.time}}</div>
+            <div><a href="">Attendance</a></div>
+            <div><a href="">Update grade</a></div>
+        {% endfor %}
+        </div>
     </div>
     {% endfor %}
     {% for form in jinja.form %}

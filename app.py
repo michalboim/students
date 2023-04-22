@@ -1084,6 +1084,8 @@ def teacher_course_info(teacher_id,course_id):
     jinja['link']=['create']
     jinja['id']=teacher_id
     jinja['courses']=crud.read_if('id, name', 'courses', 'teacher_id', teacher_id)
+    course=crud.read_if('*', 'courses', 'id', course_id)
+    jinja['course_info']=create_courses_objects(course)
     return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)
 
 @app.route('/messages')
