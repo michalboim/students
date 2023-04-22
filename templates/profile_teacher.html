@@ -1,5 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 <script type="text/babel" src="/static/teacher.js"></script>
-<div id="teacher"></div>
+<div class="main_teacher_prfile">
+    <div class="teacher_profile">
+        <div id="{{jinja.js}}"></div>
+        <div><a href="{{jinja.update_link}}">{{jinja.update_word}}</a></div>
+    </div>
+    <div class="teacher_information">
+        {% for form in jinja.form %}
+            <form action="" method="post">
+                {% for teacher in jinja.teacher %}
+                    Edit Email: <input type="email" name="email" value="{{teacher.email}}"  title="example@example.com">
+                    Edit Mobile Number: <input type="tel" name="phone" value="{{teacher.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
+                {% endfor %}
+                <input type="submit" value="Update">
+            </form>
+        {% endfor %}
+        <div>{{jinja.note}}</div>
+    </div>
+</div>
 {% endblock %}

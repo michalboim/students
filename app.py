@@ -1035,7 +1035,41 @@ def teacher_profile(teacher_id):
         password=crud.read_if('password', 'users', 'teacher_user', email[0][0])
         if password[0][0]=='123456':
             return render_template('login.html', log=log, info=info, form2=form2, note='You need to change the initial password you received:')
-        return render_template('profile_teacher.html', log=log, info=info, hello= f"hello {crud.teacher_name(teacher_id)}") 
+        else:
+            jinja={}
+            jinja['js']='teacher'
+            jinja['update_link']=f"/teacher_info_update/{teacher_id}"
+            jinja['update_word']='Uptade information'
+            return render_template('profile_teacher.html', log=log, info=info, jinja=jinja) 
+
+@app.route('/teacher_info_update/<teacher_id>', methods=['get', 'post'])
+def teacher_info_update(teacher_id):
+    log=check_log()
+    info=chek_admin()
+    jinja={}
+    #jinja['teacher_id']=teacher_id
+    teacher_info=crud.read_if('*', 'teachers', 'id', teacher_id)
+    jinja['teacher']=create_teachers_objects(teacher_info)
+    jinja['form']=['create']
+    if request.method=='GET':    
+        return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)
+    else:
+        email=request.form['email']
+        phone=request.form['phone']
+        if jinja['teacher'][0].email!=email:
+            try:
+                crud.update_if('users', 'teacher_user', f"'{email}'", 'teacher_user', jinja['teacher'][0].email)
+                crud.update_if('teachers', 'email', f"'{email}'",'id', teacher_id)
+            except:
+                jinja['note']="Email already exists"
+                return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
+        if jinja['teacher'][0].phone!=phone:
+            try:
+                crud.update_if('teachers', 'phone', f"'{phone}'",'id', teacher_id)
+            except:
+                jinja['note']="Mobile number already exists"
+                return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
+        return redirect(url_for('teacher_profile', teacher_id=teacher_id))
 
 @app.route('/messages')
 def messages():

@@ -4,8 +4,10 @@ function Teacher(){
         axios.get('/users_details').then((result) => {
             console.log(result.data)
             setUser(result.data);
-        })
+        })        
     }
+    let link='/teacher_info_update/'+(user.id);
+    console.log(link)
     React.useEffect(() =>{
         getUser();}
         , [] 
@@ -15,8 +17,7 @@ function Teacher(){
             <div>
                 <div>{user.email}</div>
                 <div>{user.phone}</div>
-
-                          
+                {/* <a herf={link}>Update</a>                          */}
             </div>
         );
 }
