@@ -1022,7 +1022,7 @@ def student_profile(student_id):
         return render_template('home.html', log=log, info=info, hello= f"hello {crud.student_name(student_id)}") 
 
 @app.route('/teacher_profile/<teacher_id>', methods=['get', 'post'])
-def teacher_profile(teacher_id):
+def teacher_profile(teacher_id): # a teacher user sees his profile
     log=check_log()
     info=chek_admin()
     form2=["create"]
@@ -1040,10 +1040,15 @@ def teacher_profile(teacher_id):
             jinja['js']='teacher'
             jinja['link']=['create']
             jinja['id']=teacher_id
+            courses=crud.read_if('id, name', 'courses', 'teacher_id', teacher_id)
+            if len(courses)==0:
+                jinja['no_courses']='The teacher is not associated with any of the courses'
+            else:
+                jinja['courses']=courses
             return render_template('profile_teacher.html', log=log, info=info, jinja=jinja) 
 
 @app.route('/teacher_info_update/<teacher_id>', methods=['get', 'post'])
-def teacher_info_update(teacher_id):
+def teacher_info_update(teacher_id): # a teacher user update his info
     log=check_log()
     info=chek_admin()
     jinja={}
@@ -1069,6 +1074,17 @@ def teacher_info_update(teacher_id):
                 jinja['note']="Mobile number already exists"
                 return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
         return redirect(url_for('teacher_profile', teacher_id=teacher_id))
+
+@app.route('/teacher_course_info/teacher=<teacher_id>course=<course_id>')
+def teacher_course_info(teacher_id,course_id):
+    log=check_log()
+    info=chek_admin()
+    jinja={}
+    jinja['js']='teacher'
+    jinja['link']=['create']
+    jinja['id']=teacher_id
+    jinja['courses']=crud.read_if('id, name', 'courses', 'teacher_id', teacher_id)
+    return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)
 
 @app.route('/messages')
 def messages():

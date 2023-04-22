@@ -5,8 +5,16 @@
 <div class="main_teacher_profile">
     {% for l in jinja.link %}
     <div class="teacher_profile">
-        <div id="{{jinja.js}}"></div>
-        <div><a href="/teacher_info_update/{{jinja.id}}">Update information</a></div>
+        <div class="information">
+            <div id="{{jinja.js}}"></div>
+            <div class="t_profile"><a href="/teacher_info_update/{{jinja.id}}">Update information</a></div>
+        </div>
+        <div class="teacher_courses" >
+            {% for course in jinja.courses %}
+                <div><a href="/teacher_course_info/teacher={{jinja.id}}course={{course[0]}}">{{course[1]}}</a></div>
+            {% endfor %}
+            <div>{{jinja.no_courses}}</div>
+        </div>
     </div>
     {% endfor %}
     {% for form in jinja.form %}

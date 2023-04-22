@@ -5,12 +5,19 @@
 }
 .teacher_profile{
     display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+.information{
+    display: flex;
     justify-content: center;
     gap: 50px;
-
 }
-.teacher_profile>div>a{
-    font-size: large;
+.t_profile{
+    margin-top:7px;
+}
+.t_profile>a{
+    font-size: medium;
     text-decoration: none;
     color: black;
     border-width: 0.5px;
@@ -24,7 +31,7 @@
 .t_info{
     display: flex;
     gap: 50px;
-    font-size: larger;
+    font-size:x-large;
     font-weight: bold;
 }
 .teacher_information{
@@ -53,4 +60,17 @@
 }
 .teacher_information>form>input{
     font-size: large;
+}
+.teacher_courses{
+    display: flex;
+    justify-content: center;
+    gap:20px;
+}
+.teacher_courses>div>a{
+    font-size: large;   
+    color: black;
+}
+.teacher_courses>div>a:hover{
+    width: max-content;
+    background-color: rgb(233, 229, 229);
 }
