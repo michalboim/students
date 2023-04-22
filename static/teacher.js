@@ -14,7 +14,7 @@ function Teacher(){
         )
         return (
 
-            <div>
+            <div class='t_info'>
                 <div>{user.email}</div>
                 <div>{user.phone}</div>
                 {/* <a herf={link}>Update</a>                          */}

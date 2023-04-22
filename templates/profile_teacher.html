@@ -1,22 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
+<link rel="stylesheet" href="../static/teacher.css">
 <script type="text/babel" src="/static/teacher.js"></script>
-<div class="main_teacher_prfile">
+<div class="main_teacher_profile">
+    {% for l in jinja.link %}
     <div class="teacher_profile">
         <div id="{{jinja.js}}"></div>
-        <div><a href="{{jinja.update_link}}">{{jinja.update_word}}</a></div>
+        <div><a href="/teacher_info_update/{{jinja.id}}">Update information</a></div>
     </div>
+    {% endfor %}
+    {% for form in jinja.form %}
     <div class="teacher_information">
-        {% for form in jinja.form %}
-            <form action="" method="post">
-                {% for teacher in jinja.teacher %}
+        <form action="" method="post">
+            {% for teacher in jinja.teacher %}
+                <div>
                     Edit Email: <input type="email" name="email" value="{{teacher.email}}"  title="example@example.com">
+                </div> 
+                <div>
                     Edit Mobile Number: <input type="tel" name="phone" value="{{teacher.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
-                {% endfor %}
-                <input type="submit" value="Update">
-            </form>
-        {% endfor %}
+                </div> 
+            {% endfor %}
+            <input type="submit" value="Update">
+        </form>       
         <div>{{jinja.note}}</div>
     </div>
+    {% endfor %}
 </div>
 {% endblock %}

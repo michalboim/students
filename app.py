@@ -1038,8 +1038,8 @@ def teacher_profile(teacher_id):
         else:
             jinja={}
             jinja['js']='teacher'
-            jinja['update_link']=f"/teacher_info_update/{teacher_id}"
-            jinja['update_word']='Uptade information'
+            jinja['link']=['create']
+            jinja['id']=teacher_id
             return render_template('profile_teacher.html', log=log, info=info, jinja=jinja) 
 
 @app.route('/teacher_info_update/<teacher_id>', methods=['get', 'post'])
@@ -1047,7 +1047,6 @@ def teacher_info_update(teacher_id):
     log=check_log()
     info=chek_admin()
     jinja={}
-    #jinja['teacher_id']=teacher_id
     teacher_info=crud.read_if('*', 'teachers', 'id', teacher_id)
     jinja['teacher']=create_teachers_objects(teacher_info)
     jinja['form']=['create']
