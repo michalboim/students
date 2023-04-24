@@ -1038,7 +1038,7 @@ def teacher_profile(teacher_id): # a teacher user sees his profile
         else:
             jinja={}
             jinja['js']='teacher'
-            jinja['link']=['create']
+            jinja['section']=['create']
             jinja['id']=teacher_id
             courses=crud.read_if('id, name', 'courses', 'teacher_id', teacher_id)
             if len(courses)==0:
@@ -1065,13 +1065,13 @@ def teacher_info_update(teacher_id): # a teacher user update his info
                 crud.update_if('users', 'teacher_user', f"'{email}'", 'teacher_user', jinja['teacher'][0].email)
                 crud.update_if('teachers', 'email', f"'{email}'",'id', teacher_id)
             except:
-                jinja['note']="Email already exists"
+                jinja['note']="Email already exists!"
                 return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
         if jinja['teacher'][0].phone!=phone:
             try:
                 crud.update_if('teachers', 'phone', f"'{phone}'",'id', teacher_id)
             except:
-                jinja['note']="Mobile number already exists"
+                jinja['note']="Mobile number already exists!"
                 return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
         return redirect(url_for('teacher_profile', teacher_id=teacher_id))
 
@@ -1081,11 +1081,19 @@ def teacher_course_info(teacher_id,course_id):
     info=chek_admin()
     jinja={}
     jinja['js']='teacher'
-    jinja['link']=['create']
+    jinja['section']=['create']
     jinja['id']=teacher_id
     jinja['courses']=crud.read_if('id, name', 'courses', 'teacher_id', teacher_id)
     course=crud.read_if('*', 'courses', 'id', course_id)
     jinja['course_info']=create_courses_objects(course)
+    students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course_id)
+    if len(students_ids)==0:
+        jinja['no_students']='There are no students enrolled to the course'
+    else:
+        jinja['link']=['create']
+        jinja['students']=[]
+        for student in students_ids:
+            s=namedtuple('S',['id', 'name','grade'])
     return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)
 
 @app.route('/messages')

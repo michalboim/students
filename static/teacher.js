@@ -17,7 +17,7 @@ function Teacher(){
             <div class='t_info'>
                 <div>{user.email}</div>
                 <div>{user.phone}</div>
-                {/* <a herf={link}>Update</a>                          */}
+                <div ><a href={link}>Update Information</a></div>                         
             </div>
         );
 }

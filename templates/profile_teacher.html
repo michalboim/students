@@ -3,21 +3,27 @@
 <link rel="stylesheet" href="../static/teacher.css">
 <script type="text/babel" src="/static/teacher.js"></script>
 <div class="main_teacher_profile">
-    {% for l in jinja.link %}
-    <div class="teacher_profile">
-        <div class="information">
-            <div id="{{jinja.js}}"></div>
-            <div class="t_profile"><a href="/teacher_info_update/{{jinja.id}}">Update information</a></div>
-        </div>
-        <div class="teacher_courses" >
-            {% for course in jinja.courses %}
-                <div><a href="/teacher_course_info/teacher={{jinja.id}}course={{course[0]}}">{{course[1]}}</a></div>
-            {% endfor %}
-            <div>{{jinja.no_courses}}</div>
+    {% for s in jinja.section %}
+    <div class="teacher_profile">        
+        <div class="information" id="{{jinja.js}}"></div> 
+        <div class="t_nav">
+            <div>Courses:</div>
+            <div class="teacher_courses" >
+                {% for course in jinja.courses %}
+                    <div class="t_course">                
+                        <a href="">{{course[1]}}</a>
+                            <div class="teacher_nav">
+                                <div><a href="/teacher_course_info/teacher={{jinja.id}}course={{course[0]}}">Information</a></div>
+                                <div><a href="">try</a></div>
+                            </div>                   
+                    </div>
+                {% endfor %}
+                <div>{{jinja.no_courses}}</div>
+            </div>
         </div>
         <div class="course_information">
         {% for course in jinja.course_info %}
-            <div>{{course.name}}:</div>
+            <div>{{course.name}} information:</div>
             <div>{{course.start}}</div>
             <div>{{course.day}}</div>
             <div>{{course.time}}</div>
@@ -39,8 +45,8 @@
                 </div> 
             {% endfor %}
             <input type="submit" value="Update">
-        </form>       
-        <div>{{jinja.note}}</div>
+            <div class="t_note">{{jinja.note}}</div>
+        </form>          
     </div>
     {% endfor %}
 </div>
