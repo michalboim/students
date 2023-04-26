@@ -31,6 +31,7 @@ def chek_admin():
             info['id']=session['id']
             info['link']=f"/administrator/{session['id']}"
             info['word']='Administrator'
+            info['hello']=f"Hello {crud.admin_name(session['id'])}- what do you want to do?"
         if session['role']=='teacher':
             info['id']=session['id']
             info['link']=f"/teacher_profile/{session['id']}"
@@ -115,7 +116,8 @@ def login():
             session['name']=crud.admin_name(session['id'])
             return redirect(url_for('administrator', admin_id=session['id']))
         else:
-            return render_template('login.html', log=log, info=info, form1=form1, note='Incorrect username or password' )
+            form=['create']
+            return render_template('login.html', log=log, info=info, form1=form1, form=form, note='Incorrect username or password' )
     return render_template('login.html', log=log, form1=form1, info=info)
 
 @app.route('/logout')

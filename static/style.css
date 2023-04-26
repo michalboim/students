@@ -51,12 +51,38 @@
 }
 
 /*login*/
-.login{
-    width: 200px;
+.main_login{
+    display: flex;
+    justify-content: center;
+}
+.main_login>form{
     display: flex;
     flex-direction: column;
     gap: 20px;
+    margin-top: 50px;
+    padding: 15px 15px 15px 15px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    font-size: larger;
+    font-weight: bold;
 }
+.main_login>form>div{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.main_login>form>div>input{
+    font-size: large;
+}
+.main_login>form>input{
+    font-size: large;
+}
+.login_note{
+    text-align: center;
+    text-decoration: underline;
+}
+
 /*search*/
 .main_search{
     position: relative;
