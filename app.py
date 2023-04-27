@@ -50,13 +50,33 @@ def users_details():# get user datails for react
         details['id']=session['id']
         details['name']=session['name']
         if details['role']=='student' or details['role']=='teacher':
-            email=crud.read_if('email', f"{session['role']}s", 'id', session['id'])
-            details['email']=email[0]
-            phone=crud.read_if('phone', f"{session['role']}s", 'id', session['id'])
-            details['phone']=phone[0]
-        else:
-            pass
+            e_p=crud.read_if('email, phone', f"{session['role']}s", 'id', session['id'])
+            details['email']=e_p[0][0]
+            details['phone']=e_p[0][1]
+        if details['role']=='teacher':
+            courses=crud.read_if('id, name', 'courses', 'teacher_id', session['id'])
+            if len(courses)==0:
+                details['no_courses']='No courses found in the system in which you are the teacher'
+                details['courses']=[]
+            else:
+                details['courses']=courses
     return details
+
+@app.route('/course_details/<course_id>')
+def course_details(course_id):
+    info_course={}
+    info_course['course_id']=course_id
+    info_course['title']='Information: '
+    course=crud.read_if('*', 'courses','id', course_id)
+    for c in course:    
+        info_course['course_name']=c[1]
+        info_course['description']=c[2]
+        info_course['teacher_id']=c[3]
+        info_course['teacher_name']=crud.teacher_name(c[3]) 
+        info_course['start']=f'{c[4][8:]}-{c[4][5:7]}-{c[4][0:4]}'
+        info_course['day']=c[5]
+        info_course['time']=c[6]
+    return info_course
 
 @app.route('/')
 def home():
@@ -1044,7 +1064,7 @@ def teacher_profile(teacher_id): # a teacher user sees his profile
             jinja['id']=teacher_id
             courses=crud.read_if('id, name', 'courses', 'teacher_id', teacher_id)
             if len(courses)==0:
-                jinja['no_courses']='The teacher is not associated with any of the courses'
+                jinja['no_courses']='No courses found in the system in which you are the teacher'
             else:
                 jinja['courses']=courses
             return render_template('profile_teacher.html', log=log, info=info, jinja=jinja) 
@@ -1067,13 +1087,13 @@ def teacher_info_update(teacher_id): # a teacher user update his info
                 crud.update_if('users', 'teacher_user', f"'{email}'", 'teacher_user', jinja['teacher'][0].email)
                 crud.update_if('teachers', 'email', f"'{email}'",'id', teacher_id)
             except:
-                jinja['note']="Email already exists!"
+                jinja['note']=["Email already exists!"]
                 return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
         if jinja['teacher'][0].phone!=phone:
             try:
                 crud.update_if('teachers', 'phone', f"'{phone}'",'id', teacher_id)
             except:
-                jinja['note']="Mobile number already exists!"
+                jinja['note']=["Mobile number already exists!"]
                 return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
         return redirect(url_for('teacher_profile', teacher_id=teacher_id))
 

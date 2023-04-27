@@ -4,33 +4,8 @@
 <script type="text/babel" src="/static/teacher.js"></script>
 <div class="main_teacher_profile">
     {% for s in jinja.section %}
-    <div class="teacher_profile">        
-        <div class="information" id="{{jinja.js}}"></div> 
-        <div class="t_nav">
-            <div>Courses:</div>
-            <div class="teacher_courses" >
-                {% for course in jinja.courses %}
-                    <div class="t_course">                
-                        <a href="">{{course[1]}}</a>
-                            <div class="teacher_nav">
-                                <div><a href="/teacher_course_info/teacher={{jinja.id}}course={{course[0]}}">Information</a></div>
-                                <div><a href="">try</a></div>
-                            </div>                   
-                    </div>
-                {% endfor %}
-                <div>{{jinja.no_courses}}</div>
-            </div>
-        </div>
-        <div class="course_information">
-        {% for course in jinja.course_info %}
-            <div>{{course.name}} information:</div>
-            <div>{{course.start}}</div>
-            <div>{{course.day}}</div>
-            <div>{{course.time}}</div>
-            <div><a href="">Attendance</a></div>
-            <div><a href="">Update grade</a></div>
-        {% endfor %}
-        </div>
+    <div>        
+        <div  id="{{jinja.js}}"></div> 
     </div>
     {% endfor %}
     {% for form in jinja.form %}
@@ -45,9 +20,21 @@
                 </div> 
             {% endfor %}
             <input type="submit" value="Update">
-            <div class="t_note">{{jinja.note}}</div>
+            {% for note in jinja.note %}
+                <div class="t_note">{{note}}</div>
+            {% endfor %}
         </form>          
     </div>
     {% endfor %}
+    <div class="course_information">
+        {% for course in jinja.course_info %}
+            <div>{{course.name}} information:</div>
+            <div>{{course.start}}</div>
+            <div>{{course.day}}</div>
+            <div>{{course.time}}</div>
+            <div><a href="">Attendance</a></div>
+            <div><a href="">Update grade</a></div>
+        {% endfor %}
+        </div>
 </div>
 {% endblock %}

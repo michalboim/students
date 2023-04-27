@@ -38,3 +38,7 @@ function Messages(props){
 ReactDOM.render(<Messages start={''} interval={3000}/>, document.getElementById('messages'))
 ReactDOM.render(<AddMessagesForm />, document.getElementById('add'))
 
+{user.courses.map((course)=>
+    {course.map((c)=>
+        <div class="t_course_name">{c}</div>)}
+    )} 

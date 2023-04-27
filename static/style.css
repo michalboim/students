@@ -1,4 +1,13 @@
 /*all*/
+input{
+    font-family: 'Times New Roman', Times, serif;
+}
+select{
+    font-family: 'Times New Roman', Times, serif;
+}
+option{
+    font-family: 'Times New Roman', Times, serif;
+}
 .links{
     display: flex;
     flex-direction: column;

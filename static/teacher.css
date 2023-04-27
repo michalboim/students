@@ -11,7 +11,6 @@
 .information{
     display: flex;
     justify-content: center;
-    gap: 50px;
 }
 .t_info{
     display: flex;
@@ -32,7 +31,6 @@
     background-color: rgb(233, 229, 229);
     text-align: center;
 }
-
 .teacher_information{
     display: flex;
     justify-content: center;
@@ -69,23 +67,32 @@
     flex-direction: column;
     gap: 10px;
 }
-.t_nav>div{
+.t_nav{
     font-size: larger;
     font-weight: bold;
+}
+.t_no_courses{
+    font-weight: normal; 
+    font-size: large; 
 }
 .teacher_courses{
     display: flex;
     gap: 10px;
 }
-
 .t_course{
-    width: 100px
+    width: 100px;
 }
-.t_course a{
+.t_course {
     display: block;
     font-size: large;   
-    color: black;
-    font-weight:normal
+    font-weight:normal;
+}
+.t_course_name{
+    text-decoration: underline;
+}
+.t_course input:hover{
+    width: max-content;
+    background-color: rgb(233, 229, 229);
 }
 .t_course a:hover{
     width: max-content;
@@ -94,8 +101,18 @@
 .teacher_nav{
     display: none;
 }
+.teacher_nav input{
+    font-size: medium;
+    border-style: none;
+    background-color: white;
+    padding-left: 0px;
+    border-radius: 2px 2px 2px 2px;
+}
 .teacher_nav a{
+    font-size: medium;
     text-decoration: none;
+    color: black;
+    border-radius: 2px 2px 2px 2px;
 }
 .t_course:hover .teacher_nav{
     display: block;
