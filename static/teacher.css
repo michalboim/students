@@ -85,7 +85,7 @@
                 gap: 10px;
             }
             .t_course{
-                width: 100px;
+                width: 150px;
             }
             .t_course {
                 display: block;
@@ -184,4 +184,45 @@
                 padding: 5px 5px 5px 5px;
             }
 
-
+ /*attendance*/
+.main_check_attend{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: max-content;
+    margin: auto;
+    margin-top: 30px;
+    padding: 15px 15px 15px 15px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+}
+.course_name_attend{
+    font-weight: bolder;
+    font-size:larger;
+    width: max-content;
+    text-decoration: underline;
+}
+.current_date{
+    font-weight: bold;
+    font-size: large;
+    width: max-content;
+}
+.students{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.student_atten>*{
+    display: flex;
+    flex-direction: row;
+}
+.student_name_attend{
+    width:250px;
+    font-size: large;
+}
+.answer{
+    display: flex;
+    width: 200px;
+    justify-content: space-between;
+}

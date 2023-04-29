@@ -81,7 +81,7 @@ def course_details(course_id): #get course datails for react
         info_course['line']='|'
     students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course_id)
     if len(students_ids)==0:
-        info_course['no_students']=[f'There are no students enrolled to the {crud.course_name(course_id)} course']
+        info_course['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
         info_course['students']=[]
         info_course['class']=[]
     else:
@@ -967,17 +967,17 @@ def course_attendance(course_id):
     info=chek_admin()
     jinja={}
     jinja['course_id']=course_id
-    jinja['chose_date']=['Choose different date:']
+    jinja['attend']=['create']
+    jinja['attend_title']=f"Attendance for {crud.course_name(course_id)}"
     current_date=datetime.date.today()
     current_date=current_date.strftime("%d/%m/%Y")
     current_date=current_date.replace('/','-')
     jinja['current_date']=f"Date: {current_date}"
-    course_name=crud.course_name(course_id)
-    jinja['course_name']=f"Attendance for {course_name}"
     if request.method=='GET':
         students_ids=crud.read_if('student_id', 'students_courses', 'course_id', course_id)
         if len(students_ids)==0:
-            return render_template ('attendance.html', log=log, info=info, jinja='', dates_dict='', course_dict='',course_dates_dict='' , note1=f"There are no students enrolled to {course_name}" )
+            jinja['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
+            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
         else:
             answer_attend=crud.read_two_if('date', 'students_attendance', 'course_id', course_id, 'date', current_date)
             if len(answer_attend)==0:    
@@ -993,10 +993,8 @@ def course_attendance(course_id):
                                 pass
                             else:
                                 crud.create('students_attendance', 'student_id, course_id, date', f"'{s_i[0]}', '{course_id}', '{current_date}'")                
-            dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
-            jinja['dates']=dates
             course_atten=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
-            students_attend=[]
+            jinja['students_attend']=[]
             for s_a in course_atten:
                 student_a=namedtuple('S_Attend',['id','name','attend'])
                 student_a.id=s_a[0]
@@ -1011,8 +1009,8 @@ def course_attendance(course_id):
                 else:
                     student_a.attend['yes']=''
                     student_a.attend['no']=''
-                students_attend.append(student_a)
-            return render_template ('attendance.html', log=log, info=info, students_attend=students_attend, jinja=jinja, dates_dict='', course_dict='', course_dates_dict='')
+                jinja['students_attend'].append(student_a)
+            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
     else:   
         if request.method=='POST':
             answer=request.form['attendance']

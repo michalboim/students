@@ -51,7 +51,7 @@ function TeacherCourses(){
                             <div class="teacher_nav">
                                 <button onClick={courseInformation} name='course_id' value={course[0]}>Information</button>
                                 <button onClick={studentInformation} value={course[0]}>Students</button> 
-                                <button><a href={"/attendance/"+course[0]}>Attendance</a></button>    
+                                <button><a href={"/attendance/"+course[0]}>Mark Attendance</a></button>    
                             </div>   
                         </div>
                         )}                        
