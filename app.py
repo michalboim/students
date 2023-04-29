@@ -68,7 +68,7 @@ def users_details():# get user datails for react
 def course_details(course_id): #get course datails for react
     info_course={}
     info_course['course_id']=course_id
-    info_course['title']='Information: '
+    info_course['info_title']='Information: '
     course=crud.read_if('*', 'courses','id', course_id)
     for c in course:    
         info_course['course_name']=c[1]
@@ -79,6 +79,35 @@ def course_details(course_id): #get course datails for react
         info_course['day']=c[5]
         info_course['time']=c[6]
         info_course['line']='|'
+    students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course_id)
+    if len(students_ids)==0:
+        info_course['no_students']=[f'There are no students enrolled to the {crud.course_name(course_id)} course']
+        info_course['students']=[]
+        info_course['class']=[]
+    else:
+        info_course['students_title']=f'Students who are enrolled to {crud.course_name(course_id)} course:'
+        info_course['name']='Name'
+        info_course['email']='Email'
+        info_course['phone']='Phone'
+        info_course['grade']='Grade'
+        info_course['class']=['students_grid_title','students_grid_email','students_grid_phone','students_grid_grade']
+        info_course['students']=[]
+        grades=[]
+        for student in students_ids:
+            info=crud.read_if('*','students', 'id', student[0])
+            for i in info:
+                info_student={}
+                info_student['id']=i[0]
+                info_student['name']=i[1]
+                info_student['email']=i[2]
+                info_student['phone']=i[3]
+                info_student['grade']=student[1]
+                if type(info_student['grade'])==int:
+                    grades.append(info_student['grade'])
+                else:
+                    pass
+            info_course['students'].append(info_student)
+            info_course['mean']=f'The average grades for the course is: {round(statistics.mean(grades),2)}'
     return info_course
 
 # start routes:
@@ -836,12 +865,6 @@ def teacher_profile(teacher_id): # a teacher user sees his profile
             jinja={}
             jinja['js']=['teacher','teacher_courses']
             jinja['section']=['create']
-            jinja['id']=teacher_id
-            courses=crud.read_if('id, name', 'courses', 'teacher_id', teacher_id)
-            if len(courses)==0:
-                jinja['no_courses']='No courses found in the system in which you are the teacher'
-            else:
-                jinja['courses']=courses
             return render_template('profile_teacher.html', log=log, info=info, jinja=jinja) 
 
 @app.route('/teacher_info_update/<teacher_id>', methods=['get', 'post'])
@@ -872,26 +895,7 @@ def teacher_info_update(teacher_id): # a teacher user update his info
                 return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
         return redirect(url_for('teacher_profile', teacher_id=teacher_id))
 
-@app.route('/teacher_course_info/teacher=<teacher_id>course=<course_id>')
-def teacher_course_info(teacher_id,course_id):
-    log=check_log()
-    info=chek_admin()
-    jinja={}
-    jinja['js']='teacher'
-    jinja['section']=['create']
-    jinja['id']=teacher_id
-    jinja['courses']=crud.read_if('id, name', 'courses', 'teacher_id', teacher_id)
-    course=crud.read_if('*', 'courses', 'id', course_id)
-    jinja['course_info']=create_courses_objects(course)
-    students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course_id)
-    if len(students_ids)==0:
-        jinja['no_students']='There are no students enrolled to the course'
-    else:
-        jinja['link']=['create']
-        jinja['students']=[]
-        for student in students_ids:
-            s=namedtuple('S',['id', 'name','grade'])
-    return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)
+
 
 
 

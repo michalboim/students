@@ -66,76 +66,122 @@
 }
 
 /*teacherCourses react*/
-.t_nav{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.t_nav{
-    font-size: larger;
-    font-weight: bold;
-}
-.t_no_courses{
-    font-weight: normal; 
-    font-size: large; 
-}
-.teacher_courses{
-    display: flex;
-    gap: 10px;
-}
-.t_course{
-    width: 100px;
-}
-.t_course {
-    display: block;
-    font-size: large;   
-    font-weight:normal;
-}
-.t_course_name{
-    text-decoration: underline;
-}
-.t_course button:hover{
-    width: max-content;
-    background-color: rgb(233, 229, 229);
-}
-.t_course a:hover{
-    width: max-content;
-    background-color: rgb(233, 229, 229);
-}
-.teacher_nav{
-    display: none;
-}
-.teacher_nav button{
-    font-size: medium;
-    border-style: none;
-    background-color: white;
-    padding-left: 0px;
-    border-radius: 2px 2px 2px 2px;
-}
-.teacher_nav a{
-    font-size: medium;
-    text-decoration: none;
-    color: black;
-    border-radius: 2px 2px 2px 2px;
-}
-.t_course:hover .teacher_nav{
-    display: block;
-}
-.teacher_nav div{
-    display: block;
-}
-.course_information{
-    display: flex;
-    gap: 15px;
-}
-.t_course_info{
-    display: flex;
-    gap: 10px;
-    position: absolute;
-    top: 215px;
-}
-.t_course_title{
-    font-weight: bold;
-    text-decoration: underline;
-    font-size: large;
-}
+            /*courses*/
+            .t_nav{
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .t_nav{
+                font-size: larger;
+                font-weight: bold;
+            }
+            .t_no_courses{
+                font-weight: normal; 
+                font-size: large; 
+            }
+            .teacher_courses{
+                display: flex;
+                gap: 10px;
+            }
+            .t_course{
+                width: 100px;
+            }
+            .t_course {
+                display: block;
+                font-size: large;   
+                font-weight:normal;
+            }
+            .t_course_name{
+                text-decoration: underline;
+            }
+            .t_course button:hover{
+                width: max-content;
+                background-color: rgb(233, 229, 229);
+            }
+            .t_course a:hover{
+                width: max-content;
+                background-color: rgb(233, 229, 229);
+            }
+            .teacher_nav{
+                display: none;
+            }
+            .teacher_nav button{
+                font-size: medium;
+                border-style: none;
+                background-color: white;
+                border-radius: 2px 2px 2px 2px;
+            }
+            .teacher_nav a{
+                font-size: medium;
+                text-decoration: none;
+                color: black;
+                border-radius: 2px 2px 2px 2px;
+            }
+            .t_course:hover .teacher_nav{
+                display: block;
+            }
+            .teacher_nav div{
+                display: block;
+            }
+            .course_information{
+                display: flex;
+                gap: 15px;
+            }
+
+            /*courses info*/
+            .t_course_info{
+                display: flex;
+                gap: 10px;
+                position: absolute;
+                top: 235px;
+            }
+            .t_course_title{
+                font-weight: bold;
+                text-decoration: underline;
+                font-size: large;
+            }
+
+            /*students*/
+            .t_students_info{
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                position: absolute;
+                top: 235px;
+            }
+            .mean_grades{
+                background-color: rgb(247, 207, 207);
+                width: max-content;
+            }
+            .students_grid{
+                display: grid;
+                grid-template-columns: max-content max-content max-content max-content;
+            }
+            .students_grid_title{
+                font-weight: bold ;
+                border-bottom: solid black 1px;
+                padding: 5px 5px 5px 5px;
+                padding-bottom: 0px;
+            }
+            .students_grid_name{
+                grid-column: 1;
+                padding: 5px 5px 5px 5px;
+            }
+            .students_grid_email{
+                grid-column: 2;
+                border-left: solid black 1px;
+                padding: 5px 5px 5px 5px;
+            }
+            .students_grid_phone{
+                grid-column: 3;
+                border-left: solid black 1px;
+                padding: 5px 5px 5px 5px;
+            }
+            .students_grid_grade{
+                grid-column: 4;
+                border-left: solid black 1px;
+                padding: 5px 5px 5px 5px;
+            }
+
+
