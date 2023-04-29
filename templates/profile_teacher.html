@@ -2,11 +2,12 @@
 {% block content %}
 <link rel="stylesheet" href="../static/teacher.css">
 <script type="text/babel" src="/static/teacher.js"></script>
+<script type="text/babel" src="/static/teacherCourses.js"></script>
 <div class="main_teacher_profile">
     {% for s in jinja.section %}
-    <div>        
-        <div  id="{{jinja.js}}"></div> 
-    </div>
+           
+        <div class="teacher_profile" id="{{jinja.js[0]}}"></div>
+        <div id="{{jinja.js[1]}}"></div> 
     {% endfor %}
     {% for form in jinja.form %}
     <div class="teacher_information">
@@ -26,15 +27,5 @@
         </form>          
     </div>
     {% endfor %}
-    <div class="course_information">
-        {% for course in jinja.course_info %}
-            <div>{{course.name}} information:</div>
-            <div>{{course.start}}</div>
-            <div>{{course.day}}</div>
-            <div>{{course.time}}</div>
-            <div><a href="">Attendance</a></div>
-            <div><a href="">Update grade</a></div>
-        {% endfor %}
-        </div>
-</div>
+
 {% endblock %}

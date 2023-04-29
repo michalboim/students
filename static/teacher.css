@@ -2,15 +2,15 @@
     margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
-}
-.teacher_profile{
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 20px;
 }
-.information{
+
+/*teacher react*/
+.teacher_profile{
     display: flex;
-    justify-content: center;
+    justify-content: center;    
 }
 .t_info{
     display: flex;
@@ -31,6 +31,8 @@
     background-color: rgb(233, 229, 229);
     text-align: center;
 }
+
+/*teacher update form*/
 .teacher_information{
     display: flex;
     justify-content: center;
@@ -62,6 +64,8 @@
     text-align: center;
     text-decoration: underline;
 }
+
+/*teacherCourses react*/
 .t_nav{
     display: flex;
     flex-direction: column;
@@ -90,7 +94,7 @@
 .t_course_name{
     text-decoration: underline;
 }
-.t_course input:hover{
+.t_course button:hover{
     width: max-content;
     background-color: rgb(233, 229, 229);
 }
@@ -101,7 +105,7 @@
 .teacher_nav{
     display: none;
 }
-.teacher_nav input{
+.teacher_nav button{
     font-size: medium;
     border-style: none;
     background-color: white;
@@ -123,4 +127,15 @@
 .course_information{
     display: flex;
     gap: 15px;
+}
+.t_course_info{
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    top: 215px;
+}
+.t_course_title{
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: large;
 }

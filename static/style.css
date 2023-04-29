@@ -8,6 +8,9 @@ select{
 option{
     font-family: 'Times New Roman', Times, serif;
 }
+button{
+    font-family: 'Times New Roman', Times, serif;
+}
 .links{
     display: flex;
     flex-direction: column;
