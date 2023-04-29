@@ -26,5 +26,29 @@
         </form>          
     </div>
     {% endfor %}
+    {% for a in jinja.attend %}    
+        <div class="main_check_attend">
+            <div class='course_name_attend'>{{jinja.attend_title}}</div>
+            <div class="current_date">{{jinja.current_date}}</div>
+            {% for no in jinja.no_students%}
+                <div class="t_no_students" >{{no}}</div>
+            {% endfor %}
+            <div class="students" >
+                {% for student in jinja.students_attend %}
+                <div class="student_atten">
+                    <form  class="atten_details" method="post">
+                        <div class="student_name_attend">{{student.name}}</div>
+                        <div class="answer"> 
+                            <div>Yes<input type="radio" name="attendance" id="" value="yes" {{student.attend.yes}}></div>
+                            <div>No<input type="radio" name="attendance" id="" value="no" {{student.attend.no}}></div>
+                            <div><input type="submit" value="Set"></div> 
+                            <input type="hidden" name="student_id" value="{{student.id}}">
+                        </div>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
 
 {% endblock %}
