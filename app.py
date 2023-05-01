@@ -58,7 +58,7 @@ def users_details():# get user datails for react
         if details['role']=='teacher':
             courses=crud.read_if('id, name', 'courses', 'teacher_id', session['id'])
             if len(courses)==0:
-                details['no_courses']='No courses found in the system in which you are the teacher'
+                details['no_courses']='You were not assigned to teach in any of the courses'
                 details['courses']=[]
             else:
                 details['courses']=courses
@@ -78,14 +78,7 @@ def courses(): # get all courses datails for react
         course_dict['start']=course.start
         course_dict['day']=course.day
         course_dict['time']=course.time
-        course_dict['line']='|'
-        course_dict['title_name']='Name'
-        course_dict['title_email']='Email'
-        course_dict['title_phone']='Phone'
-        course_dict['title_grade']='Grade'
-        course_dict['title_grade']='Grade'
-        course_dict['mean_grades_title']='Grades:'
-        course_dict['average_attend_title']='Attendance:'
+        course_dict['line']='|'        
         course_dict['class']=['students_grid_title','students_grid_email','students_grid_phone','students_grid_grade']
         students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course.tid)
         if len(students_ids)==0:
@@ -93,6 +86,11 @@ def courses(): # get all courses datails for react
             course_dict['students']=[]
             course_dict['class']=[]
         else:
+            course_dict['title_name']='Name'
+            course_dict['title_email']='Email'
+            course_dict['title_phone']='Phone'
+            course_dict['title_grade']='Grade'
+            course_dict['title_grade']='Grade'
             course_dict['students_title']=f'Students who are enrolled to {crud.course_name(course.tid)} course:'
             course_dict['students']=[]
             grades=[]
@@ -113,6 +111,7 @@ def courses(): # get all courses datails for react
             if len(grades)==0:
                 course_dict['mean_grades']='There is no record in the system for grades in this course'
             else:
+                course_dict['mean_grades_title']='Grades:'
                 course_dict['mean_grades']=f'The average grades for the course is: {round(statistics.mean(grades),2)}'
             average_attend=[]
             average_not_attend=[]
@@ -120,7 +119,8 @@ def courses(): # get all courses datails for react
             attend=crud.read_if('student_id, date, attendance', 'students_attendance', 'course_id', course.tid)
             if len(attend)==0:
                 course_dict['average_attend']='There is no record in the system for lessons in this course'
-            else:    
+            else:   
+                course_dict['average_attend_title']='Attendance:' 
                 for a in attend:
                     if a[2]=='yes':
                         average_attend.append(a)
