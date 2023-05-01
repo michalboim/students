@@ -1,10 +1,28 @@
 function TeacherCourses(){
+    
+    const [Data, setData]= React.useState([]);
     const [noCourses, setNoCourses] = React.useState('');
     const [courses, setCourses] = React.useState([]);
     const [coursesInfo, setCoursesInfo] = React.useState([]);
     const [studentsInfo, setStudentsInfo] = React.useState([]);
     const [students, setStudents] = React.useState('');
     const [className, setClassName] = React.useState([]);
+    
+    const getData=(event)=>{
+        event.preventDefault();
+        let id=event.target.value
+        console.log(event.target.name)
+        axios.get(`/course_details/${id}`).then((result)=>{
+            console.log(result.data)
+            setData(result.data)
+            console.log(Data)
+        })
+    }
+   
+
+
+
+    
     
     const courseInformation=(event)=>{
         event.preventDefault();
@@ -49,8 +67,9 @@ function TeacherCourses(){
                         <div class="t_course">
                             <div class="t_course_name">{course[1]}</div>
                             <div class="teacher_nav">
-                                <button onClick={courseInformation} name='course_id' value={course[0]}>Information</button>
+                                <button onClick={getData} value={course[0]}>Information</button>
                                 <button onClick={studentInformation} value={course[0]}>Students</button> 
+                                <button onClick={getData} name='s' value={course[0]}>Statistics</button>
                                 <button><a href={"/attendance/"+course[0]}>Mark Attendance</a></button>    
                             </div>   
                         </div>

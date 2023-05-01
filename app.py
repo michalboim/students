@@ -64,8 +64,81 @@ def users_details():# get user datails for react
                 details['courses']=courses
     return details
 
+@app.route('/courses_details')
+def courses(): # get all courses datails for react
+    courses_ids=create_courses_objects(crud.read_all('courses'))
+    courses_list=[]
+    for course in courses_ids:
+        course_dict={}
+        course_dict['id']=course.tid
+        course_dict['course_name']=course.name
+        course_dict['desc']=course.description
+        course_dict['teacher_id']=course.teacher_id
+        course_dict['teacher_name']=crud.teacher_name(course.teacher_id) 
+        course_dict['start']=course.start
+        course_dict['day']=course.day
+        course_dict['time']=course.time
+        course_dict['line']='|'
+        course_dict['title_name']='Name'
+        course_dict['title_email']='Email'
+        course_dict['title_phone']='Phone'
+        course_dict['title_grade']='Grade'
+        course_dict['title_grade']='Grade'
+        course_dict['mean_grades_title']='Grades:'
+        course_dict['average_attend_title']='Attendance:'
+        course_dict['class']=['students_grid_title','students_grid_email','students_grid_phone','students_grid_grade']
+        students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course.tid)
+        if len(students_ids)==0:
+            course_dict['no_students']=[f'There are no students enrolled to {crud.course_name(course.tid)} course']
+            course_dict['students']=[]
+            course_dict['class']=[]
+        else:
+            course_dict['students_title']=f'Students who are enrolled to {crud.course_name(course.tid)} course:'
+            course_dict['students']=[]
+            grades=[]
+            for student in students_ids:
+                info=create_students_objects(crud.read_if('*','students', 'id', student[0])) 
+                for s in info:
+                    info_student={}
+                    info_student['id']=s.tid
+                    info_student['name']=s.name
+                    info_student['email']=s.email
+                    info_student['phone']=s.phone
+                    info_student['grade']=student[1]
+                    if type(info_student['grade'])==int:
+                        grades.append(info_student['grade'])
+                    else:
+                        pass
+                    course_dict['students'].append(info_student)
+            if len(grades)==0:
+                course_dict['mean_grades']='There is no record in the system for grades in this course'
+            else:
+                course_dict['mean_grades']=f'The average grades for the course is: {round(statistics.mean(grades),2)}'
+            average_attend=[]
+            average_not_attend=[]
+            average_unknown=[]
+            attend=crud.read_if('student_id, date, attendance', 'students_attendance', 'course_id', course.tid)
+            if len(attend)==0:
+                course_dict['average_attend']='There is no record in the system for lessons in this course'
+            else:    
+                for a in attend:
+                    if a[2]=='yes':
+                        average_attend.append(a)
+                    if a[2]=='no':
+                        average_not_attend.append(a)
+                    if a[2]=='unknown':
+                        average_unknown.append(a)
+                try:
+                    course_dict['average_attend']=f"Course attendance average: {round(len(average_attend)*100/(len(average_attend)+len(average_not_attend)))}%"
+                except:
+                    course_dict['average_attend']='No record was found in the system for student attendance or non-attendance'
+                course_dict['average_note']='*Excludes students with unknown status'
+        courses_list.append(course_dict)
+    return courses_list
+
+
 @app.route('/course_details/<course_id>')
-def course_details(course_id): #get course datails for react
+def course_details(course_id): # get course datails for react
     info_course={}
     info_course['course_id']=course_id
     info_course['info_title']='Information: '
@@ -234,7 +307,7 @@ def course_info(course_id): # specific course information
         course_dict['form']=['create']
         dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
         if len(dates)==0:
-            course_dict['no_lesson']='No lesson found in the system'
+            course_dict['no_lesson']='No lessons found in the system'
         else:
             course_dict['link2']=['create']
             course_dict['link3']=['create']
@@ -852,6 +925,7 @@ def teacher_profile(teacher_id): # a teacher user sees his profile
     log=check_log()
     info=chek_admin()
     form2=["create"]
+    jinja={}
     email=crud.read_if('email','teachers', 'id', teacher_id)
     if request.method=='POST':
         new_password=request.form['new_password']
@@ -894,6 +968,67 @@ def teacher_info_update(teacher_id): # a teacher user update his info
                 jinja['note']=["Mobile number already exists!"]
                 return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
         return redirect(url_for('teacher_profile', teacher_id=teacher_id))
+
+@app.route('/attendance/<course_id>', methods=['get', 'post'])
+def course_attendance(course_id): # a teacher user mark attendance 
+    log=check_log()
+    info=chek_admin()
+    jinja={}
+    jinja['course_id']=course_id
+    jinja['attend']=['create']
+    jinja['attend_title']=f"Attendance for {crud.course_name(course_id)}"
+    current_date=datetime.date.today()
+    current_date=current_date.strftime("%d/%m/%Y")
+    current_date=current_date.replace('/','-')
+    jinja['current_date']=f"Date: {current_date}"
+    teacher_id=crud.read_if('teacher_id', 'courses', 'id', course_id)
+    jinja['teacher_id']=teacher_id[0][0]
+    if request.method=='GET':
+        students_ids=crud.read_if('student_id', 'students_courses', 'course_id', course_id)
+        if len(students_ids)==0:
+            jinja['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
+            jinja['link']='Back'
+            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
+        else:
+            jinja['link']='Done'
+            answer_attend=crud.read_two_if('date', 'students_attendance', 'course_id', course_id, 'date', current_date)
+            if len(answer_attend)==0:    
+                for s_id in students_ids:
+                    crud.create('students_attendance', 'student_id, course_id, date', f"'{s_id[0]}', '{course_id}', '{current_date}'")
+            else:
+                students_ids_atten=crud.read_two_if('student_id','students_attendance','course_id', course_id, 'date', current_date)
+                if len(students_ids)==len(students_ids_atten):
+                    pass
+                else:
+                    for s_i in students_ids:    
+                            if s_i in students_ids_atten:
+                                pass
+                            else:
+                                crud.create('students_attendance', 'student_id, course_id, date', f"'{s_i[0]}', '{course_id}', '{current_date}'")                
+            course_atten=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
+            jinja['students_attend']=[]
+            for s_a in course_atten:
+                student_a=namedtuple('S_Attend',['id','name','attend'])
+                student_a.id=s_a[0]
+                student_a.name=f"{crud.student_name(s_a[0])}:"
+                student_a.attend={}
+                if s_a[1]=='yes':
+                    student_a.attend['yes']='checked'
+                    student_a.attend['no']=''
+                elif s_a[1]=='no':
+                    student_a.attend['yes']=''
+                    student_a.attend['no']='checked'
+                else:
+                    student_a.attend['yes']=''
+                    student_a.attend['no']=''
+                jinja['students_attend'].append(student_a)
+            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
+    else:   
+        if request.method=='POST':
+            answer=request.form['attendance']
+            student_id=request.form['student_id']
+            crud.update_three_if('students_attendance', 'attendance',f"'{answer}'", 'student_id', student_id, 'course_id', course_id, 'date', current_date)    
+            return redirect(url_for('course_attendance',course_id=course_id))
 
 
 
@@ -961,62 +1096,6 @@ def attendance():
                 return render_template('attendance.html', log=log, info=info, jinja='', dates_dict='', course_dict='', course_dates_dict='', form=form ,students_objects=student_object, courses=courses)
     return render_template('attendance.html', log=log, info=info, jinja='', dates_dict='', course_dict='', course_dates_dict='', form=form ,courses=courses, students_search=students_search)
 
-@app.route('/attendance/<course_id>', methods=['get', 'post'])
-def course_attendance(course_id):
-    log=check_log()
-    info=chek_admin()
-    jinja={}
-    jinja['course_id']=course_id
-    jinja['attend']=['create']
-    jinja['attend_title']=f"Attendance for {crud.course_name(course_id)}"
-    current_date=datetime.date.today()
-    current_date=current_date.strftime("%d/%m/%Y")
-    current_date=current_date.replace('/','-')
-    jinja['current_date']=f"Date: {current_date}"
-    if request.method=='GET':
-        students_ids=crud.read_if('student_id', 'students_courses', 'course_id', course_id)
-        if len(students_ids)==0:
-            jinja['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
-            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
-        else:
-            answer_attend=crud.read_two_if('date', 'students_attendance', 'course_id', course_id, 'date', current_date)
-            if len(answer_attend)==0:    
-                for s_id in students_ids:
-                    crud.create('students_attendance', 'student_id, course_id, date', f"'{s_id[0]}', '{course_id}', '{current_date}'")
-            else:
-                students_ids_atten=crud.read_two_if('student_id','students_attendance','course_id', course_id, 'date', current_date)
-                if len(students_ids)==len(students_ids_atten):
-                    pass
-                else:
-                    for s_i in students_ids:    
-                            if s_i in students_ids_atten:
-                                pass
-                            else:
-                                crud.create('students_attendance', 'student_id, course_id, date', f"'{s_i[0]}', '{course_id}', '{current_date}'")                
-            course_atten=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
-            jinja['students_attend']=[]
-            for s_a in course_atten:
-                student_a=namedtuple('S_Attend',['id','name','attend'])
-                student_a.id=s_a[0]
-                student_a.name=f"{crud.student_name(s_a[0])}:"
-                student_a.attend={}
-                if s_a[1]=='yes':
-                    student_a.attend['yes']='checked'
-                    student_a.attend['no']=''
-                elif s_a[1]=='no':
-                    student_a.attend['yes']=''
-                    student_a.attend['no']='checked'
-                else:
-                    student_a.attend['yes']=''
-                    student_a.attend['no']=''
-                jinja['students_attend'].append(student_a)
-            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
-    else:   
-        if request.method=='POST':
-            answer=request.form['attendance']
-            student_id=request.form['student_id']
-            crud.update_three_if('students_attendance', 'attendance',f"'{answer}'", 'student_id', student_id, 'course_id', course_id, 'date', current_date)    
-            return redirect(url_for('course_attendance',course_id=course_id))
 
 @app.route('/attendance_chosen_date/<course_id>', methods=['get', 'post'])
 def attendance_chosen_date(course_id):

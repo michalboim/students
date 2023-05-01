@@ -85,7 +85,7 @@
                 gap: 10px;
             }
             .t_course{
-                width: 150px;
+                width: 135px;
             }
             .t_course {
                 display: block;
@@ -134,7 +134,7 @@
                 display: flex;
                 gap: 10px;
                 position: absolute;
-                top: 235px;
+                top: 260px;
             }
             .t_course_title{
                 font-weight: bold;
@@ -148,7 +148,7 @@
                 flex-direction: column;
                 gap: 20px;
                 position: absolute;
-                top: 235px;
+                top: 260px;
             }
             .mean_grades{
                 background-color: rgb(247, 207, 207);
@@ -211,7 +211,22 @@
 .students{
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
+}
+.done{
+    text-align: right;
+    margin-top: 20px;
+}
+.done a{
+    text-decoration: none;
+    color: black;
+    border-width: 1.5px;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: gray;
+    padding: 1px 3px 1px 2px;
+    background-color: rgb(233, 229, 229);
+    width: max-content;
 }
 .student_atten>*{
     display: flex;
