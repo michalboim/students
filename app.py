@@ -1031,7 +1031,37 @@ def course_attendance(course_id): # a teacher user mark attendance
             crud.update_three_if('students_attendance', 'attendance',f"'{answer}'", 'student_id', student_id, 'course_id', course_id, 'date', current_date)    
             return redirect(url_for('course_attendance',course_id=course_id))
 
+@app.route('/updeat_grade/<course_id>', methods=['get','post'])
+def updeat_grade(course_id): # a teacher user update grade
+    log=check_log()
+    info=chek_admin()
+    jinja={}
+    jinja['grades']=['create']
+    jinja['course_id']=course_id
+    teacher_id=crud.read_if('teacher_id', 'courses', 'id', course_id)
+    jinja['teacher_id']=teacher_id[0][0]
+    jinja['grades_title']=f'Update grades for {crud.course_name(course_id)}:'
+    if request.method=='GET':
+        students_grades=crud.read_if('student_id, grade', 'students_courses', 'course_id', course_id)
+        if len(students_grades)==0:
+            jinja['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
+            jinja['link']='Back'
+        else:
+            jinja['link']='Done'
+            jinja['students_grades']=[]
+            for student in students_grades:
+                inf=namedtuple('S_G',['id','name','grade'])
+                inf.id=student[0]
+                inf.name=crud.student_name(student[0])
+                inf.grade=student[1]
+                jinja['students_grades'].append(inf)                
+        return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
+    else:
+        crud.change_grade(request.form['grade'], request.form['student_id'], course_id)
+        return redirect(url_for('updeat_grade',course_id=course_id))
 
+
+    
 
 
 

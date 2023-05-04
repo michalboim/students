@@ -60,6 +60,10 @@
 .teacher_information>form>input{
     font-size: large;
 }
+.t_info_click{
+    display: flex;
+    flex-direction: row;
+}
 .t_note{
     text-align: center;
     text-decoration: underline;
@@ -158,7 +162,6 @@
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
-
             }
             .mean_grades{
                 width: max-content;
@@ -201,7 +204,9 @@
                 flex-direction: column;
                 gap: 15px;
             }
-
+            .average_note{
+                font-size: small;
+            }
  /*attendance*/
 .main_check_attend{
     display: flex;
@@ -258,4 +263,27 @@
     display: flex;
     width: 200px;
     justify-content: space-between;
+}
+
+/*grades*/
+.main_update_grade{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: max-content;
+    margin: auto;
+    margin-top: 30px;
+    padding: 15px 15px 15px 15px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+}
+.students_grades{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.t_student_grade{
+    width: 40px;
 }

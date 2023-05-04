@@ -126,6 +126,7 @@ function TeacherCourses(){
                         <div class='t_course_title'>{statistics.average_attend_title}</div>
                         <div >{statistics.average_attend} </div>
                     </div>
+                    <div class='average_note'>{statistics.average_note}</div>
                 </div>
             </div>    
         );

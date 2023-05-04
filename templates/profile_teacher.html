@@ -19,7 +19,11 @@
                     Edit Mobile Number: <input type="tel" name="phone" value="{{teacher.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
                 </div> 
             {% endfor %}
-            <input type="submit" value="Update">
+            <div class="t_info_click">
+                <input type="submit" value="Update">
+                <a href="">Change password</a>
+            </div>
+
             {% for note in jinja.note %}
                 <div class="t_note">{{note}}</div>
             {% endfor %}
@@ -49,6 +53,27 @@
                 {% endfor %}
                 <div class="done"><a href="/teacher_profile/{{jinja.teacher_id}}">{{jinja.link}}</a></div>
             </div>
+        </div>
+    {% endfor %}
+    {% for g in jinja.grades %}
+        <div class="main_update_grade" >
+            <div class='course_name_attend'>{{jinja.grades_title}}</div>
+            {% for no in jinja.no_students%}
+                <div class="t_no_students" >{{no}}</div>
+            {% endfor %}
+            <div class="students_grades" >
+                {% for student in jinja.students_grades %}
+                <div class="student_atten">
+                    <form  class="atten_details" method="post">
+                        <div class="student_name_attend">{{student.name}}:</div>
+                        <div ><input type="number" name="grade" value="{{student.grade}}" class="t_student_grade"></div> 
+                        <div><input type="submit" value="Update"></div>
+                        <input type="hidden" name="student_id" value="{{student.id}}">
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="done"><a href="/teacher_profile/{{jinja.teacher_id}}">{{jinja.link}}</a></div>
         </div>
     {% endfor %}
 {% endblock %}
