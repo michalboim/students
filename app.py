@@ -1060,51 +1060,6 @@ def updeat_grade(course_id): # a teacher user update grade
         crud.change_grade(request.form['grade'], request.form['student_id'], course_id)
         return redirect(url_for('updeat_grade',course_id=course_id))
 
-
-    
-
-
-
-
-@app.route('/teachers')
-def show_teachers():
-    log=check_log()
-    info=chek_admin()
-    teachers=crud.read_all('teachers')
-    return render_template('teachers.html', log=log, info=info, teachers=create_teachers_objects(teachers))
-
-@app.route('/teacher/<teacher_id>',  methods=['GET', 'POST'])
-def teacher_info_a(teacher_id):
-    log=check_log()
-    info=chek_admin()
-    if request.method=='POST':        
-        new_grade=request.form['new_grade']
-        student_id=request.form['student_id']
-        course_id=request.form['course_id']
-        crud.change_grade(new_grade, student_id, course_id)
-    teacher=crud.read_if('*',"teachers","id", teacher_id)
-    teacher_object=create_students_objects(teacher)
-    teacher_courses=crud.read_if('*', 'courses', 'teacher_id', teacher_id)
-    teacher_course_object=create_courses_objects(teacher_courses)
-    students_courses=[]
-    for course in teacher_course_object:    
-        students=[]
-        students_info=crud.read_if('student_id, grade', 'students_courses', 'course_id', course.tid )
-        students.append(course.name)
-        for s in students_info:
-             student=namedtuple('C_S', [ 'student_id','student_name','course_id','grade'])
-             student.student_id=s[0]
-             student.student_name=crud.student_name(s[0])
-             student.course_id=course.tid
-             student.grade=s[1]
-             students.append(student)
-        students_courses.append(students)
-    return render_template('teachers.html', log=log, info=info, teacher=teacher_object, teacher_courses=teacher_course_object, students_courses=students_courses)
-
-
-    
-
-
 @app.route('/messages')
 def messages():
     all_messages=crud.read_all('messages')
