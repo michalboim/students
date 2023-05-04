@@ -67,20 +67,27 @@
 
 /*teacherCourses react*/
             /*courses*/
-            .t_nav{
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
+            .course_information{
+                display:grid;
+                grid-template-columns: max-content max-content;
+                grid-template-rows: max-content max-content;
+                row-gap: 20px;
             }
-            .t_nav{
+            .courses_title{
+                grid-column: 1;
+                grid-row: 1;
                 font-size: larger;
                 font-weight: bold;
             }
             .t_no_courses{
+                grid-column: 1;
+                grid-row: 2;
                 font-weight: normal; 
                 font-size: large; 
             }
             .teacher_courses{
+                grid-column: 1;
+                grid-row: 2;
                 display: flex;
                 gap: 10px;
             }
@@ -124,34 +131,36 @@
             .teacher_nav div{
                 display: block;
             }
-            .course_information{
-                display: flex;
-                gap: 15px;
-            }
+
 
             /*courses info*/
             .t_course_info{
+                grid-column: 2;
+                grid-row: 2;
                 display: flex;
+                flex-direction: column;
                 gap: 10px;
-                position: absolute;
-                top: 260px;
             }
             .t_course_title{
                 font-weight: bold;
                 text-decoration: underline;
                 font-size: large;
             }
+            .t_course_details{
+                display: flex;
+                gap: 20px; 
+            }
 
             /*students*/
             .t_students_info{
+                grid-column: 2;
+                grid-row: 2;
                 display: flex;
                 flex-direction: column;
                 gap: 20px;
-                position: absolute;
-                top: 260px;
+
             }
             .mean_grades{
-                background-color: rgb(247, 207, 207);
                 width: max-content;
             }
             .students_grid{
@@ -182,6 +191,15 @@
                 grid-column: 4;
                 border-left: solid black 1px;
                 padding: 5px 5px 5px 5px;
+            }
+
+            /*statistics*/
+            .t_statistics{
+                grid-column: 2;
+                grid-row: 2;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
             }
 
  /*attendance*/

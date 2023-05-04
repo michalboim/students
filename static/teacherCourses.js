@@ -7,32 +7,39 @@ function TeacherCourses(){
     const [studentsInfo, setStudentsInfo] = React.useState([]);
     const [students, setStudents] = React.useState('');
     const [className, setClassName] = React.useState([]);
+    const [statistics, setStatistics] = React.useState([]);
     
     const getFun=(event)=>{
         event.preventDefault();
         let id=event.target.value;
         let name=event.target.name;
         Data.forEach(function(item, index){
-            console.log(item.id)
             if (item.id==id){
-                console.log(item)
                 if (name=='information'){
                     setCoursesInfo(item)
                     setStudentsInfo([])
                     setStudents('')
                     setClassName([])
+                    setStatistics('')
                 }
                 if (name=='students'){
                     setStudentsInfo(item.students)
                     setStudents(item)
                     setClassName(item.class)
                     setCoursesInfo('')
+                    setStatistics('')
+                }
+                if (name=='statistics'){
+                    setStatistics(item)
+                    setStudentsInfo([])
+                    setStudents('')
+                    setClassName([])
+                    setCoursesInfo('')
                 }
             }
         })
 
     }
-    console.log(studentsInfo)
     const getTeacherCourses = () => {
         axios.get('/users_details').then((result) => {
             setNoCourses(result.data.no_courses)
@@ -51,36 +58,38 @@ function TeacherCourses(){
     }, [] 
         )
         return (
-            <div >
-                <div class="t_nav">
-                    <div>Courses:</div>
-                    <div class="t_no_courses">{noCourses}</div>
-                    <div class="teacher_courses" >                       
-                    {courses.map((course)=>
-                        <div class="t_course">
-                            <div class="t_course_name">{course[1]}</div>
-                            <div class="teacher_nav">
-                                <button onClick={getFun} name='information' value={course[0]}>Information</button>
-                                <button onClick={getFun} name='students' value={course[0]}>Students</button> 
-                                <button onClick={getFun} name='statistics' value={course[0]}>Statistics</button>
-                                <button><a href={"/attendance/"+course[0]}>Mark Attendance</a></button>    
-                            </div>   
-                        </div>
-                        )}                        
-                    </div>                
-                </div>
+            <div class='course_information'>
+                <div class='courses_title'>Courses:</div>
+                <div class="t_no_courses">{noCourses}</div>
+                <div class="teacher_courses" >                       
+                {courses.map((course)=>
+                    <div class="t_course">
+                        <div class="t_course_name">{course[1]}</div>
+                        <div class="teacher_nav">                 
+                            <button onClick={getFun} name='information' value={course[0]}>Information</button>
+                            <button onClick={getFun} name='students' value={course[0]}>Students</button>
+                            <button><a href={"/updeat_grade/"+course[0]}>Update Grade</a></button> 
+                            <button onClick={getFun} name='statistics' value={course[0]}>Statistics</button>
+                            <button><a href={"/attendance/"+course[0]}>Mark Attendance</a></button>
+                        </div>   
+                    </div>
+                    )}                        
+                </div>                
                 <div class='t_course_info'>
-                    <div class='t_course_title'>{coursesInfo.course_name} {coursesInfo.info_title}</div>
-                    <div>{coursesInfo.start} {coursesInfo.line} </div>
-                    <div>{coursesInfo.day} {coursesInfo.line} </div>
-                    <div>{coursesInfo.time} {coursesInfo.line} </div>
+                    <div class='t_course_title'>{coursesInfo.course_name} </div>
+                    <div class='t_course_details'>
+                        <div>{coursesInfo.start}</div>
+                        <div>{coursesInfo.line}</div>
+                        <div>{coursesInfo.day} </div>
+                        <div>{coursesInfo.line}</div>
+                        <div>{coursesInfo.time}</div>
+                    </div>
                 </div>
                 <div class='t_students_info'>
-                    <div >
-                        <div class='t_course_title'> {students.students_title}</div>
-                        <div class='t_no_courses'> {students.no_students}</div>
+                    <div>
+                        <div class='t_course_title'>{students.students_title}</div>                        
+                        <div class='t_course_title'> {students.no_students}</div>
                     </div>
-                    <div class='mean_grades'> {students.mean_grades}</div>
                     <div class='students_grid'>
                         <div class={className[0]}>{students.title_name}</div>
                         <div class={className[0]}>{students.title_email}</div>
@@ -108,6 +117,16 @@ function TeacherCourses(){
                         </div> 
                     </div>
                 </div> 
+                <div class='t_statistics'>
+                    <div class='mean_grades'>
+                        <div class='t_course_title'>{statistics.mean_grades_title} {statistics.no_students}</div>
+                        <div >{statistics.mean_grades} </div>
+                    </div>
+                    <div class='mean_grades'>
+                        <div class='t_course_title'>{statistics.average_attend_title}</div>
+                        <div >{statistics.average_attend} </div>
+                    </div>
+                </div>
             </div>    
         );
 }
