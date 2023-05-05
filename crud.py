@@ -56,6 +56,12 @@ def teacher_id(email):
     name=name[0][0]
     return name
 
+def get_id(table, value, condition):
+    '''get user id'''
+    user_id=read_if('id',table, value, condition)
+    user_id=user_id[0][0]
+    return user_id
+
 def admin_id(email):
     '''get email and return id from administrators table'''
     name=read_if('id', 'administrators', 'email', email)

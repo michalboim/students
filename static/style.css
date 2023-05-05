@@ -1,4 +1,7 @@
 /*all*/
+head{
+    font-family: 'Times New Roman', Times, serif;
+}
 input{
     font-family: 'Times New Roman', Times, serif;
 }
@@ -24,7 +27,7 @@ button{
     color: black;
 }
 .link>a:hover{
-    background-color: rgb(201, 248, 248);
+    background-color:rgb(193, 99, 99);
     border-radius: 2px;
 }
 #submit{
@@ -46,20 +49,32 @@ button{
     font-size:small;
     width: 120px;
 }
+.more_links a:hover{
+    background-color:rgb(234, 181, 181);
+}
 /*header*/
 .navbar{
     width: 100%;
+    height: 40px;
     text-decoration: none;
     display: flex;
     justify-content: space-around;
+    background-color: rgb(249, 220, 220);
+    border-radius: 3px 3px 3px 3px;
 }
 .navbar>*{
     text-decoration: none;
     color: black;
+    height: max-content;
+    margin-top: 10px;
 }
 .navbar>a:hover{
-    background-color: rgb(201, 248, 248);
+    background-color:rgb(193, 99, 99);
     border-radius: 2px;
+}
+.user_hello{
+    font-weight: bolder;
+    font-size: larger;
 }
 
 /*login*/
@@ -164,7 +179,7 @@ button{
 .course_info>a{
     text-decoration: none;
     color: black;
-    background-color: rgb(209, 206, 206);
+    background-color: rgb(233, 229, 229);
 }
 .course_name{
     width: 150px;
@@ -209,7 +224,7 @@ button{
 }
 .info_course_teacher>a:hover{
     width: max-content;
-    background-color: rgb(209, 206, 206);
+    background-color: rgb(233, 229, 229);
 }
 .info_course_students{
     grid-column: 2;
@@ -244,7 +259,7 @@ button{
     color: black;
 }
 .course_student_name>*>a:hover{   
-    background-color: rgb(209, 206, 206);
+    background-color: rgb(233, 229, 229);
     width: max-content;
 }
 .course_grade{
@@ -303,7 +318,7 @@ button{
                     color:black
                 }
                 .chosen_attend_attend>a:hover{
-                    background-color: rgb(209, 206, 206);
+                    background-color: rgb(233, 229, 229);
                     width: max-content;
                 }
                 .yes{
@@ -369,7 +384,7 @@ button{
                     border-radius: 3px;
                     border-color: black;
                     padding: 1px 3px 1px 2px;
-                    background-color: rgb(248, 242, 242);
+                    background-color: rgb(233, 229, 229);
                     width: max-content;
                     text-align: center;
                 }
@@ -405,7 +420,7 @@ button{
 }
 .add_course>input{
     border-style: none;
-    background-color: rgb(218, 214, 214);
+    background-color: rgb(233, 229, 229);
     border-radius: 10px;
 }
 .add_course>select{
@@ -440,7 +455,7 @@ button{
     color: black;
 }
 .info_course_update>a:hover{
-    background-color: rgb(236, 234, 234);
+    background-color: rgb(233, 229, 229);
     border-radius: 2px;
 }
 .course_link{
@@ -468,7 +483,7 @@ button{
 }
 .info_chosen_course>input{
     border-style: none;
-    background-color: rgb(218, 214, 214);
+    background-color: rgb(233, 229, 229);
     border-radius: 10px;
 }
 .info_chosen_course>select{
@@ -542,7 +557,7 @@ button{
 .student_info>a{
     text-decoration: none;
     color: black;
-    background-color: rgb(209, 206, 206);
+    background-color: rgb(233, 229, 229);
 }
 .student_name{
     width:250px;
@@ -653,7 +668,7 @@ button{
                                     width: max-content;
                                 }
                                 .choosing_course>a:hover{
-                                    background-color: rgb(209, 206, 206);
+                                    background-color: rgb(233, 229, 229);
                                 }
 /*add_student*/
 .main_students{
@@ -672,7 +687,7 @@ button{
 }
 .add_student>input{
     border-style: none;
-    background-color: rgb(218, 214, 214);
+    background-color: rgb(233, 229, 229);
     border-radius: 10px;
 }
 
@@ -704,7 +719,7 @@ button{
     color: black;
 }
 .info_student_update>a:hover{
-    background-color: rgb(236, 234, 234);
+    background-color: rgb(233, 229, 229);
     border-radius: 2px;
 }
 
@@ -727,7 +742,7 @@ button{
 }
 .info_chosen_student>input{
     border-style: none;
-    background-color: rgb(218, 214, 214);
+    background-color: rgb(233, 229, 229);
     border-radius: 10px;
 }
 .info_chosen_student>select{
@@ -801,7 +816,7 @@ button{
 .teacher_info>a{
     text-decoration: none;
     color: black;
-    background-color: rgb(209, 206, 206);
+    background-color: rgb(233, 229, 229);
 }
 .teacher_name{
     width:250px;
@@ -843,7 +858,7 @@ button{
     color: black;
 }
 .teacher_course_name>*>a:hover{
-    background-color: rgb(209, 206, 206);
+    background-color: rgb(233, 229, 229);
 }
 /*add_teacher*/
 .main_teachers{
@@ -862,7 +877,7 @@ button{
 }
 .add_teacher>input{
     border-style: none;
-    background-color: rgb(218, 214, 214);
+    background-color: rgb(233, 229, 229);
     border-radius: 10px;
 }
 
@@ -895,7 +910,7 @@ button{
     color: black;
 }
 .info_teacher_update>a:hover{
-    background-color: rgb(236, 234, 234);
+    background-color: rgb(233, 229, 229);
     border-radius: 2px;
 }
 
@@ -918,7 +933,7 @@ button{
 }
 .info_chosen_teacher>input{
     border-style: none;
-    background-color: rgb(218, 214, 214);
+    background-color: rgb(233, 229, 229);
     border-radius: 10px;
 }
 .info_chosen_teacher>select{

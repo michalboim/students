@@ -25,7 +25,7 @@ def check_log(): #check if user is loged in or not
         log_result['log']=log
         return log_result
 
-def chek_admin():
+def info_user(): # get user info
     if "role" in session:
         info={}
         if session['role']=='admin':
@@ -37,10 +37,12 @@ def chek_admin():
             info['id']=session['id']
             info['link']=f"/teacher_profile/{session['id']}"
             info['word']=f"Welcome {crud.teacher_name(session['id'])}"
+            info['class']='user_hello'
         if session['role']=='student':
             info['id']=session['id']
             info['link']=f"/student_profile/{session['id']}"
             info['word']=f"Welcome {crud.student_name(session['id'])}"
+            info['class']='user_hello'
         return info
 
 # react routes:
@@ -138,57 +140,11 @@ def courses(): # get all courses datails for react
         courses_list.append(course_dict)
     return courses_list
 
-@app.route('/course_details/<course_id>')
-def course_details(course_id): # get course datails for react
-    info_course={}
-    info_course['course_id']=course_id
-    info_course['info_title']='Information: '
-    course=crud.read_if('*', 'courses','id', course_id)
-    for c in course:    
-        info_course['course_name']=c[1]
-        info_course['description']=c[2]
-        info_course['teacher_id']=c[3]
-        info_course['teacher_name']=crud.teacher_name(c[3]) 
-        info_course['start']=f'{c[4][8:]}-{c[4][5:7]}-{c[4][0:4]}'
-        info_course['day']=c[5]
-        info_course['time']=c[6]
-        info_course['line']='|'
-    students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course_id)
-    if len(students_ids)==0:
-        info_course['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
-        info_course['students']=[]
-        info_course['class']=[]
-    else:
-        info_course['students_title']=f'Students who are enrolled to {crud.course_name(course_id)} course:'
-        info_course['name']='Name'
-        info_course['email']='Email'
-        info_course['phone']='Phone'
-        info_course['grade']='Grade'
-        info_course['class']=['students_grid_title','students_grid_email','students_grid_phone','students_grid_grade']
-        info_course['students']=[]
-        grades=[]
-        for student in students_ids:
-            info=crud.read_if('*','students', 'id', student[0])
-            for i in info:
-                info_student={}
-                info_student['id']=i[0]
-                info_student['name']=i[1]
-                info_student['email']=i[2]
-                info_student['phone']=i[3]
-                info_student['grade']=student[1]
-                if type(info_student['grade'])==int:
-                    grades.append(info_student['grade'])
-                else:
-                    pass
-            info_course['students'].append(info_student)
-            info_course['mean']=f'The average grades for the course is: {round(statistics.mean(grades),2)}'
-    return info_course
-
 # start routes:
 @app.route('/')
 def home():
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     return render_template('home.html', log=log, info=info)
 
 @app.route('/home')
@@ -198,7 +154,7 @@ def go_home():
 @app.route('/search')
 def search():
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     title=['Courses Resulte:', 'Students Resulte:', 'Teachers Resulte:']
     courses_list=crud.read_like('*', 'courses', 'name', request.args['search'].title())
     course_object=[]
@@ -223,25 +179,26 @@ def search():
 @app.route('/login', methods=['get','post'])
 def login():
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form1=['create']
     if request.method=='POST':
         auth=authenticate(request.form['email'], request.form['password'])
-        if auth=='student':
-            session['role']='student'
-            session['id']=crud.student_id(request.form['email'])
-            session['name']=crud.student_name(session['id'])
-            return redirect(url_for('student_profile', student_id=session['id']))
-        if auth=='teacher':
-            session['role']='teacher'
-            session['id']=crud.teacher_id(request.form['email'])
-            session['name']=crud.teacher_name(session['id'])
-            return redirect(url_for('teacher_profile', teacher_id=session['id']))
-        if auth=='admin':
-            session['role']='admin'
-            session['id']=crud.admin_id(request.form['email'])
-            session['name']=crud.admin_name(session['id'])
-            return redirect(url_for('administrator', admin_id=session['id']))
+        if len(auth)!=0:
+            if auth[0][1]=='student':
+                session['role']='student'
+                session['id']=crud.get_id('students', 'user_id', auth[0][0])
+                session['name']=crud.student_name(session['id'])
+                return redirect(url_for('student_profile', student_id=session['id']))
+            if auth[0][1]=='teacher':
+                session['role']='teacher'
+                session['id']=crud.get_id('teachers', 'user_id', auth[0][0])
+                session['name']=crud.teacher_name(session['id'])
+                return redirect(url_for('teacher_profile', teacher_id=session['id']))
+            if auth[0][1]=='admin':
+                session['role']='admin'
+                session['id']=crud.get_id('administrators', 'user_id', auth[0][0])
+                session['name']=crud.admin_name(session['id'])
+                return redirect(url_for('administrator', admin_id=session['id']))
         else:
             form=['create']
             return render_template('login.html', log=log, info=info, form1=form1, form=form, note='Incorrect username or password' )
@@ -258,13 +215,13 @@ def logout():
 @app.route('/administrator/<admin_id>' )
 def administrator(admin_id): # showe administrator pages
     log=check_log()
-    info=chek_admin()    
+    info=info_user()    
     return render_template ('administrator.html',log=log, info=info, course_dict='')
 
 @app.route('/admin_courses',methods=['GET', 'POST'])
 def admin_courses(): # courses information and actions for admin
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
@@ -280,7 +237,7 @@ def admin_courses(): # courses information and actions for admin
 @app.route('/course_info/<course_id>')
 def course_info(course_id): # specific course information
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     course_dict={}
     course_dict['link1']=['create']
     course_dict['id']=course_id
@@ -317,7 +274,7 @@ def course_info(course_id): # specific course information
 @app.route('/attendance_course/<course_id>', methods=['get','post'])
 def attendance_course(course_id): # View attendance for a specific course
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     course_dict={}
     course_dict['id']=course_id
     course_dict['link1']=['create']
@@ -380,7 +337,7 @@ def attendance_course(course_id): # View attendance for a specific course
 @app.route('/update_course_attendance/<course_id>') 
 def update_course_attendance(course_id): # Choosing a specific lesson to update attendance
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     course_dict={}
     course_dict['id']=course_id
     course_dict['link1']=['create']
@@ -397,7 +354,7 @@ def update_course_attendance(course_id): # Choosing a specific lesson to update 
 @app.route('/update_course_date_attendance/course_id=<course_id>date=<date>', methods=['get','post'])
 def update_course_date_attendance(course_id, date): # update attendance for a specific lesson in a course 
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     course_dict={}
     course_dict['id']=course_id
     course_dict['link1']=['create']
@@ -437,7 +394,7 @@ def update_course_date_attendance(course_id, date): # update attendance for a sp
 @app.route('/add_course', methods=['GET','POST'])
 def add_course():
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     if request.method=='POST':          
         crud.create('courses', 'name, description, teacher_id, start, day, time', f" '{request.form['new_name'].title()}', '{request.form['new_description']}', '{request.form['teacher_tid']}', '{request.form['new_start']}', '{request.form['new_day']}', '{request.form['new_time']}' ")
         return redirect(url_for('admin_courses'))
@@ -447,7 +404,7 @@ def add_course():
 @app.route('/update_courses', methods=['GET', 'POST'])
 def update_courses(): # Choosing a course to update 
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
@@ -462,7 +419,7 @@ def update_courses(): # Choosing a course to update
 @app.route('/chosen_course/<course_id>', methods=['GET', 'POST'])
 def chosen_course_update(course_id):
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form2=['create']
     chosen_course={}
     chosen_course['title_chosen']='Edit the Changes:'
@@ -493,7 +450,7 @@ def chosen_course_update(course_id):
 @app.route('/course_registration', methods=['GET', 'POST'])
 def course_registrationt(): # Choosing a specific course for student registration 
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
@@ -508,7 +465,7 @@ def course_registrationt(): # Choosing a specific course for student registratio
 @app.route('/course_id_registration/<course_id>',  methods=['GET', 'POST'])
 def course_id_registration(course_id): # Choosing students to registering to a chosen course
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     course_dict={}
     course_dict['form']=['create']
@@ -539,7 +496,7 @@ def course_id_registration(course_id): # Choosing students to registering to a c
 @app.route('/admin_students', methods=['GET', 'POST'])
 def admin_students(): # students information and actions for admin
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     if request.method=='POST':
         students=crud.read_like('*', 'students', 'name', request.form['search'].title())
@@ -553,7 +510,7 @@ def admin_students(): # students information and actions for admin
 @app.route('/student_info/<student_id>')
 def student_info(student_id): # specific student information
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     student_dict={}
     student_dict['link1']=['create']
     student_dict['link2']=['create']
@@ -585,7 +542,7 @@ def student_info(student_id): # specific student information
 @app.route('/attendance_student/<student_id>', methods=['get','post'])
 def attendance_student(student_id): # View attendance for a specific student
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     student_dict={}
     student_dict['link1']=['create']
     student_dict['link2']=[]
@@ -636,7 +593,7 @@ def attendance_student(student_id): # View attendance for a specific student
 @app.route('/update_student_attendance/<student_id>')
 def update_student_attendance(student_id): # Choosing a specific course for a student to update attendance
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     student_dict={}
     student_dict['link1']=['create']
     student_dict['link2']=['create']
@@ -653,7 +610,7 @@ def update_student_attendance(student_id): # Choosing a specific course for a st
 @app.route("/update_student_course_attendance/student_id=<student_id>course=<course_id>", methods=['get','post'])
 def update_student_course_attendance(student_id, course_id): # update attendance for a specific student in a specific course
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     student_dict={}
     student_dict['link1']=['create']
     student_dict['link2']=['create']
@@ -689,7 +646,7 @@ def update_student_course_attendance(student_id, course_id): # update attendance
 @app.route('/add_student', methods=['POST','GET'])
 def add_student():
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     if request.method=='POST':
         num_students=len(crud.read_all('students'))
         try:
@@ -708,7 +665,7 @@ def add_student():
 @app.route('/update_students', methods=['GET', 'POST'])
 def update_students(): # choosing a student to update
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     if request.method=='POST':
         students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
@@ -723,7 +680,7 @@ def update_students(): # choosing a student to update
 @app.route('/chosen_student/<student_id>', methods=['GET', 'POST'])
 def chosen_student_update(student_id):
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     student_info=crud.read_if('*',"students","id", student_id)
     student_object=create_students_objects(student_info)
     if request.method=='POST':
@@ -750,7 +707,7 @@ def chosen_student_update(student_id):
 @app.route('/student_registration', methods=['GET', 'POST'])
 def student_registrationt():  # Choosing a specific student for course registration 
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
@@ -763,7 +720,7 @@ def student_registrationt():  # Choosing a specific student for course registrat
         return render_template('course_registration.html', log=log, info=info, form=form, course_dict='', courses=create_courses_objects(crud.read_all('courses')))
 
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     if request.method=='POST':
         students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
@@ -778,7 +735,7 @@ def student_registrationt():  # Choosing a specific student for course registrat
 @app.route('/student_id_registration/<student_id>',  methods=['GET', 'POST'])
 def student_id_registration(student_id): # Choosing courses to registering to a chosen student
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     student_dict={}
     student_dict['form']=['create']
@@ -811,7 +768,7 @@ def student_id_registration(student_id): # Choosing courses to registering to a 
 @app.route('/admin_teachers',methods=['GET', 'POST'])
 def admin_teachers(): # teachers information and actions for admin
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form=['create']
     if request.method=='POST':
         teachers=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
@@ -825,7 +782,7 @@ def admin_teachers(): # teachers information and actions for admin
 @app.route('/teacher_info/<teacher_id>')
 def teacher_info(teacher_id): # specific teacher information
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     teacher_dict={}
     teacher_dict['link']=['create']
     teacher_dict['id']=teacher_id
@@ -845,7 +802,7 @@ def teacher_info(teacher_id): # specific teacher information
 @app.route('/add_teacher', methods=['POST','GET'])
 def add_teacher():
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     if request.method=='POST':
         num_teachers=len(crud.read_all('teachers'))
         try:
@@ -864,7 +821,7 @@ def add_teacher():
 @app.route('/update_teachers', methods=['GET', 'POST'])
 def update_teachers(): # choosing a teacher to update
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form1=['create']
     if request.method=='POST':
         teachers_list=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
@@ -879,7 +836,7 @@ def update_teachers(): # choosing a teacher to update
 @app.route('/chosen_teacher/<teacher_id>', methods=['GET', 'POST'])
 def chosen_teacher_update(teacher_id):
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     teacher_info=crud.read_if('*',"teachers","id", teacher_id)
     teacher_object=create_teachers_objects(teacher_info) 
     if request.method=='POST':
@@ -907,15 +864,15 @@ def chosen_teacher_update(teacher_id):
 @app.route('/student_profile/<student_id>', methods=['get', 'post'])
 def student_profile(student_id):
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form2=["create"]
     email=crud.read_if('email','students', 'id', student_id)
     if request.method=='POST':
         new_password=request.form['new_password']
-        crud.update_if('users', 'password', new_password, 'student_user', email[0][0])
+        crud.update_if('new_users', 'password', new_password, 'username', email[0][0])
         return redirect(url_for('student_profile', student_id=student_id))
     else:
-        password=crud.read_if('password', 'users', 'student_user', email[0][0])
+        password=crud.read_if('password', 'new_users', 'username', email[0][0])
         if password[0][0]=='123456':
             return render_template('login.html', log=log, info=info, form2=form2, note='You need to change the initial password you received:')
         return render_template('home.html', log=log, info=info, hello= f"hello {crud.student_name(student_id)}") 
@@ -924,16 +881,16 @@ def student_profile(student_id):
 @app.route('/teacher_profile/<teacher_id>', methods=['get', 'post'])
 def teacher_profile(teacher_id): # a teacher user sees his profile
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     form2=["create"]
     jinja={}
     email=crud.read_if('email','teachers', 'id', teacher_id)
     if request.method=='POST':
         new_password=request.form['new_password']
-        crud.update_if('users', 'password', new_password, 'teacher_user', email[0][0])
+        crud.update_if('new_users', 'password', new_password, 'username', email[0][0])
         return redirect(url_for('teacher_profile', teacher_id=teacher_id))
     else:
-        password=crud.read_if('password', 'users', 'teacher_user', email[0][0])
+        password=crud.read_if('password', 'new_users', 'username', email[0][0])
         if password[0][0]=='123456':
             return render_template('login.html', log=log, info=info, form2=form2, note='You need to change the initial password you received:')
         else:
@@ -945,7 +902,7 @@ def teacher_profile(teacher_id): # a teacher user sees his profile
 @app.route('/teacher_info_update/<teacher_id>', methods=['get', 'post'])
 def teacher_info_update(teacher_id): # a teacher user update his info
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     jinja={}
     teacher_info=crud.read_if('*', 'teachers', 'id', teacher_id)
     jinja['teacher']=create_teachers_objects(teacher_info)
@@ -973,7 +930,7 @@ def teacher_info_update(teacher_id): # a teacher user update his info
 @app.route('/attendance/<course_id>', methods=['get', 'post'])
 def course_attendance(course_id): # a teacher user mark attendance 
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     jinja={}
     jinja['course_id']=course_id
     jinja['attend']=['create']
@@ -1034,7 +991,7 @@ def course_attendance(course_id): # a teacher user mark attendance
 @app.route('/updeat_grade/<course_id>', methods=['get','post'])
 def updeat_grade(course_id): # a teacher user update grade
     log=check_log()
-    info=chek_admin()
+    info=info_user()
     jinja={}
     jinja['grades']=['create']
     jinja['course_id']=course_id

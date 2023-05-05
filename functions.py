@@ -1,6 +1,6 @@
 import classes
 import crud
-
+from setup_db import query
 def create_courses_objects(courses: list):
     courses_objects=[classes.Course(course[0], course[1], course[2], course[3], course[4], course[5], course[6] ) for course in courses]
     for c in courses_objects:
@@ -24,14 +24,8 @@ def courses_teachers():
                 courses_teachers.append(course_teacher)
     return courses_teachers
 
-def authenticate(email, password):
-    student_auth=crud.read_two_if('role', 'users', 'student_user', email, 'password', password)
-    if len(student_auth)!=0:
-        return student_auth[0][0]
-    teacher_auth=crud.read_two_if('role', 'users', 'teacher_user', email, 'password', password)
-    if len(teacher_auth)!=0:
-        return teacher_auth[0][0]
-    admin_auth=crud.read_two_if('role', 'users', 'admin_user', email, 'password', password)
-    if len(admin_auth)!=0:
-        return admin_auth[0][0]
+def authenticate(email,password):
+    result=query(f"SELECT new_users.id, roles.type from new_users, roles WHERE new_users.username='{email}' AND new_users.password='{password}' AND roles.id=new_users.role_id")
+    if len(result)!=0:
+        return result
     return []

@@ -13,11 +13,11 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS courses (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        description TEXT,
-        teacher_id TEXT NOT NULL,
-        start TEXT,
-        day TEXT,
-        time TEXT, 
+        description TEXT DEFAULT "Still not updated",
+        teacher_id TEXT NOT NULL DEFAULT "Still not updated",
+        start TEXT DEFAULT "Still not updated",
+        day TEXT DEFAULT "Still not updated",
+        time TEXT DEFAULT "Still not updated", 
         FOREIGN KEY (teacher_id) REFERENCES teachers (id)
         )
     """)
@@ -25,37 +25,47 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS teachers (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        phone TEXT UNIQUE
+        email TEXT UNIQUE ,
+        phone TEXT UNIQUE ,
+        user_id INTEGER,
+        FOREIGN KEY(user_id) REFERENCES new_users (id)
         ) 
     """) 
     query("""
     CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        phone TEXT UNIQUE
+        email TEXT UNIQUE,
+        phone TEXT UNIQUE,
+        user_id INTEGER,
+        FOREIGN KEY(user_id) REFERENCES new_users (id)
         )
     """)
     query("""
     CREATE TABLE IF NOT EXISTS administrators (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE
+        email TEXT UNIQUE,
+        phone TEXT UNIQUE,
+        user_id INTEGER,
+        FOREIGN KEY(user_id) REFERENCES new_users (id)
         ) 
     """) 
     query("""
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS new_users (
         id INTEGER,
-	    student_user TEXT  UNIQUE,
-	    teacher_user TEXT  UNIQUE,
-	    admin_user TEXT UNIQUE,
+	    username TEXT UNIQUE,
 	    password TEXT DEFAULT "123456",
-	    role TEXT,
+	    role_id INTEGER,
 	    PRIMARY KEY(id),
-	    FOREIGN KEY(student_user) REFERENCES students (email),
-	    FOREIGN KEY (teacher_user) REFERENCES teachers (email),
-        FOREIGN KEY (admin_user) REFERENCES administrators (email)
+        FOREIGN KEY (role_id) REFERENCES roles (id)
+        )
+    """)
+    query("""
+    CREATE TABLE IF NOT EXISTS roles (
+        id INTEGER,
+	    type TEXT,
+	    PRIMARY KEY(id)
         )
     """)
     query("""
@@ -87,27 +97,44 @@ def create_tables():
     )
     """)
 def create_fake_data(students_num=10, teachers_num=4):
-
+    roels={1:'student', 2:'teacher', 3:'admin'}
+    for role in roels.values():
+        query(f"INSERT INTO roles (type) VALUES ('{role}')")
     fake=faker.Faker()
     for student in range(students_num):
         email=fake.email()
-        query(f"INSERT INTO students (name, email) VALUES ('{fake.name()}','{email}')")
-        query(f"INSERT INTO users (student_user, role) VALUES ('{email}', 'student')")
+        query(f"INSERT INTO new_users (username, role_id) VALUES ('{email}', '1')")
+        user_id=query(f"SELECT id FROM new_users WHERE username='{email}'")
+        query(f"INSERT INTO students (name, email, user_id) VALUES ('{fake.name()}','{email}', '{user_id[0][0]}')")
     for teachers in range(teachers_num):
         email=fake.email()
-        query(f"INSERT INTO teachers (name, email) VALUES ('{fake.name()}','{email}')")
-        query(f"INSERT INTO users (teacher_user, role) VALUES ('{email}', 'teacher')")
+        query(f"INSERT INTO new_users (username, role_id) VALUES ('{email}', '2')")
+        user_id=query(f"SELECT id FROM new_users WHERE username='{email}'")
+        query(f"INSERT INTO teachers (name, email, user_id) VALUES ('{fake.name()}','{email}', '{user_id[0][0]}')")
     for admin in range(teachers_num):
         email=fake.email()
-        query(f"INSERT INTO administrators (name, email) VALUES ('{fake.name()}','{email}')")
-        query(f"INSERT INTO users (admin_user,password, role) VALUES ('{email}', 'admin','admin')")
+        query(f"INSERT INTO new_users (username, role_id, password) VALUES ('{email}', '3', 'admin')")
+        user_id=query(f"SELECT id FROM new_users WHERE username='{email}'")
+        query(f"INSERT INTO administrators (name, email, user_id) VALUES ('{fake.name()}','{email}', '{user_id[0][0]}')")
     courses=['python', 'java', 'html', 'css', 'js']
     for course in courses:
-        trachers_ids=[tup[0] for tup in query("SELECT id FROM teachers")] #[(1,),(2,)]
+        trachers_ids=[tup[0] for tup in query("SELECT id FROM teachers")]
         query(f"INSERT INTO courses (name, teacher_id, start) VALUES ('{course.title()}', '{random.choice(trachers_ids)}','2000-01-01' )")
     messages=['message 1', 'message 2', 'message 3']
     for message in messages:
         query(f"INSERT INTO messages (message) VALUES ('{message}')")
+    
+    query(f"INSERT INTO new_users (username, role_id) VALUES ('d@d', '1')")
+    user_id=query(f"SELECT id FROM new_users WHERE username='d@d'")
+    query(f"INSERT INTO students (name, email, user_id) VALUES ('dan','d@d', '{user_id[0][0]}')")
+    
+    query(f"INSERT INTO new_users (username, role_id) VALUES ('t@t', '2')")
+    user_id=query(f"SELECT id FROM new_users WHERE username='t@t'")
+    query(f"INSERT INTO teachers (name, email, user_id) VALUES ('tal','t@t', '{user_id[0][0]}')")
+    
+    query(f"INSERT INTO new_users (username, role_id, password) VALUES ('m@m', '3', 'admin')")
+    user_id=query(f"SELECT id FROM new_users WHERE username='m@m'")
+    query(f"INSERT INTO administrators (name, email, user_id) VALUES ('michal','m@m', '{user_id[0][0]}')")
 
 if __name__=="__main__":
     create_tables()
