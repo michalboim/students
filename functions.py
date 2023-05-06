@@ -8,11 +8,11 @@ def create_courses_objects(courses: list):
     return courses_objects
 
 def create_teachers_objects(teachers: list):
-    teachers_objects=[classes.Teacher(teacher[0], teacher[1], teacher[2], teacher[3]) for teacher in teachers]
+    teachers_objects=[classes.Teacher(teacher[0], teacher[1], teacher[2], teacher[3], teacher[4]) for teacher in teachers]
     return teachers_objects
 
 def create_students_objects(students: list):
-    students_objects=[classes.Student(student[0], student[1], student[2], student[3]) for student in students]
+    students_objects=[classes.Student(student[0], student[1], student[2], student[3], student[4]) for student in students]
     return students_objects
 
 def courses_teachers():

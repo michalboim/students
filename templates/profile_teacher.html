@@ -19,14 +19,13 @@
                     Edit Mobile Number: <input type="tel" name="phone" value="{{teacher.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
                 </div> 
             {% endfor %}
+            {% for note in jinja.note %}
+                <div class="t_note">{{note}}</div>
+            {% endfor %}
             <div class="t_info_click">
                 <input type="submit" value="Update">
                 <a href="">Change password</a>
             </div>
-
-            {% for note in jinja.note %}
-                <div class="t_note">{{note}}</div>
-            {% endfor %}
         </form>          
     </div>
     {% endfor %}
