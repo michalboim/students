@@ -50,5 +50,24 @@
     </div>
     <div class="login_note">{{jinja.note}}</div>
     {% endfor %}
+    {% for form in jinja.form2 %}
+    <div class="login_information">
+        <form action="" class="login" method="post">
+            <div class="user_info">
+                <input type="text" name="old_password" placeholder="Enter old password">
+            </div>
+            <div class="user_info">
+                <input type="password" name="new_password" placeholder="Enter new password">
+            </div>
+            <div class="user_info">
+                <input type="password" name="verification" placeholder="Verification new password">
+            </div>
+            <div class="user_info">
+                <input type="submit" value="Submit">
+            </div>      
+        </form>
+    </div>
+    <div class="login_note">{{jinja.note}}</div>
+    {% endfor %}   
 </div>
 {% endblock %}

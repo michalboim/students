@@ -1084,7 +1084,7 @@ def user_info_update(user_id): # a user update his info
         if session['role']=='admin':
             return redirect(url_for('administrator', admin_id=user_id))
 
-@app.route('/change_password/<user_id>')
+@app.route('/change_password/<user_id>', methods=['get','post'])
 def change_password(user_id):
     log=check_log()
     info=info_user()
@@ -1104,10 +1104,28 @@ def change_password(user_id):
         admin_info=crud.read_if('*', table_name, 'id', user_id)
         jinja['user']=create_admins_objects(admin_info)    
     if request.method=='GET':
-        if jinja['user'][0].phone=='None' or jinja['user'][0].phone=='':
-            return 'no'
-    else:    #return render_template('login.html', log=log, info=info, jinja=jinja)
-        return jinja['user'][0].phone
+        return render_template('login.html', log=log, info=info, jinja=jinja)
+    else:
+        old_password=crud.read_two_if('password', 'new_users', 'username', jinja['user'][0].email, 'id', jinja['user'][0].user_id)
+        if old_password[0][0]!=request.form['old_password']:
+            jinja['note']='Incorrect password'
+            return render_template('login.html', log=log, info=info, jinja=jinja)
+        else:
+            if request.form['new_password']!=request.form['verification']:
+                    jinja['note']='The new password and verification are not the same'
+                    return render_template('login.html', log=log, info=info, jinja=jinja)
+            else:
+                crud.update_if('new_users','password', request.form['new_password'], 'id', jinja['user'][0].user_id)
+                if session['role']=='teacher':
+                    return redirect(url_for('teacher_profile', teacher_id=user_id))
+                if session['role']=='student':
+                    return redirect(url_for('student_profile', student_id=user_id))
+                if session['role']=='admin':
+                    return redirect(url_for('administrator', admin_id=user_id))
+
+           
+        
+       
 
 @app.route('/messages')
 def messages():
