@@ -794,14 +794,50 @@ def teacher_info(teacher_id): # specific teacher information
     teacher_dict['id']=teacher_id
     teacher=crud.read_if('*',"teachers","id", teacher_id)
     teacher_object=create_teachers_objects(teacher)
-    teacher_dict['courses_title']='Courses: '
+    teacher_dict['courses_title']='Courses:'
+    teacher_dict['title_name']='Name'
+    teacher_dict['title_grade']='Average grade'
+    teacher_dict['title_attend']='Average attendance'
     courses=crud.read_if('id','courses', 'teacher_id', teacher_id)
     if len(courses)==0:     
         teacher_dict['courses']=''
         teacher_dict['no_courses']='The teacher is not associated with any of the courses'
     else:
-        courses_names=[[c[0], crud.course_name(c[0])] for c in courses]
-        teacher_dict['courses']=courses_names
+        teacher_dict['form']=['create']
+        teacher_dict['course_info']=[]
+        for course in courses:
+            info_course={}
+            info_course['course_name']=crud.course_name(course[0])
+            info_course['course_id']=course[0]
+            course_grades=crud.read_if('grade', 'students_courses', 'course_id', course[0]) 
+            info_course['grades']=[]              
+            for grade in course_grades:            
+                if type(grade[0])==int:
+                    info_course['grades'].append(grade[0])
+            if len(info_course['grades'])==0:
+                info_course['grades_average']='No records was found in the system'
+            else:
+                info_course['grades_average']=f"{round(statistics.mean(info_course['grades']),2)}%"
+            course_attend=crud.read_if('attendance', 'students_attendance', 'course_id', course[0])
+            average_attend=[]
+            average_not_attend=[]
+            average_unknown=[]
+            if len(course_attend)==0:
+                info_course['average_attend']='There is no record in the system for lessons in this course'
+            else:    
+                for a in course_attend:
+                    if a[0]=='yes':
+                        average_attend.append(a)
+                    if a[0]=='no':
+                        average_not_attend.append(a)
+                    if a[0]=='unknown':
+                        average_unknown.append(a)
+                try:
+                    info_course['average_attend']=f"{round(len(average_attend)*100/(len(average_attend)+len(average_not_attend)))}%"
+                except:
+                    info_course['average_attend']='No record was found in the system for student attendance or non-attendance'
+            teacher_dict['course_info'].append(info_course)
+        teacher_dict['average_note']='*Excludes students with unknown status'
         teacher_dict['no_courses']=''
     return render_template('admin_teachers.html', log=log, info=info, teacher_object=teacher_object, teacher_dict=teacher_dict)
 
@@ -1003,11 +1039,12 @@ def updeat_grade(course_id): # a teacher user update grade
 
 # features for all users:
 @app.route('/user_info_update/<user_id>', methods=['get', 'post'])
-def user_info_update(user_id): # a teacher user update his info
+def user_info_update(user_id): # a user update his info
     log=check_log()
     info=info_user()
     jinja={}
     jinja['form1']=['create']
+    jinja['user_id']=user_id
     if session['role']=='teacher':
         table_name='teachers'
         teacher_info=crud.read_if('*', table_name, 'id', user_id)
@@ -1046,6 +1083,31 @@ def user_info_update(user_id): # a teacher user update his info
             return redirect(url_for('student_profile', student_id=user_id))
         if session['role']=='admin':
             return redirect(url_for('administrator', admin_id=user_id))
+
+@app.route('/change_password/<user_id>')
+def change_password(user_id):
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form2']=['create']
+    jinja['user_id']=user_id
+    if session['role']=='teacher':
+        table_name='teachers'
+        teacher_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_teachers_objects(teacher_info)  
+    if session['role']=='student':
+        table_name='students'
+        student_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_students_objects(student_info)
+    if session['role']=='admin':
+        table_name='administrators'
+        admin_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_admins_objects(admin_info)    
+    if request.method=='GET':
+        if jinja['user'][0].phone=='None' or jinja['user'][0].phone=='':
+            return 'no'
+    else:    #return render_template('login.html', log=log, info=info, jinja=jinja)
+        return jinja['user'][0].phone
 
 @app.route('/messages')
 def messages():

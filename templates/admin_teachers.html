@@ -39,14 +39,29 @@
                     <div class="info_teacher_phone"><span class="title_teacher">Phone: </span>{{teacher.phone}}</div>
                     {% endfor %}
                 </div>
-                <div class="info_teacher_courses">
+                <div class="info_teacher_courses">                   
                     <div class="title_teacher" style="margin-bottom: 10px;">{{teacher_dict.courses_title}}</div>
-                    <div class="teacher_course_name">
-                        {% for course in teacher_dict.courses %}
-                        <div><a href="/course_info/{{course[0]}}">{{course[1]}}</a></div>
+                    {% for form in teacher_dict.form %}
+                        <div class="course_title_names">{{teacher_dict.title_name}}</div>
+                        <div class="course_title_grades">{{teacher_dict.title_grade}}</div>
+                        <div class="course_title_attends">{{teacher_dict.title_attend}}</div>
+                        <div class="course_name_info">
+                            {% for course in teacher_dict.course_info %}
+                            <a href="/course_info/{{course.course_id}}">{{course.course_name}}</a>
                         {% endfor %}
-                    </div>
-                    <div class="no_teacher_courses">{{teacher_dict.no_courses}}</div>
+                        </div>
+                        <div class="course_grade_info">
+                            {% for course in teacher_dict.course_info %}
+                                <div >{{course.grades_average}}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="course_attend_info">
+                            {% for course in teacher_dict.course_info %}
+                                <div >{{course.average_attend}}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <div class="no_teacher_courses">{{teacher_dict.no_courses}}</div>                   
                 </div>
             </div>
         </div>

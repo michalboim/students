@@ -34,7 +34,7 @@
     {% for form in jinja.form1 %}   
     <div class="login_information">
         <form action="" method="post">
-            <div class="change_password"><a href="">Change password</a></div>
+            <div class="change_password"><a href="/change_password/{{jinja.user_id}}">Change password</a></div>
             {% for user in jinja.user %}
                 <div class="user_info">
                     Edit Email: <input  type="email" name="email" value="{{user.email}}"  title="example@example.com">

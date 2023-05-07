@@ -877,23 +877,76 @@ button{
     flex-direction: column;
     gap: 10px;    
 }
+.info_teacher_courses{
+    display: grid;
+    grid-template-columns: max-content max-content max-content;
+    grid-template-rows: max-content max-content max-content;
+    grid-column: 2;
+    grid-row: 1;
+}
 .title_teacher{
     font-size: large;
     font-weight: bold;
     grid-column: 1;
     grid-row: 1;
 }
-.teacher_course_name{
+.course_title_names{
+    grid-row: 2;
+    grid-column: 1;
+    font-weight: bold ;
+    border-bottom: solid black 1px;
+    padding: 5px 5px 5px 5px;
+    padding-bottom: 0px;
+}
+.course_title_grades{
+    grid-row: 2;
+    grid-column: 2;
+    font-weight: bold ;
+    border-bottom: solid black 1px;
+    padding: 5px 5px 5px 5px;
+    padding-bottom: 0px;
+}
+.course_title_attends{
+    grid-row: 2;
+    grid-column: 3;
+    font-weight: bold ;
+    border-bottom: solid black 1px;
+    padding: 5px 5px 5px 5px;
+    padding-bottom: 0px;
+}
+.course_name_info{
+    grid-row: 3;
+    grid-column: 1;
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    padding: 5px 5px 5px 5px;
 }
-.teacher_course_name>*>a{
+.course_grade_info{
+    grid-row: 3;
+    grid-column: 2;
+    border-left: solid black 1px;
+    padding: 5px 5px 5px 5px;
+}
+.course_attend_info{
+    grid-row: 3;
+    grid-column: 3;
+    border-left: solid black 1px;
+    padding: 5px 5px 5px 5px;
+}
+.teacher_course_name{
+    grid-row: 3;
+}
+.course_name_info a{
     text-decoration: none;
     color: black;
 }
-.teacher_course_name>*>a:hover{
+.course_name_info a:hover{
     background-color: rgb(233, 229, 229);
+    width: max-content;
+}
+.no_teacher_courses{
+    grid-row: 2;
+    grid-column: 1;
 }
 /*add_teacher*/
 .main_teachers{
