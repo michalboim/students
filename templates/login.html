@@ -3,22 +3,42 @@
 
 <div class="main_login">
     {% for f in form1 %}
-    <form action="" class="login" method="post">
-        <input type="text" name="email" placeholder="Enter username">
-        <input type="password" name="password" placeholder="Enter password">
-        <input type="submit" value="Submit">
-        {% for f in form %}
-            <div class="login_note">{{note}}</div>
-        {% endfor %} 
-    </form>
+    <div class="login_information">
+        <form action="" class="login" method="post">
+            <input type="text" name="email" placeholder="Enter username">
+            <input type="password" name="password" placeholder="Enter password">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <div class="login_note">{{note}}</div>
     {% endfor %}    
     {% for f in form2 %}
-    <form action="" method="post">
-        <div class="login_note">{{note}}</div>
-        <input type="password" name="new_password" placeholder="Enter new password">
-        <input type="submit" value="Submit">  
-    </form>
+    <div class="login_note">{{note}}</div>
+    <div class="login_information">
+        <form action="" method="post">           
+            <input type="password" name="new_password" placeholder="Enter new password">
+            <input type="submit" value="Submit">  
+        </form>
+    </div>
+    {% endfor %}
+    {% for form in jinja.form %}
+    <div class="login_information">
+        <form action="" method="post">
+            {% for user in jinja.user %}
+                <div>
+                    Edit Email: <input type="email" name="email" value="{{user.email}}"  title="example@example.com">
+                </div> 
+                <div>
+                    Edit Mobile Number: <input type="tel" name="phone" value="{{user.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
+                </div> 
+            {% endfor %}
+            <div class="login_info_click">
+                <input type="submit" value="Update">
+                <a href="">Change password</a>
+            </div>
+        </form>          
+    </div>
+    <div class="login_note">{{jinja.note}}</div>
     {% endfor %}
 </div>
-
 {% endblock %}

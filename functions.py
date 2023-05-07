@@ -15,6 +15,10 @@ def create_students_objects(students: list):
     students_objects=[classes.Student(student[0], student[1], student[2], student[3], student[4]) for student in students]
     return students_objects
 
+def create_admins_objects(admins: list):
+    admins_objects=[classes.Teacher(admin[0], admin[1], admin[2], admin[3], admin[4]) for admin in admins]
+    return admins_objects
+
 def courses_teachers():
     courses_teachers=[]
     for course in create_courses_objects(crud.read_all('courses')):

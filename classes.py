@@ -41,4 +41,17 @@ class Teacher:
 
     def __repr__(self) -> str:
         return self.name
+
+class Admin:
+    def __init__(self, tid, name, email, phone, user_id ) -> None:
+        self.tid=tid
+        self.name=name
+        self.email=email
+        self.phone=phone
+        self.user_id=user_id
     
+    def __str__(self) -> str:
+        return self.name
+
+    def __repr__(self) -> str:
+        return self.name

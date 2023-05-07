@@ -3,7 +3,7 @@ app = Flask(__name__)
 from setup_db import query
 import classes
 import crud
-from functions import create_courses_objects, create_students_objects, create_teachers_objects, courses_teachers, authenticate
+from functions import create_courses_objects, create_students_objects, create_teachers_objects, create_admins_objects, courses_teachers, authenticate
 from collections import namedtuple
 import datetime, statistics
 
@@ -201,8 +201,8 @@ def login():
                 return redirect(url_for('administrator', admin_id=session['id']))
         else:
             form=['create']
-            return render_template('login.html', log=log, info=info, form1=form1, form=form, note='Incorrect username or password' )
-    return render_template('login.html', log=log, form1=form1, info=info)
+            return render_template('login.html', log=log, info=info, form1=form1, form=form, jinja='', note='Incorrect username or password' )
+    return render_template('login.html', log=log, form1=form1, info=info, jinja='')
 
 @app.route('/logout')
 def logout():
@@ -884,8 +884,9 @@ def student_profile(student_id):
     else:
         password=crud.read_if('password', 'new_users', 'username', email[0][0])
         if password[0][0]=='123456':
-            return render_template('login.html', log=log, info=info, form2=form2, note='You need to change the initial password you received:')
-        return render_template('home.html', log=log, info=info, hello= f"hello {crud.student_name(student_id)}") 
+            return render_template('login.html', log=log, info=info, form2=form2, jinja='', note='You need to change the initial password you received:')
+        else:
+            return render_template('profile_student.html', log=log, info=info, jinja='', hello= f"hello {crud.student_name(student_id)}") 
 
 # teacher features:
 @app.route('/teacher_profile/<teacher_id>', methods=['get', 'post'])
@@ -902,7 +903,7 @@ def teacher_profile(teacher_id): # a teacher user sees his profile
     else:
         password=crud.read_if('password', 'new_users', 'username', email[0][0])
         if password[0][0]=='123456':
-            return render_template('login.html', log=log, info=info, form2=form2, note='You need to change the initial password you received:')
+            return render_template('login.html', log=log, info=info, form2=form2, jinja='', note='You need to change the initial password you received:')
         else:
             jinja={}
             jinja['js']=['teacher','teacher_courses']
@@ -938,6 +939,52 @@ def teacher_info_update(teacher_id): # a teacher user update his info
                 jinja['note']=["Mobile number already exists!"]
                 return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
         return redirect(url_for('teacher_profile', teacher_id=teacher_id))
+
+@app.route('/user_info_update/<user_id>', methods=['get', 'post'])
+def user_info_update(user_id): # a teacher user update his info
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form']=['create']
+    if session['role']=='teacher':
+        table_name='teachers'
+        teacher_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_teachers_objects(teacher_info)  
+    if session['role']=='student':
+        table_name='students'
+        student_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_students_objects(student_info)
+    if session['role']=='admin':
+        table_name='administrators'
+        admin_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_admins_objects(admin_info)    
+    if request.method=='GET':    
+        return render_template('login.html', log=log, info=info, jinja=jinja)
+    else:
+        email=request.form['email']
+        phone=request.form['phone']
+        if jinja['user'][0].email!=email:
+            check_user_table=crud.read_if('id', table_name, 'email', email)
+            check_new_users=crud.read_if('id', 'new_users', 'username', email)
+            if len(check_user_table)==0 and len(check_new_users)==0:
+                crud.update_if('new_users', 'username', f"'{email}'", 'id', jinja['user'][0].user_id)
+                crud.update_if(table_name, 'email', f"'{email}'",'id', user_id)
+            else:
+                jinja['note']="Email already exists"
+                return render_template('login.html', log=log, info=info, jinja=jinja)  
+        if jinja['user'][0].phone!=phone:
+            try:
+                crud.update_if(table_name, 'phone', f"'{phone}'",'id', user_id)
+            except:
+                jinja['note']="Mobile already exists"
+                return render_template('login.html', log=log, info=info, jinja=jinja)  
+        if session['role']=='teacher':
+            return redirect(url_for('teacher_profile', teacher_id=user_id))
+        if session['role']=='student':
+            return redirect(url_for('student_profile', student_id=user_id))
+        if session['role']=='admin':
+            return redirect(url_for('administrator', admin_id=user_id))
+
 
 @app.route('/attendance/<course_id>', methods=['get', 'post'])
 def course_attendance(course_id): # a teacher user mark attendance 

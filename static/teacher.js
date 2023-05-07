@@ -13,7 +13,7 @@ function Teacher(){
             <div class='t_info'>
                 <div>{user.email}</div>
                 <div>{user.phone}</div>
-                <div ><a href={'/teacher_info_update/'+user.id}>Update Information</a></div>                         
+                <div ><a href={'/user_info_update/'+user.id}>Update Information</a></div>                         
             </div>        
         );
 }
