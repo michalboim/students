@@ -158,6 +158,10 @@
         {% for l in course_dict.link2 %}
         <div>
             <a href="/attendance_course/{{course_dict.id}}">Check Attendance</a>
+        </div>           
+        {% endfor %}
+        {% for l in course_dict.link3 %}
+        <div>
             <a href="/update_course_attendance/{{course_dict.id}}">Update Attendance</a>
         </div>           
         {% endfor %}

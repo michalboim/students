@@ -8,27 +8,6 @@
         <div class="teacher_profile" id="{{jinja.js[0]}}"></div>
         <div id="{{jinja.js[1]}}"></div> 
     {% endfor %}
-    {% for form in jinja.form %}
-    <div class="teacher_information">
-        <form action="" method="post">
-            {% for teacher in jinja.teacher %}
-                <div>
-                    Edit Email: <input type="email" name="email" value="{{teacher.email}}"  title="example@example.com">
-                </div> 
-                <div>
-                    Edit Mobile Number: <input type="tel" name="phone" value="{{teacher.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
-                </div> 
-            {% endfor %}
-            {% for note in jinja.note %}
-                <div class="t_note">{{note}}</div>
-            {% endfor %}
-            <div class="t_info_click">
-                <input type="submit" value="Update">
-                <a href="">Change password</a>
-            </div>
-        </form>          
-    </div>
-    {% endfor %}
     {% for a in jinja.attend %}    
         <div class="main_check_attend">
             <div class='course_name_attend'>{{jinja.attend_title}}</div>

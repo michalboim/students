@@ -268,6 +268,7 @@ def course_info(course_id): # specific course information
             course_dict['no_lesson']='No lessons found in the system'
         else:
             course_dict['link2']=['create']
+            course_dict['link3']=['create']
     return render_template ('admin_courses.html', log=log, info=info, course_dict=course_dict, course_attend='', attend_update='', attend_date_update='')
 
 @app.route('/attendance_course/<course_id>', methods=['get','post'])
@@ -910,82 +911,6 @@ def teacher_profile(teacher_id): # a teacher user sees his profile
             jinja['section']=['create']
             return render_template('profile_teacher.html', log=log, info=info, jinja=jinja) 
 
-@app.route('/teacher_info_update/<teacher_id>', methods=['get', 'post'])
-def teacher_info_update(teacher_id): # a teacher user update his info
-    log=check_log()
-    info=info_user()
-    jinja={}
-    teacher_info=crud.read_if('*', 'teachers', 'id', teacher_id)
-    jinja['teacher']=create_teachers_objects(teacher_info)
-    jinja['form']=['create']
-    if request.method=='GET':    
-        return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)
-    else:
-        email=request.form['email']
-        phone=request.form['phone']
-        if jinja['teacher'][0].email!=email:
-            check_teachers=crud.read_if('id', 'teachers', 'email', email)
-            check_users=crud.read_if('id', 'new_users', 'username', email)
-            if len(check_teachers)==0 and len(check_users)==0:
-                crud.update_if('new_users', 'username', f"'{email}'", 'id', jinja['teacher'][0].user_id)
-                crud.update_if('teachers', 'email', f"'{email}'",'id', teacher_id)
-            else:
-                jinja['note']=["Email already exists!"]
-                return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
-        if jinja['teacher'][0].phone!=phone:
-            try:
-                crud.update_if('teachers', 'phone', f"'{phone}'",'id', teacher_id)
-            except:
-                jinja['note']=["Mobile number already exists!"]
-                return render_template('profile_teacher.html', log=log, info=info, jinja=jinja)  
-        return redirect(url_for('teacher_profile', teacher_id=teacher_id))
-
-@app.route('/user_info_update/<user_id>', methods=['get', 'post'])
-def user_info_update(user_id): # a teacher user update his info
-    log=check_log()
-    info=info_user()
-    jinja={}
-    jinja['form']=['create']
-    if session['role']=='teacher':
-        table_name='teachers'
-        teacher_info=crud.read_if('*', table_name, 'id', user_id)
-        jinja['user']=create_teachers_objects(teacher_info)  
-    if session['role']=='student':
-        table_name='students'
-        student_info=crud.read_if('*', table_name, 'id', user_id)
-        jinja['user']=create_students_objects(student_info)
-    if session['role']=='admin':
-        table_name='administrators'
-        admin_info=crud.read_if('*', table_name, 'id', user_id)
-        jinja['user']=create_admins_objects(admin_info)    
-    if request.method=='GET':    
-        return render_template('login.html', log=log, info=info, jinja=jinja)
-    else:
-        email=request.form['email']
-        phone=request.form['phone']
-        if jinja['user'][0].email!=email:
-            check_user_table=crud.read_if('id', table_name, 'email', email)
-            check_new_users=crud.read_if('id', 'new_users', 'username', email)
-            if len(check_user_table)==0 and len(check_new_users)==0:
-                crud.update_if('new_users', 'username', f"'{email}'", 'id', jinja['user'][0].user_id)
-                crud.update_if(table_name, 'email', f"'{email}'",'id', user_id)
-            else:
-                jinja['note']="Email already exists"
-                return render_template('login.html', log=log, info=info, jinja=jinja)  
-        if jinja['user'][0].phone!=phone:
-            try:
-                crud.update_if(table_name, 'phone', f"'{phone}'",'id', user_id)
-            except:
-                jinja['note']="Mobile already exists"
-                return render_template('login.html', log=log, info=info, jinja=jinja)  
-        if session['role']=='teacher':
-            return redirect(url_for('teacher_profile', teacher_id=user_id))
-        if session['role']=='student':
-            return redirect(url_for('student_profile', student_id=user_id))
-        if session['role']=='admin':
-            return redirect(url_for('administrator', admin_id=user_id))
-
-
 @app.route('/attendance/<course_id>', methods=['get', 'post'])
 def course_attendance(course_id): # a teacher user mark attendance 
     log=check_log()
@@ -1075,6 +1000,52 @@ def updeat_grade(course_id): # a teacher user update grade
     else:
         crud.change_grade(request.form['grade'], request.form['student_id'], course_id)
         return redirect(url_for('updeat_grade',course_id=course_id))
+
+# features for all users:
+@app.route('/user_info_update/<user_id>', methods=['get', 'post'])
+def user_info_update(user_id): # a teacher user update his info
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form1']=['create']
+    if session['role']=='teacher':
+        table_name='teachers'
+        teacher_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_teachers_objects(teacher_info)  
+    if session['role']=='student':
+        table_name='students'
+        student_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_students_objects(student_info)
+    if session['role']=='admin':
+        table_name='administrators'
+        admin_info=crud.read_if('*', table_name, 'id', user_id)
+        jinja['user']=create_admins_objects(admin_info)    
+    if request.method=='GET':    
+        return render_template('login.html', log=log, info=info, jinja=jinja)
+    else:
+        email=request.form['email']
+        phone=request.form['phone']
+        if jinja['user'][0].email!=email:
+            check_user_table=crud.read_if('id', table_name, 'email', email)
+            check_new_users=crud.read_if('id', 'new_users', 'username', email)
+            if len(check_user_table)==0 and len(check_new_users)==0:
+                crud.update_if('new_users', 'username', f"'{email}'", 'id', jinja['user'][0].user_id)
+                crud.update_if(table_name, 'email', f"'{email}'",'id', user_id)
+            else:
+                jinja['note']="Email already exists"
+                return render_template('login.html', log=log, info=info, jinja=jinja)  
+        if jinja['user'][0].phone!=phone:
+            try:
+                crud.update_if(table_name, 'phone', f"'{phone}'",'id', user_id)
+            except:
+                jinja['note']="Mobile already exists"
+                return render_template('login.html', log=log, info=info, jinja=jinja)  
+        if session['role']=='teacher':
+            return redirect(url_for('teacher_profile', teacher_id=user_id))
+        if session['role']=='student':
+            return redirect(url_for('student_profile', student_id=user_id))
+        if session['role']=='admin':
+            return redirect(url_for('administrator', admin_id=user_id))
 
 @app.route('/messages')
 def messages():

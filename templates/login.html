@@ -5,9 +5,15 @@
     {% for f in form1 %}
     <div class="login_information">
         <form action="" class="login" method="post">
-            <input type="text" name="email" placeholder="Enter username">
-            <input type="password" name="password" placeholder="Enter password">
-            <input type="submit" value="Submit">
+            <div class="user_info">
+                <input type="text" name="email" placeholder="Enter username">
+            </div>
+            <div class="user_info">
+                <input type="password" name="password" placeholder="Enter password">
+            </div>
+            <div class="user_info">
+                <input type="submit" value="Submit">
+            </div>      
         </form>
     </div>
     <div class="login_note">{{note}}</div>
@@ -15,27 +21,31 @@
     {% for f in form2 %}
     <div class="login_note">{{note}}</div>
     <div class="login_information">
-        <form action="" method="post">           
-            <input type="password" name="new_password" placeholder="Enter new password">
-            <input type="submit" value="Submit">  
+        <form action="" method="post">  
+            <div class="user_info">
+                <input type="password" name="new_password" placeholder="Enter new password">
+            </div> 
+            <div class="user_info">
+                <input type="submit" value="Submit">
+            </div>         
         </form>
     </div>
     {% endfor %}
-    {% for form in jinja.form %}
+    {% for form in jinja.form1 %}   
     <div class="login_information">
         <form action="" method="post">
+            <div class="change_password"><a href="">Change password</a></div>
             {% for user in jinja.user %}
-                <div>
-                    Edit Email: <input type="email" name="email" value="{{user.email}}"  title="example@example.com">
+                <div class="user_info">
+                    Edit Email: <input  type="email" name="email" value="{{user.email}}"  title="example@example.com">
                 </div> 
-                <div>
+                <div class="user_info">
                     Edit Mobile Number: <input type="tel" name="phone" value="{{user.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
                 </div> 
             {% endfor %}
-            <div class="login_info_click">
+            <div class="user_info">
                 <input type="submit" value="Update">
-                <a href="">Change password</a>
-            </div>
+            </div>           
         </form>          
     </div>
     <div class="login_note">{{jinja.note}}</div>

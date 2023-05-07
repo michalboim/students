@@ -86,6 +86,20 @@ button{
     flex-direction: column;
     gap: 10px;
 }
+.change_password a{
+    font-size: medium;
+    font-weight: normal;
+    text-decoration: none;
+    color: black;
+    border-width: 0.5px;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: gray;
+    padding: 1px 3px 1px 2px;
+    background-color: rgb(233, 229, 229);
+    text-align: center;
+    align-self: flex-end;
+}
 .login_information{
     display: flex;
     justify-content: center;
@@ -100,17 +114,25 @@ button{
     border-radius: 3px;
     font-size: larger;
     font-weight: bold;
+    width: 270px;
+    
 }
 .login_information>form>div{
     display: flex;
     flex-direction: column;
     gap: 5px;
+    
 }
 .login_information>form>div>input{
     font-size: large;
+    width: max-content;
 }
 .login_information>form>input{
     font-size: large;
+    width: max-content;
+}
+.user_info{
+    align-self: center;
 }
 .login_info_click{
     display: flex;
@@ -122,7 +144,6 @@ button{
     font-size: larger;
     font-weight: bolder;
 }
-
 
 /*search*/
 .main_search{

@@ -32,43 +32,6 @@
     text-align: center;
 }
 
-/*teacher update form*/
-.teacher_information{
-    display: flex;
-    justify-content: center;
-}
-.teacher_information>form{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 30px;
-    padding: 15px 15px 15px 15px;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 3px;
-    font-size: larger;
-    font-weight: bold;
-}
-.teacher_information>form>div{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-.teacher_information>form>div>input{
-    font-size: large;
-}
-.teacher_information>form>input{
-    font-size: large;
-}
-.t_info_click{
-    display: flex;
-    flex-direction: row;
-}
-.t_note{
-    text-align: center;
-    text-decoration: underline;
-}
-
 /*teacherCourses react*/
             /*courses*/
             .course_information{
