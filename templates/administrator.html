@@ -5,23 +5,9 @@
     <div class="links">        
         <div class="link"><a href="/admin_courses">Courses</a></div>
         <div class="link"><a href="/admin_students">Students</a></div>
-        <div class="link"><a href="/admin_teachers">Teachers</a></div>    
+        <div class="link"><a href="/admin_teachers">Teachers</a></div> 
+        <div class="link"><a href="/user_info_update/{{admin_id}}">Update Information</a></div>   
     </div>
     <div class="info_more_links">
-        {% for l in course_dict.link1 %}
-        <div>
-            <a href="/chosen_course/{{course_dict.id}}">Update course</a>
-        {% endfor %}
-        </div>
-        <div>
-        {% for l in course_dict.link2 %}
-            <a href="/attendance_course/{{course_dict.id}}">Check Attendance</a>
-        {% endfor %}
-        </div>
-        <div>
-        {% for l in course_dict.link3 %}
-            <a href="/update_course_attendance/{{course_dict.id}}">Update Attendance</a>           
-        {% endfor %} 
-        </div>
     </div>  
 {% endblock %}

@@ -218,8 +218,9 @@ def logout():
 @app.route('/administrator/<admin_id>' )
 def administrator(admin_id): # showe administrator pages
     log=check_log()
-    info=info_user()    
-    return render_template ('administrator.html',log=log, info=info, course_dict='')
+    info=info_user()
+    admin_id=admin_id    
+    return render_template ('administrator.html',log=log, info=info, course_dict='', admin_id=admin_id)
 
 @app.route('/admin_courses',methods=['GET', 'POST'])
 def admin_courses(): # courses information and actions for admin
@@ -229,13 +230,13 @@ def admin_courses(): # courses information and actions for admin
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
         if len(courses_list)==0:
-            return render_template('admin_courses.html',log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, result='No such course was found')
+            return render_template('admin_courses.html',log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, result='No such course was found', admin_id=session['id'])
         else:
             courses_object=create_courses_objects(courses_list)
             for course in courses_object:
                 course.teacher_id=crud.teacher_name(course.teacher_id)  
-            return render_template('admin_courses.html',log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, courses_objects=courses_object)
-    return render_template('admin_courses.html', log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, courses_teachers=courses_teachers())
+            return render_template('admin_courses.html',log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, courses_objects=courses_object, admin_id=session['id'])
+    return render_template('admin_courses.html', log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, courses_teachers=courses_teachers(), admin_id=session['id'])
 
 @app.route('/course_info/<course_id>')
 def course_info(course_id): # specific course information
@@ -272,7 +273,7 @@ def course_info(course_id): # specific course information
         else:
             course_dict['link2']=['create']
             course_dict['link3']=['create']
-    return render_template ('admin_courses.html', log=log, info=info, course_dict=course_dict, course_attend='', attend_update='', attend_date_update='')
+    return render_template ('admin_courses.html', log=log, info=info, course_dict=course_dict, course_attend='', attend_update='', attend_date_update='', admin_id=session['id'])
 
 @app.route('/attendance_course/<course_id>', methods=['get','post'])
 def attendance_course(course_id): # View attendance for a specific course
@@ -308,7 +309,7 @@ def attendance_course(course_id): # View attendance for a specific course
         course_attend['average_attend']='No record was found in the system for student attendance or non-attendance'
     course_attend['average_note']='*Excludes students with unknown status'
     if request.method=='GET':
-        return render_template ('admin_courses.html', log=log, info=info, course_attend=course_attend, course_dict=course_dict, attend_update='', attend_date_update='')
+        return render_template ('admin_courses.html', log=log, info=info, course_attend=course_attend, course_dict=course_dict, attend_update='', attend_date_update='', admin_id=session['id'])
     else:
         course_attend['form']=['create']
         course_attend['date']=request.form['chosen_date']
@@ -335,7 +336,7 @@ def attendance_course(course_id): # View attendance for a specific course
             course_attend['not_attend']=[['/admin_students','No students found']] 
         if len(course_attend['unknown'])==0:
             course_attend['unknown']=[['/admin_students','No students found']]        
-        return render_template ('admin_courses.html', log=log, info=info, course_attend=course_attend, course_dict=course_dict, attend_update='', attend_date_update='')
+        return render_template ('admin_courses.html', log=log, info=info, course_attend=course_attend, course_dict=course_dict, attend_update='', attend_date_update='', admin_id=session['id'])
 
 @app.route('/update_course_attendance/<course_id>') 
 def update_course_attendance(course_id): # Choosing a specific lesson to update attendance
@@ -352,7 +353,7 @@ def update_course_attendance(course_id): # Choosing a specific lesson to update 
     dates=crud.read_if('DISTINCT date', 'students_attendance', 'course_id', course_id)
     attend_update['chose_date']=['Choose a lesson:']
     attend_update['dates']=dates
-    return render_template('admin_courses.html', log=log, info=info, course_attend='', course_dict=course_dict, attend_update=attend_update, attend_date_update='')
+    return render_template('admin_courses.html', log=log, info=info, course_attend='', course_dict=course_dict, attend_update=attend_update, attend_date_update='', admin_id=session['id'])
                  
 @app.route('/update_course_date_attendance/course_id=<course_id>date=<date>', methods=['get','post'])
 def update_course_date_attendance(course_id, date): # update attendance for a specific lesson in a course 
@@ -387,7 +388,7 @@ def update_course_date_attendance(course_id, date): # update attendance for a sp
             student_a.attend['no']='checked'
         attend_date_update['students_attend'].append(student_a)
     if request.method=='GET':
-        return render_template('admin_courses.html', log=log, info=info, course_attend='', course_dict=course_dict, attend_update=attend_update, attend_date_update=attend_date_update)
+        return render_template('admin_courses.html', log=log, info=info, course_attend='', course_dict=course_dict, attend_update=attend_update, attend_date_update=attend_date_update, admin_id=session['id'])
     else: 
         answer=request.form['attendance']
         student_id=request.form['student_id']
@@ -402,7 +403,7 @@ def add_course():
         crud.create('courses', 'name, description, teacher_id, start, day, time', f" '{request.form['new_name'].title()}', '{request.form['new_description']}', '{request.form['teacher_tid']}', '{request.form['new_start']}', '{request.form['new_day']}', '{request.form['new_time']}' ")
         return redirect(url_for('admin_courses'))
     else:
-        return render_template('add_course.html', log=log, info=info, course_dict='', teachers_object=create_teachers_objects(crud.read_all('teachers')))
+        return render_template('add_course.html', log=log, info=info, course_dict='', admin_id=session['id'], teachers_object=create_teachers_objects(crud.read_all('teachers')))
 
 @app.route('/update_courses', methods=['GET', 'POST'])
 def update_courses(): # Choosing a course to update 
@@ -412,12 +413,12 @@ def update_courses(): # Choosing a course to update
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
         if len(courses_list)==0:
-            return render_template('update_courses.html', log=log, info=info, form=form, chosen_course='', course_dict='', result='No such course was found')
+            return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form=form, chosen_course='', course_dict='', result='No such course was found')
         else:
             course_object=create_courses_objects(courses_list)  
-            return render_template('update_courses.html', log=log, info=info, form=form, chosen_course='',teacher_info='', courses_objects=course_object, course_dict='')
+            return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form=form, chosen_course='',teacher_info='', courses_objects=course_object, course_dict='')
     else:    
-        return render_template('update_courses.html', log=log, info=info, form=form, chosen_course='',teacher_info='', courses=courses_teachers(), course_dict='')
+        return render_template('update_courses.html', log=log, info=info, form=form, admin_id=session['id'], chosen_course='',teacher_info='', courses=courses_teachers(), course_dict='')
 
 @app.route('/chosen_course/<course_id>', methods=['GET', 'POST'])
 def chosen_course_update(course_id):
@@ -448,7 +449,7 @@ def chosen_course_update(course_id):
         crud.update_if('courses', 'name, description, teacher_id, start, day, time', f"'{name}', '{description}', '{teacher_id}', '{start}', '{day}', '{time}'",'id', course_id)
         return redirect(url_for('course_info', course_id=course_id))
     else:
-        return render_template('update_courses.html', log=log, info=info, form='', form2=form2 ,chosen_course=chosen_course, teacher_info=teacher_info, course_dict='') 
+        return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form='', form2=form2 ,chosen_course=chosen_course, teacher_info=teacher_info, course_dict='') 
 
 @app.route('/course_registration', methods=['GET', 'POST'])
 def course_registrationt(): # Choosing a specific course for student registration 
@@ -458,12 +459,12 @@ def course_registrationt(): # Choosing a specific course for student registratio
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
         if len(courses_list)==0:
-            return render_template('course_registration.html', log=log, info=info, form=form, course_dict='', result1='No such course was found')
+            return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', result1='No such course was found')
         else:
             course_object=create_students_objects(courses_list) 
-            return render_template('course_registration.html', log=log, info=info, form=form, course_dict='', course_objects=course_object)
+            return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', course_objects=course_object)
     else:    
-        return render_template('course_registration.html', log=log, info=info, form=form, course_dict='', courses=create_courses_objects(crud.read_all('courses')))
+        return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', courses=create_courses_objects(crud.read_all('courses')))
 
 @app.route('/course_id_registration/<course_id>',  methods=['GET', 'POST'])
 def course_id_registration(course_id): # Choosing students to registering to a chosen course
@@ -481,11 +482,11 @@ def course_id_registration(course_id): # Choosing students to registering to a c
         if 'form2' in request.form:
             students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
             if len(students_list)==0:
-                return render_template('course_registration.html', log=log, info=info, form=form, course_dict=course_dict, result2='No such student was found')
+                return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict=course_dict, result2='No such student was found')
             else:
                 students_object=create_students_objects(students_list)
                 course_dict['students']=students_object
-                return render_template('course_registration.html', log=log, info=info, form=form, course_dict=course_dict)
+                return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict=course_dict)
         if 'form3' in request.form:
             students_ids=request.form.getlist('student_id')
             for student in students_ids:
@@ -494,7 +495,7 @@ def course_id_registration(course_id): # Choosing students to registering to a c
                 except:
                     pass
             return redirect(url_for('course_info', course_id=course_id))
-    return render_template('course_registration.html', log=log, info=info, form=form, course_dict=course_dict)
+    return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict=course_dict)
 
 # admin features for students:
 @app.route('/admin_students', methods=['GET', 'POST'])
@@ -505,11 +506,11 @@ def admin_students(): # students information and actions for admin
     if request.method=='POST':
         students=crud.read_like('*', 'students', 'name', request.form['search'].title())
         if len(students)==0:
-            return render_template('admin_students.html', log=log, info=info, form=form, student_attend='', student_dict='', result='No such studentd was found')
+            return render_template('admin_students.html', log=log, info=info, admin_id=session['id'], form=form, student_attend='', student_dict='', result='No such studentd was found')
         else:
             student_object=create_students_objects(students)
-            return render_template('admin_students.html', log=log, info=info, form=form, student_attend='', student_dict='', students_objects=student_object)
-    return render_template('admin_students.html', log=log, info=info, form=form, student_attend='', student_dict='', students=create_students_objects(crud.read_all('students')))
+            return render_template('admin_students.html', log=log, info=info, admin_id=session['id'], form=form, student_attend='', student_dict='', students_objects=student_object)
+    return render_template('admin_students.html', log=log, info=info, admin_id=session['id'], form=form, student_attend='', student_dict='', students=create_students_objects(crud.read_all('students')))
 
 @app.route('/student_info/<student_id>')
 def student_info(student_id): # specific student information
@@ -540,7 +541,7 @@ def student_info(student_id): # specific student information
         student_dict['courses']=courses_names
         student_dict['no_courses']=''
         student_dict['form']=['create']
-    return render_template('admin_students.html', log=log, info=info, student_object=student_object, student_dict=student_dict, student_attend='')
+    return render_template('admin_students.html', log=log, info=info, admin_id=session['id'], student_object=student_object, student_dict=student_dict, student_attend='')
 
 @app.route('/attendance_student/<student_id>', methods=['get','post'])
 def attendance_student(student_id): # View attendance for a specific student
@@ -589,9 +590,9 @@ def attendance_student(student_id): # View attendance for a specific student
                 date_attend.c_id=request.form['course_select']
                 date_attend.attend=c_l[1].title()
                 student_attend['lesson_info'].append(date_attend)
-        return render_template('admin_students.html', log=log, info=info, student_object='', student_attend=student_attend, student_dict=student_dict)
+        return render_template('admin_students.html', log=log, info=info, admin_id=session['id'], student_object='', student_attend=student_attend, student_dict=student_dict)
     else:
-        return render_template('admin_students.html', log=log, info=info, student_object='', student_attend=student_attend, student_dict=student_dict)
+        return render_template('admin_students.html', log=log, info=info, admin_id=session['id'], student_object='', student_attend=student_attend, student_dict=student_dict)
         
 @app.route('/update_student_attendance/<student_id>')
 def update_student_attendance(student_id): # Choosing a specific course for a student to update attendance
@@ -604,11 +605,10 @@ def update_student_attendance(student_id): # Choosing a specific course for a st
     student_dict['id']=student_id
     student_attend={}
     student_attend['update_title']=f"Uptade attendance for {crud.student_name(student_id)}"
-    #student_attend['student_id']=student_id
     student_attend['courses_title']=['Choose a course:']
     courses=crud.read_if('course_id', 'students_courses', 'student_id', student_id)
     student_attend['courses']=[(course[0], crud.course_name(course[0])) for course in courses]
-    return render_template ('admin_students.html', log=log, info=info, student_object='', student_attend=student_attend, student_dict=student_dict)
+    return render_template ('admin_students.html', log=log, info=info, admin_id=session['id'], student_object='', student_attend=student_attend, student_dict=student_dict)
 
 @app.route("/update_student_course_attendance/student_id=<student_id>course=<course_id>", methods=['get','post'])
 def update_student_course_attendance(student_id, course_id): # update attendance for a specific student in a specific course
@@ -640,9 +640,8 @@ def update_student_course_attendance(student_id, course_id): # update attendance
             attend.attend['no']='checked'
         student_attend['date_attend'].append(attend)
     if request.method=='GET':
-        return render_template ('admin_students.html', log=log, info=info, student_object='', student_attend=student_attend, student_dict=student_dict)
+        return render_template ('admin_students.html', log=log, info=info, admin_id=session['id'], student_object='', student_attend=student_attend, student_dict=student_dict)
     else:
-        date=request.form['date']
         crud.update_three_if('students_attendance', 'attendance', f"'{request.form['attendance']}'", 'student_id', student_id, 'course_id', course_id, 'date', request.form['date'])        
         return redirect(url_for('update_student_course_attendance', student_id=student_id, course_id=course_id))        
         
@@ -653,7 +652,7 @@ def add_student():
     if request.method=='POST':
         num_students=len(crud.read_all('students'))
         if request.form['new_email']=='' or request.form['new_phone']=='' :
-            return render_template('add_student.html', log=log, info=info, student_dict='', note="Email and Mobile number are required fields")
+            return render_template('add_student.html', log=log, info=info, admin_id=session['id'], student_dict='', note="Email and Mobile number are required fields")
         else:
             check_students=crud.read_or_two('id', 'students', 'email', request.form['new_email'], 'phone', request.form['new_phone'])
             check_users=crud.read_if('id', 'new_users', 'username', request.form['new_email'])
@@ -665,11 +664,11 @@ def add_student():
                 if new_num>num_students:
                     return redirect(url_for("admin_students"))
                 else:
-                    return render_template('add_student.html', log=log, info=info, student_dict='', note="A mistake occurred please try again")
+                    return render_template('add_student.html', log=log, info=info, admin_id=session['id'], student_dict='', note="A mistake occurred please try again")
             else:
-                return render_template('add_student.html', log=log, info=info, student_dict='', note="Email or Mobile number already exists")       
+                return render_template('add_student.html', log=log, info=info, admin_id=session['id'], student_dict='', note="Email or Mobile number already exists")       
     else:
-        return render_template('add_student.html', log=log, info=info, student_dict='')
+        return render_template('add_student.html', log=log, info=info, admin_id=session['id'], student_dict='')
 
 @app.route('/update_students', methods=['GET', 'POST'])
 def update_students(): # choosing a student to update
@@ -679,12 +678,12 @@ def update_students(): # choosing a student to update
     if request.method=='POST':
         students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
         if len(students_list)==0:
-            return render_template('update_students.html', log=log, info=info, form=form, student_dict='', result='No such student was found')
+            return render_template('update_students.html', log=log, info=info, admin_id=session['id'], form=form, student_dict='', result='No such student was found')
         else:
             student_object=create_students_objects(students_list) 
-            return render_template('update_students.html', log=log, info=info, form=form, student_dict='', student_objects=student_object)
+            return render_template('update_students.html', log=log, info=info, admin_id=session['id'], form=form, student_dict='', student_objects=student_object)
     else:    
-        return render_template('update_students.html', log=log, info=info, form=form, student_dict='', students=create_students_objects(crud.read_all('students')))
+        return render_template('update_students.html', log=log, info=info, admin_id=session['id'], form=form, student_dict='', students=create_students_objects(crud.read_all('students')))
 
 @app.route('/chosen_student/<student_id>', methods=['GET', 'POST'])
 def chosen_student_update(student_id):
@@ -705,15 +704,15 @@ def chosen_student_update(student_id):
                 crud.update_if('new_users', 'username', f"'{email}'", 'id', student_object[0].user_id)
                 crud.update_if('students', 'email', f"'{email}'",'id', student_id)
             else:
-                return render_template('update_students.html', log=log, info=info, student_dict='', title='Edit the Changes:', student_object=student_object, note="Email already exists")  
+                return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object, note="Email already exists")  
         if student_object[0].phone!=phone:
             try:
                 crud.update_if('students', 'phone', f"'{phone}'",'id', student_id)
             except:
-                return render_template('update_students.html', log=log, info=info, student_dict='', title='Edit the Changes:', student_object=student_object, note="Mobile number already exists")  
+                return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object, note="Mobile number already exists")  
         return redirect(url_for('student_info', student_id=student_id)) 
     else:
-        return render_template('update_students.html', log=log, info=info, student_dict='', title='Edit the Changes:', student_object=student_object) 
+        return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object) 
 
 @app.route('/student_registration', methods=['GET', 'POST'])
 def student_registrationt():  # Choosing a specific student for course registration 
@@ -723,25 +722,12 @@ def student_registrationt():  # Choosing a specific student for course registrat
     if request.method=='POST':
         courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
         if len(courses_list)==0:
-            return render_template('course_registration.html', log=log, info=info, form=form, course_dict='', result1='No such course was found')
+            return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', result1='No such course was found')
         else:
             course_object=create_students_objects(courses_list) 
-            return render_template('course_registration.html', log=log, info=info, form=form, course_dict='', course_objects=course_object)
+            return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', course_objects=course_object)
     else:    
-        return render_template('course_registration.html', log=log, info=info, form=form, course_dict='', courses=create_courses_objects(crud.read_all('courses')))
-
-    log=check_log()
-    info=info_user()
-    form=['create']
-    if request.method=='POST':
-        students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
-        if len(students_list)==0:
-            return render_template('student_registration.html', log=log, info=info, form=form, student_dict='', result1='No such student was found')
-        else:
-            student_object=create_students_objects(students_list) 
-            return render_template('student_registration.html', log=log, info=info, form=form, student_dict='', student_objects=student_object)
-    else:    
-        return render_template('student_registration.html', log=log, info=info, form=form, student_dict='', students=create_students_objects(crud.read_all('students')))
+        return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', courses=create_courses_objects(crud.read_all('courses')))
 
 @app.route('/student_id_registration/<student_id>',  methods=['GET', 'POST'])
 def student_id_registration(student_id): # Choosing courses to registering to a chosen student
@@ -760,11 +746,11 @@ def student_id_registration(student_id): # Choosing courses to registering to a 
             courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
             if len(courses_list)==0:
                 student_dict['courses']=[]
-                return render_template('student_registration.html', log=log, info=info, form=form, student_dict=student_dict, result2='No such course was found')
+                return render_template('student_registration.html', log=log, info=info, admin_id=session['id'], form=form, student_dict=student_dict, result2='No such course was found')
             else:
                 courses_object=create_courses_objects(courses_list)
                 student_dict['courses']=courses_object
-                return render_template('student_registration.html', log=log, info=info, form=form, student_dict=student_dict)
+                return render_template('student_registration.html', log=log, info=info, admin_id=session['id'], form=form, student_dict=student_dict)
         if 'form3' in request.form:
             courses_ids=request.form.getlist('course_id')
             for course in courses_ids:
@@ -774,7 +760,7 @@ def student_id_registration(student_id): # Choosing courses to registering to a 
                     pass
             return redirect(url_for('student_info',student_id=student_id))
     else:
-        return render_template('student_registration.html', log=log, info=info, form=form, student_dict=student_dict)
+        return render_template('student_registration.html', log=log, info=info, admin_id=session['id'], form=form, student_dict=student_dict)
 
 # admin features for teachers:
 @app.route('/admin_teachers',methods=['GET', 'POST'])
@@ -785,11 +771,11 @@ def admin_teachers(): # teachers information and actions for admin
     if request.method=='POST':
         teachers=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
         if len(teachers)==0:
-            return render_template('admin_teachers.html', log=log, info=info, form=form, teacher_dict='', result='No such teacher was found')
+            return render_template('admin_teachers.html', log=log, info=info, admin_id=session['id'], form=form, teacher_dict='', result='No such teacher was found')
         else:
             teachers_object=create_students_objects(teachers)
-            return render_template('admin_teachers.html', log=log, info=info, form=form, teacher_dict='', teachers_objects=teachers_object)
-    return render_template('admin_teachers.html', log=log, info=info, form=form, teacher_dict='', teachers_objects=create_teachers_objects(crud.read_all('teachers')))
+            return render_template('admin_teachers.html', log=log, info=info, admin_id=session['id'], form=form, teacher_dict='', teachers_objects=teachers_object)
+    return render_template('admin_teachers.html', log=log, info=info, admin_id=session['id'], form=form, teacher_dict='', teachers_objects=create_teachers_objects(crud.read_all('teachers')))
 
 @app.route('/teacher_info/<teacher_id>')
 def teacher_info(teacher_id): # specific teacher information
@@ -845,7 +831,7 @@ def teacher_info(teacher_id): # specific teacher information
             teacher_dict['course_info'].append(info_course)
         teacher_dict['average_note']='*Excludes students with unknown status'
         teacher_dict['no_courses']=''
-    return render_template('admin_teachers.html', log=log, info=info, teacher_object=teacher_object, teacher_dict=teacher_dict)
+    return render_template('admin_teachers.html', log=log, info=info, admin_id=session['id'], teacher_object=teacher_object, teacher_dict=teacher_dict)
 
 @app.route('/add_teacher', methods=['POST','GET'])
 def add_teacher():
@@ -854,7 +840,7 @@ def add_teacher():
     if request.method=='POST':
         num_teachers=len(crud.read_all('teachers'))
         if request.form['new_email']=='' or request.form['new_phone']=='' :
-            return render_template('add_teacher.html', log=log, info=info, teacher_dict='', note="Email and Mobile number are required fields")
+            return render_template('add_teacher.html', log=log, info=info, admin_id=session['id'], teacher_dict='', note="Email and Mobile number are required fields")
         else:
             check_teachers=crud.read_or_two('id', 'teachers', 'email', request.form['new_email'], 'phone', request.form['new_phone'])
             check_users=crud.read_if('id', 'new_users', 'username', request.form['new_email'])
@@ -866,11 +852,11 @@ def add_teacher():
                 if new_num>num_teachers:
                     return redirect(url_for("admin_teachers"))
                 else:
-                    return render_template('add_teacher.html', log=log, info=info, teacher_dict='', note="A mistake occurred please try again")
+                    return render_template('add_teacher.html', log=log, info=info, admin_id=session['id'], teacher_dict='', note="A mistake occurred please try again")
             else:
-                return render_template('add_teacher.html', log=log, info=info, teacher_dict='', note="Email or Mobile number already exists")
+                return render_template('add_teacher.html', log=log, info=info, admin_id=session['id'], teacher_dict='', note="Email or Mobile number already exists")
     else:
-        return render_template('add_teacher.html', log=log, info=info, teacher_dict='')
+        return render_template('add_teacher.html', log=log, info=info, admin_id=session['id'], teacher_dict='')
 
 @app.route('/update_teachers', methods=['GET', 'POST'])
 def update_teachers(): # choosing a teacher to update
@@ -880,12 +866,12 @@ def update_teachers(): # choosing a teacher to update
     if request.method=='POST':
         teachers_list=crud.read_like('*', 'teachers', 'name', request.form['search'].title())
         if len(teachers_list)==0:
-            return render_template('update_teachers.html', log=log, info=info, form1=form1, teacher_dict='', result='No such teacher was found')
+            return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], form1=form1, teacher_dict='', result='No such teacher was found')
         else:
             teacher_object=create_teachers_objects(teachers_list)   
-            return render_template('update_teachers.html', log=log, info=info, form1=form1, teacher_dict='', teacher_objects=teacher_object)
+            return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], form1=form1, teacher_dict='', teacher_objects=teacher_object)
     else:    
-        return render_template('update_teachers.html', log=log, info=info, form1=form1, teacher_dict='', teachers=create_teachers_objects(crud.read_all('teachers')))
+        return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], form1=form1, teacher_dict='', teachers=create_teachers_objects(crud.read_all('teachers')))
 
 @app.route('/chosen_teacher/<teacher_id>', methods=['GET', 'POST'])
 def chosen_teacher_update(teacher_id):
@@ -906,15 +892,15 @@ def chosen_teacher_update(teacher_id):
                 crud.update_if('new_users', 'username', f"'{email}'", 'id', teacher_object[0].user_id)
                 crud.update_if('teachers', 'email', f"'{email}'",'id', teacher_id)
             else:
-                return render_template('update_teachers.html', log=log, info=info, teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Email already exists")  
+                return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Email already exists")  
         if teacher_object[0].phone!=phone:
             try:
                 crud.update_if('teachers', 'phone', f"'{phone}'",'id', teacher_id)
             except:
-                return render_template('update_teachers.html', log=log, info=info, teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Mobile number already exists")  
+                return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Mobile number already exists")  
         return redirect(url_for('teacher_info', teacher_id=teacher_id))
     else:
-        return render_template('update_teachers.html', log=log, info=info, teacher_dict='', title='Edit the Changes:' ,teacher_object=teacher_object) 
+        return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:' ,teacher_object=teacher_object) 
 
 # student features:
 @app.route('/student_profile/<student_id>', methods=['get', 'post'])
@@ -1124,7 +1110,7 @@ def change_password(user_id):
                     jinja['note']='The new password and verification are not the same'
                     return render_template('login.html', log=log, info=info, jinja=jinja)
             else:
-                crud.update_if('new_users','password', request.form['new_password'], 'id', jinja['user'][0].user_id)
+                crud.update_if('new_users','password', f"'{request.form['new_password']}'", 'id', jinja['user'][0].user_id)
                 if session['role']=='teacher':
                     return redirect(url_for('teacher_profile', teacher_id=user_id))
                 if session['role']=='student':
