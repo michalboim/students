@@ -1118,61 +1118,10 @@ def change_password(user_id):
                 if session['role']=='admin':
                     return redirect(url_for('administrator', admin_id=user_id))
 
-@app.route('/forgot_password', methods=['get','post']) 
-def forgot_password():
-    log=check_log()
-    info=info_user()
-    jinja={}
-    jinja['form3']=['create']
-    if request.method=='GET':        
-        return render_template('login.html', log=log, info=info, jinja=jinja)
-    else:
-        username=crud.query(f"SELECT new_users.id, roles.type from new_users, roles WHERE new_users.username='{request.form['username']}'  AND roles.id=new_users.role_id") 
-        if len(username)==0:
-            jinja['note']='Username not exist'
-            return render_template('login.html', log=log, info=info, jinja=jinja)
-        else:
-            if username[0][1]=='admin':
-                table_name='administrators'
-            else:
-                table_name=f"{username[0][1]}s"
-            user_id=crud.read_if('id', table_name, 'user_id', username[0][0])
-            return redirect(url_for('forgot_password_user', user_id=user_id[0][0], table=table_name,new_user_id=username[0][0] ))
-
-@app.route('/forgot_password/id=<user_id>table=<table>new=<new_user_id>', methods=['get','post']) 
-def forgot_password_user(user_id, table, new_user_id): # Verification process to create new password for a user who forgot his password
-    log=check_log()
-    info=info_user()
-    jinja={}
-    jinja['form4']=['create']
-    user_info=crud.read_if('name, phone', table, 'id', user_id)
-    if type(user_info[0][1])!=str or user_info[0][1]=='':
-        jinja['input_info']=['name', 'Enter your registration name']        
-    else:
-        jinja['input_info']=['phone', 'Enter mobile number']
-    if request.method=='GET':
-        return render_template('login.html', log=log, info=info, jinja=jinja)
-    else:
-        if 'phone' in request.form:
-            if request.form['phone']!=user_info[0][1]:
-                jinja['note']='Incorect mobile number'
-                return render_template('login.html', log=log, info=info, jinja=jinja)
-            jinja['form4']=''
-            jinja['form5']=['create']
-        if 'name' in request.form:
-            if request.form['name'].title()!=user_info[0][0]:
-                jinja['note']='Incorect name'
-                return render_template('login.html', log=log, info=info, jinja=jinja)
-            jinja['form4']=''
-            jinja['form5']=['create']
-        if 'password' in request.form:
-            crud.update_if('new_users','password', f"'{request.form['password']}'", 'id', new_user_id)
-            return redirect(url_for('login'))
-        return render_template('login.html', log=log, info=info, jinja=jinja)
 
 
 
-        
+#<div class="link"><a href="/user_info_update/{{admin_id}}">Update Information</a></div>           
 
 @app.route('/messages')
 def messages():
