@@ -121,6 +121,8 @@ function TeacherCourses(){
                     <div class='mean_grades'>
                         <div class='t_course_title'>{statistics.mean_grades_title} {statistics.no_students}</div>
                         <div >{statistics.mean_grades} </div>
+                        <div >{statistics.max_grade} </div>
+                        <div >{statistics.min_grade} </div>
                     </div>
                     <div class='mean_grades'>
                         <div class='t_course_title'>{statistics.average_attend_title}</div>

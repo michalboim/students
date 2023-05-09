@@ -7,6 +7,7 @@ from functions import create_courses_objects, create_students_objects, create_te
 from collections import namedtuple
 import datetime, statistics
 
+
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 # session functions:
@@ -118,6 +119,8 @@ def courses(): # get all courses datails for react
                 course_dict['mean_grades']='No records was found in the system'
             else:
                 course_dict['mean_grades']=f'The average grades for the course is: {round(statistics.mean(grades),2)}'
+                course_dict['max_grade']=f'The hiest grade is: {max(grades)}'
+                course_dict['min_grade']=f'The lowest grade is: {min(grades)}'
             average_attend=[]
             average_not_attend=[]
             average_unknown=[]
@@ -649,19 +652,22 @@ def add_student():
     info=info_user()
     if request.method=='POST':
         num_students=len(crud.read_all('students'))
-        check_students=crud.read_or_two('id', 'students', 'email', request.form['new_email'], 'phone', request.form['new_phone'])
-        check_users=crud.read_if('id', 'new_users', 'username', request.form['new_email'])
-        if len(check_students)==0 and len(check_users)==0:
-            crud.create('new_users', 'username, role_id', f"'{request.form['new_email']}', '1'" )
-            user_id=crud.read_if('id', 'new_users', 'username', request.form['new_email']) 
-            crud.create('students', 'name, email, phone, user_id', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}', '{user_id[0][0]}'")
-            new_num=len(crud.read_all('students'))
-            if new_num>num_students:
-                return redirect(url_for("admin_students"))
-            else:
-                return render_template('add_student.html', log=log, info=info, student_dict='', note="A mistake occurred please try again")
+        if request.form['new_email']=='' or request.form['new_phone']=='' :
+            return render_template('add_student.html', log=log, info=info, student_dict='', note="Email and Mobile number are required fields")
         else:
-            return render_template('add_student.html', log=log, info=info, student_dict='', note="Email or Mobile number already exists")       
+            check_students=crud.read_or_two('id', 'students', 'email', request.form['new_email'], 'phone', request.form['new_phone'])
+            check_users=crud.read_if('id', 'new_users', 'username', request.form['new_email'])
+            if len(check_students)==0 and len(check_users)==0:
+                crud.create('new_users', 'username, role_id', f"'{request.form['new_email']}', '1'" )
+                user_id=crud.read_if('id', 'new_users', 'username', request.form['new_email']) 
+                crud.create('students', 'name, email, phone, user_id', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}', '{user_id[0][0]}'")
+                new_num=len(crud.read_all('students'))
+                if new_num>num_students:
+                    return redirect(url_for("admin_students"))
+                else:
+                    return render_template('add_student.html', log=log, info=info, student_dict='', note="A mistake occurred please try again")
+            else:
+                return render_template('add_student.html', log=log, info=info, student_dict='', note="Email or Mobile number already exists")       
     else:
         return render_template('add_student.html', log=log, info=info, student_dict='')
 
@@ -796,8 +802,8 @@ def teacher_info(teacher_id): # specific teacher information
     teacher_object=create_teachers_objects(teacher)
     teacher_dict['courses_title']='Courses:'
     teacher_dict['title_name']='Name'
-    teacher_dict['title_grade']='Average grade'
-    teacher_dict['title_attend']='Average attendance'
+    teacher_dict['title_grade']='Average grade*'
+    teacher_dict['title_attend']='Average attendance*'
     courses=crud.read_if('id','courses', 'teacher_id', teacher_id)
     if len(courses)==0:     
         teacher_dict['courses']=''
@@ -847,19 +853,22 @@ def add_teacher():
     info=info_user()
     if request.method=='POST':
         num_teachers=len(crud.read_all('teachers'))
-        check_teachers=crud.read_or_two('id', 'teachers', 'email', request.form['new_email'], 'phone', request.form['new_phone'])
-        check_users=crud.read_if('id', 'new_users', 'username', request.form['new_email'])
-        if len(check_teachers)==0 and len(check_users)==0:
-            crud.create('new_users', 'username, role_id', f"'{request.form['new_email']}', '2'" )
-            user_id=crud.read_if('id', 'new_users', 'username', request.form['new_email']) 
-            crud.create('teachers', 'name, email, phone, user_id', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}', '{user_id[0][0]}'")
-            new_num=len(crud.read_all('teachers'))
-            if new_num>num_teachers:
-                return redirect(url_for("admin_teachers"))
-            else:
-                return render_template('add_teacher.html', log=log, info=info, teacher_dict='', note="A mistake occurred please try again")
+        if request.form['new_email']=='' or request.form['new_phone']=='' :
+            return render_template('add_teacher.html', log=log, info=info, teacher_dict='', note="Email and Mobile number are required fields")
         else:
-            return render_template('add_teacher.html', log=log, info=info, teacher_dict='', note="Email or Mobile number already exists")
+            check_teachers=crud.read_or_two('id', 'teachers', 'email', request.form['new_email'], 'phone', request.form['new_phone'])
+            check_users=crud.read_if('id', 'new_users', 'username', request.form['new_email'])
+            if len(check_teachers)==0 and len(check_users)==0:
+                crud.create('new_users', 'username, role_id', f"'{request.form['new_email']}', '2'" )
+                user_id=crud.read_if('id', 'new_users', 'username', request.form['new_email']) 
+                crud.create('teachers', 'name, email, phone, user_id', f"'{request.form['new_name'].title()}','{request.form['new_email']}','{request.form['new_phone']}', '{user_id[0][0]}'")
+                new_num=len(crud.read_all('teachers'))
+                if new_num>num_teachers:
+                    return redirect(url_for("admin_teachers"))
+                else:
+                    return render_template('add_teacher.html', log=log, info=info, teacher_dict='', note="A mistake occurred please try again")
+            else:
+                return render_template('add_teacher.html', log=log, info=info, teacher_dict='', note="Email or Mobile number already exists")
     else:
         return render_template('add_teacher.html', log=log, info=info, teacher_dict='')
 
@@ -1123,9 +1132,61 @@ def change_password(user_id):
                 if session['role']=='admin':
                     return redirect(url_for('administrator', admin_id=user_id))
 
-           
+@app.route('/forgot_password', methods=['get','post']) 
+def forgot_password():
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form3']=['create']
+    if request.method=='GET':        
+        return render_template('login.html', log=log, info=info, jinja=jinja)
+    else:
+        username=crud.query(f"SELECT new_users.id, roles.type from new_users, roles WHERE new_users.username='{request.form['username']}'  AND roles.id=new_users.role_id") 
+        if len(username)==0:
+            jinja['note']='Username not exist'
+            return render_template('login.html', log=log, info=info, jinja=jinja)
+        else:
+            if username[0][1]=='admin':
+                table_name='administrators'
+            else:
+                table_name=f"{username[0][1]}s"
+            user_id=crud.read_if('id', table_name, 'user_id', username[0][0])
+            return redirect(url_for('forgot_password_user', user_id=user_id[0][0], table=table_name,new_user_id=username[0][0] ))
+
+@app.route('/forgot_password/id=<user_id>table=<table>new=<new_user_id>', methods=['get','post']) 
+def forgot_password_user(user_id, table, new_user_id): # Verification process to create new password for a user who forgot his password
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form4']=['create']
+    user_info=crud.read_if('name, phone', table, 'id', user_id)
+    if type(user_info[0][1])!=str or user_info[0][1]=='':
+        jinja['input_info']=['name', 'Enter your registration name']        
+    else:
+        jinja['input_info']=['phone', 'Enter mobile number']
+    if request.method=='GET':
+        return render_template('login.html', log=log, info=info, jinja=jinja)
+    else:
+        if 'phone' in request.form:
+            if request.form['phone']!=user_info[0][1]:
+                jinja['note']='Incorect mobile number'
+                return render_template('login.html', log=log, info=info, jinja=jinja)
+            jinja['form4']=''
+            jinja['form5']=['create']
+        if 'name' in request.form:
+            if request.form['name'].title()!=user_info[0][0]:
+                jinja['note']='Incorect name'
+                return render_template('login.html', log=log, info=info, jinja=jinja)
+            jinja['form4']=''
+            jinja['form5']=['create']
+        if 'password' in request.form:
+            crud.update_if('new_users','password', f"'{request.form['password']}'", 'id', new_user_id)
+            return redirect(url_for('login'))
+        return render_template('login.html', log=log, info=info, jinja=jinja)
+
+
+
         
-       
 
 @app.route('/messages')
 def messages():

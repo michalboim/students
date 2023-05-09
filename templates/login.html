@@ -6,13 +6,16 @@
     <div class="login_information">
         <form action="" class="login" method="post">
             <div class="user_info">
-                <input type="text" name="email" placeholder="Enter username">
+                <input type="email" name="email" placeholder="Enter username" title="example@example.com">
             </div>
             <div class="user_info">
                 <input type="password" name="password" placeholder="Enter password">
             </div>
             <div class="user_info">
-                <input type="submit" value="Submit">
+                <div class="more_options">
+                    <input type="submit" value="Submit">
+                    <a href="/forgot_password">Forgot password</a>
+                </div>                
             </div>      
         </form>
     </div>
@@ -34,7 +37,6 @@
     {% for form in jinja.form1 %}   
     <div class="login_information">
         <form action="" method="post">
-            <div class="change_password"><a href="/change_password/{{jinja.user_id}}">Change password</a></div>
             {% for user in jinja.user %}
                 <div class="user_info">
                     Edit Email: <input  type="email" name="email" value="{{user.email}}"  title="example@example.com">
@@ -44,7 +46,10 @@
                 </div> 
             {% endfor %}
             <div class="user_info">
-                <input type="submit" value="Update">
+                <div class="more_options">
+                    <input type="submit" value="Update">
+                    <a href="/change_password/{{jinja.user_id}}">Change password</a>
+                </div>                     
             </div>           
         </form>          
     </div>
@@ -68,6 +73,45 @@
         </form>
     </div>
     <div class="login_note">{{jinja.note}}</div>
+    {% endfor %} 
+    {% for form in jinja.form3 %}
+    <div class="login_information">
+        <form action="" class="login" method="post">
+            <div class="user_info">
+                <input type="text" name="username" placeholder="Enter username">
+            </div>
+            <div class="user_info">
+                <input type="submit" value="Submit">
+            </div>      
+        </form>
+    </div>
+    <div class="login_note">{{jinja.note}}</div>
     {% endfor %}   
+    {% for form in jinja.form4 %}
+    <div class="login_information">
+        <form action="" class="login" method="post">
+            <div class="user_info">
+                <input type="text" name="{{jinja.input_info[0]}}" placeholder="{{jinja.input_info[1]}}">
+            </div>
+            <div class="user_info">
+                <input type="submit" value="Submit">
+            </div>      
+        </form>
+    </div>
+    <div class="login_note">{{jinja.note}}</div>
+    {% endfor %}  
+    {% for form in jinja.form5 %}
+    <div class="login_information">
+        <form action="" class="login" method="post">
+            <div class="user_info">
+                <input type="password" name="password" placeholder="Enter new password">
+            </div>
+            <div class="user_info">
+                <input type="submit" value="Submit">
+            </div>      
+        </form>
+    </div>
+    <div class="login_note">{{jinja.note}}</div>
+    {% endfor %}            
 </div>
 {% endblock %}
