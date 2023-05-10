@@ -4,7 +4,7 @@
             <div>
                 {% for f in form %}
                 <form action="" method="POST">
-                    <input type="text" name="search" placeholder="Enter course name">
+                    <input type="text" name="search" placeholder="Enter course name" autofocus>
                     <input type="submit" value="Search">
                 </form>
                 {% endfor %}
@@ -30,7 +30,7 @@
             <div class="title_chosen_course">{{chosen_course.title_chosen}}</div>
             <form class="info_chosen_course" action="" method="POST">
                 {% for course in chosen_course.course_info %}
-                Course Name: <input type="text" name="name" value="{{course.name}}" >
+                Course Name: <input type="text" name="name" value="{{course.name}}" required autofocus>
                 Course Description: <input type="text" name="description" value="{{course.description}}">
                 Course Teacher:
                 {% endfor %}
@@ -55,6 +55,7 @@
                     </select>
                     Course Time: <input type="time" name="time" value="{{course.time}}">
                 <input id="submit" type="submit" value="submit">
+                <div class="note">{{note}}</div>
                 {% endfor %}
             </form>    
         </div>   

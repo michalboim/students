@@ -5,7 +5,7 @@
             <div>
                 {% for f in form %}
                 <form action="" method="POST">
-                    <input type="text" name="search" placeholder="Enter student name">
+                    <input type="text" name="search" placeholder="Enter student name" autofocus>
                     <input type="submit" value="Search">
                 </form>
                 {% endfor %}
@@ -23,9 +23,9 @@
             <div class="title_chosen_student">{{title}}</div>
             <form class="info_chosen_student" action="" method="POST">
                 {% for student in student_object %}
-                Student Name: <input type="text" name="name" value="{{student.name}}" >
-                Student Email: <input type="email" name="email" value="{{student.email}}"  title="example@example.com">
-                Student Mobile Number: <input type="tel" name="phone" value="{{student.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}"> 
+                Student Name: <input type="text" name="name" value="{{student.name}}" autofocus required>
+                Student Email: <input type="email" name="email" value="{{student.email}}"  title="example@example.com" required>
+                Student Mobile Number: <input type="tel" name="phone" value="{{student.phone}}" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}" required> 
                 <input id="submit" type="submit" value="submit">
                 {% endfor %}
             </form>

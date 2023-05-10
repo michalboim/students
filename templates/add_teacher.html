@@ -2,9 +2,9 @@
 
     <div class="main_teachers">
         <form class="add_teacher" action="" method="POST">
-            New Teacher Name: <input type="text" name="new_name">
-            New Teacher Email: <input type="email" name="new_email" title="example@example.com">
-            New Teacher Mobile Number: <input type="tel" name="new_phone" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}">
+            New Teacher Name: <input type="text" name="new_name" required autofocus>
+            New Teacher Email: <input type="email" name="new_email" title="example@example.com" required>
+            New Teacher Mobile Number: <input type="tel" name="new_phone" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}" required>
             <input id="submit" type="submit" value="submit">
         </form>
         <div class="note">{{note}}</div>      

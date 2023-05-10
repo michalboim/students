@@ -2,7 +2,7 @@
 
     <div class="main_add_courses">
         <form class="add_course" action="" method="POST">
-            New Course Name: <input type="text" name="new_name" >
+            New Course Name: <input type="text" name="new_name" required autofocus >
             New Course Description<input type="text" name="new_description" >
             Choose New Course Teacher:
                 <select class="show_teacher" name="teacher_tid" id="">
@@ -21,6 +21,7 @@
                 </select>
             New Course Time: <input type="time" name="new_time" >
             <input id="submit" type="submit" value="submit">
+            <div class="note">{{note}}</div>
         </form> 
     </div>
     <div class="info_more_links">

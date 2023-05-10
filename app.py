@@ -399,7 +399,9 @@ def update_course_date_attendance(course_id, date): # update attendance for a sp
 def add_course():
     log=check_log()
     info=info_user()
-    if request.method=='POST':          
+    if request.method=='POST':
+        if request.form['new_name']=='':
+            return render_template('add_course.html', log=log, info=info, course_dict='', admin_id=session['id'], note="Course Name is required fields")          
         crud.create('courses', 'name, description, teacher_id, start, day, time', f" '{request.form['new_name'].title()}', '{request.form['new_description']}', '{request.form['teacher_tid']}', '{request.form['new_start']}', '{request.form['new_day']}', '{request.form['new_time']}' ")
         return redirect(url_for('admin_courses'))
     else:
@@ -446,8 +448,11 @@ def chosen_course_update(course_id):
         start=request.form['start']
         day=request.form['day']
         time=request.form['time']
-        crud.update_if('courses', 'name, description, teacher_id, start, day, time', f"'{name}', '{description}', '{teacher_id}', '{start}', '{day}', '{time}'",'id', course_id)
-        return redirect(url_for('course_info', course_id=course_id))
+        if name=='':
+            return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form='', form2=form2 ,chosen_course=chosen_course, teacher_info=teacher_info, course_dict='', note="Course Name is required fields")
+        else:
+            crud.update_if('courses', 'name, description, teacher_id, start, day, time', f"'{name}', '{description}', '{teacher_id}', '{start}', '{day}', '{time}'",'id', course_id)
+            return redirect(url_for('course_info', course_id=course_id))
     else:
         return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form='', form2=form2 ,chosen_course=chosen_course, teacher_info=teacher_info, course_dict='') 
 
@@ -651,8 +656,8 @@ def add_student():
     info=info_user()
     if request.method=='POST':
         num_students=len(crud.read_all('students'))
-        if request.form['new_email']=='' or request.form['new_phone']=='' :
-            return render_template('add_student.html', log=log, info=info, admin_id=session['id'], student_dict='', note="Email and Mobile number are required fields")
+        if request.form['new_name']=='' or request.form['new_email']=='' or request.form['new_phone']=='' :
+            return render_template('add_student.html', log=log, info=info, admin_id=session['id'], student_dict='', note="Name, Email and Mobile number are required fields")
         else:
             check_students=crud.read_or_two('id', 'students', 'email', request.form['new_email'], 'phone', request.form['new_phone'])
             check_users=crud.read_if('id', 'new_users', 'username', request.form['new_email'])
@@ -695,22 +700,25 @@ def chosen_student_update(student_id):
         name=request.form['name'].title()
         email=request.form['email']
         phone=request.form['phone']
-        if student_object[0].name!=name:
-            crud.update_if('students', 'name', f"'{name}'", 'id', student_id)
-        if student_object[0].email!=email:
-            check_students=crud.read_if('id', 'students', 'email', email)
-            check_users=crud.read_if('id', 'new_users', 'username', email)
-            if len(check_students)==0 and len(check_users)==0:
-                crud.update_if('new_users', 'username', f"'{email}'", 'id', student_object[0].user_id)
-                crud.update_if('students', 'email', f"'{email}'",'id', student_id)
-            else:
-                return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object, note="Email already exists")  
-        if student_object[0].phone!=phone:
-            try:
-                crud.update_if('students', 'phone', f"'{phone}'",'id', student_id)
-            except:
-                return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object, note="Mobile number already exists")  
-        return redirect(url_for('student_info', student_id=student_id)) 
+        if name=='' or email=='' or phone=='' :
+            return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object, note="Name, Email and Mobile number are required fields")
+        else:
+            if student_object[0].name!=name:
+                crud.update_if('students', 'name', f"'{name}'", 'id', student_id)
+            if student_object[0].email!=email:
+                check_students=crud.read_if('id', 'students', 'email', email)
+                check_users=crud.read_if('id', 'new_users', 'username', email)
+                if len(check_students)==0 and len(check_users)==0:
+                    crud.update_if('new_users', 'username', f"'{email}'", 'id', student_object[0].user_id)
+                    crud.update_if('students', 'email', f"'{email}'",'id', student_id)
+                else:
+                    return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object, note="Email already exists")  
+            if student_object[0].phone!=phone:
+                try:
+                    crud.update_if('students', 'phone', f"'{phone}'",'id', student_id)
+                except:
+                    return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object, note="Mobile number already exists")  
+            return redirect(url_for('student_info', student_id=student_id)) 
     else:
         return render_template('update_students.html', log=log, info=info, admin_id=session['id'], student_dict='', title='Edit the Changes:', student_object=student_object) 
 
@@ -720,14 +728,14 @@ def student_registrationt():  # Choosing a specific student for course registrat
     info=info_user()
     form=['create']
     if request.method=='POST':
-        courses_list=crud.read_like('*', 'courses', 'name', request.form['search'].title())
-        if len(courses_list)==0:
-            return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', result1='No such course was found')
+        students_list=crud.read_like('*', 'students', 'name', request.form['search'].title())
+        if len(students_list)==0:
+            return render_template('student_registration.html', log=log, info=info, admin_id=session['id'], form=form,   student_dict='', result1='No such student was found')
         else:
-            course_object=create_students_objects(courses_list) 
-            return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', course_objects=course_object)
+            student_object=create_students_objects(students_list) 
+            return render_template('student_registration.html', log=log, info=info, admin_id=session['id'], form=form, student_dict='', student_objects=student_object)
     else:    
-        return render_template('course_registration.html', log=log, info=info, admin_id=session['id'], form=form, course_dict='', courses=create_courses_objects(crud.read_all('courses')))
+        return render_template('student_registration.html', log=log, info=info, admin_id=session['id'], form=form, student_dict='', students=create_students_objects(crud.read_all('students')))
 
 @app.route('/student_id_registration/<student_id>',  methods=['GET', 'POST'])
 def student_id_registration(student_id): # Choosing courses to registering to a chosen student
@@ -839,8 +847,8 @@ def add_teacher():
     info=info_user()
     if request.method=='POST':
         num_teachers=len(crud.read_all('teachers'))
-        if request.form['new_email']=='' or request.form['new_phone']=='' :
-            return render_template('add_teacher.html', log=log, info=info, admin_id=session['id'], teacher_dict='', note="Email and Mobile number are required fields")
+        if request.form['new_name']=='' or request.form['new_email']=='' or request.form['new_phone']=='' :
+            return render_template('add_teacher.html', log=log, info=info, admin_id=session['id'], teacher_dict='', note="Name, Email and Mobile number are required fields")
         else:
             check_teachers=crud.read_or_two('id', 'teachers', 'email', request.form['new_email'], 'phone', request.form['new_phone'])
             check_users=crud.read_if('id', 'new_users', 'username', request.form['new_email'])
@@ -883,22 +891,25 @@ def chosen_teacher_update(teacher_id):
         name=request.form['name'].title()
         email=request.form['email']
         phone=request.form['phone']
-        if teacher_object[0].name!=name:
-                crud.update_if('teachers', 'name', f"'{name}'", 'id', teacher_id)
-        if teacher_object[0].email!=email:
-            check_teachers=crud.read_if('id', 'teachers', 'email', email)
-            check_users=crud.read_if('id', 'new_users', 'username', email)
-            if len(check_teachers)==0 and len(check_users)==0:
-                crud.update_if('new_users', 'username', f"'{email}'", 'id', teacher_object[0].user_id)
-                crud.update_if('teachers', 'email', f"'{email}'",'id', teacher_id)
-            else:
-                return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Email already exists")  
-        if teacher_object[0].phone!=phone:
-            try:
-                crud.update_if('teachers', 'phone', f"'{phone}'",'id', teacher_id)
-            except:
-                return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Mobile number already exists")  
-        return redirect(url_for('teacher_info', teacher_id=teacher_id))
+        if name=='' or email=='' or phone=='' :
+            return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Name, Email and Mobile number are required fields")
+        else:
+            if teacher_object[0].name!=name:
+                    crud.update_if('teachers', 'name', f"'{name}'", 'id', teacher_id)
+            if teacher_object[0].email!=email:
+                check_teachers=crud.read_if('id', 'teachers', 'email', email)
+                check_users=crud.read_if('id', 'new_users', 'username', email)
+                if len(check_teachers)==0 and len(check_users)==0:
+                    crud.update_if('new_users', 'username', f"'{email}'", 'id', teacher_object[0].user_id)
+                    crud.update_if('teachers', 'email', f"'{email}'",'id', teacher_id)
+                else:
+                    return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Email already exists")  
+            if teacher_object[0].phone!=phone:
+                try:
+                    crud.update_if('teachers', 'phone', f"'{phone}'",'id', teacher_id)
+                except:
+                    return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:', teacher_object=teacher_object, note="Mobile number already exists")  
+            return redirect(url_for('teacher_info', teacher_id=teacher_id))
     else:
         return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:' ,teacher_object=teacher_object) 
 
@@ -1057,6 +1068,9 @@ def user_info_update(user_id): # a user update his info
     else:
         email=request.form['email']
         phone=request.form['phone']
+        if email=='' or phone=='' :
+            jinja['note']="Email and Mobile number are required fields"
+            return render_template('login.html', log=log, info=info, jinja=jinja)
         if jinja['user'][0].email!=email:
             check_user_table=crud.read_if('id', table_name, 'email', email)
             check_new_users=crud.read_if('id', 'new_users', 'username', email)

@@ -5,7 +5,7 @@
             <div class="student_search">
                 {% for f in form %}
                 <form action="" method="POST">
-                    <input type="text" name="search" placeholder="Enter student name">
+                    <input type="text" name="search" placeholder="Enter student name" autofocus>
                     <input type="submit" value="Search">
                 </form>
                 {% endfor %}
@@ -33,7 +33,7 @@
             <div>
                 {% for form in student_attend.form1 %}
                     <form action="" method="post">
-                        <select name="course_select" id="">
+                        <select name="course_select" id="" autofocus>
                             {% for course in student_attend.course_list %}
                             <option value="{{course[0]}}">{{course[1]}}</option>
                             {% endfor %}
@@ -135,7 +135,7 @@
         {% for l in student_dict.link1 %}
         <div>
             <a href="/chosen_student/{{student_dict.id}}">Update</a>
-            <a href="/student_id_registration/{{student_dict.id}}">Add course</a>
+            <a href="/student_id_registration/{{student_dict.id}}">Add to course</a>
         </div>           
         {% endfor %}
         {% for l in student_dict.link2 %}

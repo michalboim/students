@@ -4,7 +4,7 @@
             <div class="course_search">
                 {% for f in form %}
                 <form action="" method="POST">
-                    <input type="text" name="search" placeholder="Enter course name">
+                    <input type="text" name="search" placeholder="Enter course name" autofocus>
                     <input type="submit" value="Search">
                 </form>
                 {% endfor %}
@@ -42,7 +42,7 @@
                 <div>           
                     <form class="form_select_attend" action="", method="post" >            
                         {% for chose in course_attend.select %}
-                            <select name="chosen_date" id="">
+                            <select name="chosen_date" id="" autofocus>
                                 {% for date in course_attend.dates %}
                                     <option value="{{date[0]}}">{{date[0]}}</option>
                                 {% endfor %}
@@ -104,7 +104,7 @@
                     <form   method="post">
                         <div class="update_name_attend">{{student.name}}</div>
                         <div class="answer_update"> 
-                            <div>Yes<input type="radio" name="attendance" id="" value="yes" {{student.attend.yes}}></div>
+                            <div>Yes<input type="radio" name="attendance" id="" value="yes" {{student.attend.yes}} ></div>
                             <div>No<input type="radio" name="attendance" id="" value="no" {{student.attend.no}}></div>
                             <div><input name="form2" type="submit" value="Set"></div> 
                             <input type="hidden" name="student_id" value="{{student.id}}"> 
