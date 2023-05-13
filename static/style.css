@@ -215,7 +215,6 @@ textarea{
     font-size:small;
     text-align: center;
 }
-
 .messages_form{
     grid-row: 2;
     grid-column: 2;
@@ -236,6 +235,12 @@ textarea{
 }
 .choose_course_message{
     width: 160px;
+}
+.published_message{
+    grid-row: 2;
+    grid-column: 2;
+    font-size: large;
+    font-weight: bold;
 }
 /*admin_courses*/
 .admin_courses_main{

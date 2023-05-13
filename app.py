@@ -914,14 +914,57 @@ def chosen_teacher_update(teacher_id):
         return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:' ,teacher_object=teacher_object) 
 
 # admin features:
-@app.route('/add_message')
+@app.route('/add_message', methods=['get', 'post'])
 def add_messages():
     log=check_log()
     info=info_user()
     jinja={}
-    jinja['form']=['create']
+    jinja['form1']=['create']
     courses=crud.read_all('courses')
     jinja['courses']=create_courses_objects(courses)
+    current_time=datetime.datetime.now()
+    current_time=current_time.strftime("%d/%m/%Y %H:%M")
+    if request.method=='GET':
+        return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+    else:
+        try:
+            crud.create('messages', 'message, time', f"'{request.form['message']}','{current_time}'")
+        except:
+            jinja['note']='Message already posted'
+            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+        message_id=crud.read_two_if('id', 'messages', 'message', request.form['message'], 'time', current_time)
+        message_id=message_id[0][0]
+        loctions=request.form.getlist('choose_loction')
+        if len(loctions)==0:
+            jinja['note']='No location to post the message was chosen'
+            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+        else:
+            for l in loctions:
+                try:
+                    l=int(l)
+                    crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{l}'")
+                except:
+                    pass
+                if l=='home_page':
+                    crud.update_if('messages', 'location', "'home_page'", 'id', message_id)
+                if l=='all_courses':
+                       for course in jinja['courses']:
+                            try:
+                               crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{course.tid}'" )
+                            except:
+                               pass
+        return redirect(url_for('show_message', message_id=message_id))
+
+@app.route('/show_message/<message_id>')
+def show_message(message_id):
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form2']=['create']
+    message=crud.read_if('message','messages', 'id', message_id)
+    if len(message)==0:
+        jinja['note']='An error occurred while posting the message'
+    jinja['note']=f'"{message[0][0]}" message published successfully'
     return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
 
 # student features:

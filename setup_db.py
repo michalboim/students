@@ -95,7 +95,9 @@ def create_tables():
     CREATE TABLE IF NOT EXISTS messages (
         id INTEGER PRIMARY KEY,
 	    message TEXT,
-	    location TEXT
+	    location TEXT,
+        time TEXT,
+        UNIQUE (message, time)
     )
     """)
     query("""
@@ -148,4 +150,4 @@ def create_fake_data(students_num=10, teachers_num=4):
 
 if __name__=="__main__":
     create_tables()
-    create_fake_data()
+    #create_fake_data()

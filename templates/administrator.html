@@ -12,7 +12,7 @@
     </div>
     <div class="info_more_links">
     </div>
-    {% for form in jinja.form %}
+    {% for form in jinja.form1 %}
         <div class="messages_form">
             <form action="" method="post">
                 <textarea name="message" id="" cols="30" rows="5" placeholder="Write the message here" required autofocus></textarea>
@@ -35,8 +35,12 @@
                     {% endfor %}
                 </div>
                 <div id="result"></div>
-                <input class="choose_course_message" type="submit" value="Choose">
+                <input class="choose_course_message" type="submit" value="Post">
+                <div class="note">{{jinja.note}}</div>
             </form>
         </div> 
-    {% endfor %} 
+    {% endfor %}
+    {% for form in jinja.form2 %} 
+        <div class="published_message">{{jinja.note}}</div>
+    {% endfor %}
 {% endblock %}
