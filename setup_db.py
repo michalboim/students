@@ -93,9 +93,22 @@ def create_tables():
     """)
     query("""
     CREATE TABLE IF NOT EXISTS messages (
-        message TEXT
+        id INTEGER PRIMARY KEY,
+	    message TEXT,
+	    location TEXT
     )
     """)
+    query("""
+    CREATE TABLE IF NOT EXISTS messages_courses (
+        id INTEGER PRIMARY KEY,
+        message_id INTEGER,
+        course_id INTEGER,
+        UNIQUE (message_id, course_id),
+        FOREIGN KEY (message_id) REFERENCES messages (id),
+        FOREIGN KEY (course_id) REFERENCES courses (id)
+    )
+    """)
+
 def create_fake_data(students_num=10, teachers_num=4):
     roels={1:'student', 2:'teacher', 3:'admin'}
     for role in roels.values():
@@ -120,9 +133,6 @@ def create_fake_data(students_num=10, teachers_num=4):
     for course in courses:
         trachers_ids=[tup[0] for tup in query("SELECT id FROM teachers")]
         query(f"INSERT INTO courses (name, teacher_id, start) VALUES ('{course.title()}', '{random.choice(trachers_ids)}','2000-01-01' )")
-    messages=['message 1', 'message 2', 'message 3']
-    for message in messages:
-        query(f"INSERT INTO messages (message) VALUES ('{message}')")
     
     query(f"INSERT INTO new_users (username, role_id) VALUES ('d@d', '1')")
     user_id=query(f"SELECT id FROM new_users WHERE username='d@d'")

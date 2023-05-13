@@ -1,13 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
+<script defer src="/static/filter_message.js"></script>
 <div class="hello_admin">{{info.hello}}</div>
 <div class="admin_pages">  
     <div class="links">        
         <div class="link"><a href="/admin_courses">Courses</a></div>
         <div class="link"><a href="/admin_students">Students</a></div>
         <div class="link"><a href="/admin_teachers">Teachers</a></div> 
+        <div class="link"><a href="/add_message">Add message</a></div>
         <div class="link"><a href="/user_info_update/{{admin_id}}">Update Information</a></div>
     </div>
     <div class="info_more_links">
-    </div>  
+    </div>
+    {% for form in jinja.form %}
+        <div class="messages_form">
+            <form action="" method="post">
+                <textarea name="message" id="" cols="30" rows="5" placeholder="Write the message here" required autofocus></textarea>
+                <div>Choose where to post the message:</div>
+                <div><input class="choose_course_message" type="text" name="" id="search" oninput="mySearch()" placeholder="Enter course name"></div>
+                <div class="message_loction" id="message_loction">
+                    <div class="choose_loction">
+                        <div><input type="checkbox" name="choose_loction" value="home_page"></div>
+                        <div >Home page</div>                      
+                    </div>
+                    <div class="choose_loction">
+                        <input type="checkbox" name="choose_loction" value="all_courses">
+                        <div >All courses</div>                      
+                    </div>
+                    {% for course in jinja.courses %}
+                        <div class="choose_loction">
+                            <input type="checkbox" name="choose_loction" value="{{course.tid}}">
+                            <div >{{course.name}}</div>                      
+                        </div>
+                    {% endfor %}
+                </div>
+                <div id="result"></div>
+                <input class="choose_course_message" type="submit" value="Choose">
+            </form>
+        </div> 
+    {% endfor %} 
 {% endblock %}

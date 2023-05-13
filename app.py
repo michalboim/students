@@ -220,7 +220,7 @@ def administrator(admin_id): # showe administrator pages
     log=check_log()
     info=info_user()
     admin_id=admin_id    
-    return render_template ('administrator.html',log=log, info=info, course_dict='', admin_id=admin_id)
+    return render_template ('administrator.html',log=log, info=info, course_dict='', admin_id=admin_id, jinja='')
 
 @app.route('/admin_courses',methods=['GET', 'POST'])
 def admin_courses(): # courses information and actions for admin
@@ -480,7 +480,7 @@ def course_id_registration(course_id): # Choosing students to registering to a c
     course_dict['form']=['create']
     students=create_students_objects(crud.read_all('students'))
     course_dict['students']=students
-    course_dict['course_title']=f'Choose student for {crud.course_name(course_id)}:'
+    course_dict['course_title']=f'Choose students for {crud.course_name(course_id)}:'
     if request.method=='POST':
         if 'form1' in request.form:
             return redirect(url_for('course_registrationt'))
@@ -746,7 +746,7 @@ def student_id_registration(student_id): # Choosing courses to registering to a 
     student_dict['form']=['create']
     courses=create_courses_objects(crud.read_all('courses'))
     student_dict['courses']=courses
-    student_dict['student_title']=f'Choose course for {crud.student_name(student_id)}:'
+    student_dict['student_title']=f'Choose courses for {crud.student_name(student_id)}:'
     if request.method=='POST':
         if 'form1' in request.form:
             return redirect(url_for('student_registrationt'))
@@ -912,6 +912,17 @@ def chosen_teacher_update(teacher_id):
             return redirect(url_for('teacher_info', teacher_id=teacher_id))
     else:
         return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:' ,teacher_object=teacher_object) 
+
+# admin features:
+@app.route('/add_message')
+def add_messages():
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form']=['create']
+    courses=crud.read_all('courses')
+    jinja['courses']=create_courses_objects(courses)
+    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
 
 # student features:
 @app.route('/student_profile/<student_id>', methods=['get', 'post'])
