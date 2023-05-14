@@ -6,6 +6,8 @@ function TeacherCourses(){
     const [coursesInfo, setCoursesInfo] = React.useState([]);
     const [statistics, setStatistics] = React.useState('');
     const [studentStat, setStudentStat] = React.useState('');
+    const [messages, setMessages] = React.useState([]);
+    const [noMessages, setNoMessages] = React.useState([]);
     
     const getFun=(event)=>{
         event.preventDefault();
@@ -17,11 +19,15 @@ function TeacherCourses(){
                     setCoursesInfo(item)
                     setStatistics('')
                     setStudentStat('')
+                    setMessages([])
+                    setNoMessages('')
                 }
                 if (name=='messages'){
                     setCoursesInfo('')
                     setStatistics('')
                     setStudentStat('')
+                    setMessages(item.messages)
+                    setNoMessages(item)
                 }
                 if (name=='statistics'){
                     courses.forEach(function(item,index){
@@ -31,6 +37,8 @@ function TeacherCourses(){
                     })
                     setStatistics(item)
                     setCoursesInfo('')
+                    setMessages([])
+                    setNoMessages('')
                 }
             }
         })
@@ -91,6 +99,13 @@ function TeacherCourses(){
                         <div>{studentStat.course_attend}</div>
                     </div>
                     <div class='average_note'>{statistics.average_note}</div>
+                </div>
+                <div class='t_no_messages' >{noMessages.no_messages}</div>
+                <div class='t_messages'>
+                    <div class='t_course_title'>{noMessages.messages_title}</div>
+                    {messages.map((message)=>
+                    <div>{message}</div>
+                    )}
                 </div>
             </div>    
         );

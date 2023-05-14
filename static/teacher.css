@@ -175,6 +175,19 @@
             .average_note{
                 font-size: small;
             }
+            .t_no_messages{
+                grid-column: 2;
+                grid-row: 2;
+                font-weight: bold;
+                font-size: large;
+            }
+            .t_messages{
+                grid-column: 2;
+                grid-row: 2;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
  /*attendance*/
 .main_check_attend{
     display: flex;
