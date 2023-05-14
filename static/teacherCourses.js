@@ -7,7 +7,7 @@ function TeacherCourses(){
     const [studentsInfo, setStudentsInfo] = React.useState([]);
     const [students, setStudents] = React.useState('');
     const [className, setClassName] = React.useState([]);
-    const [statistics, setStatistics] = React.useState([]);
+    const [statistics, setStatistics] = React.useState('');
     
     const getFun=(event)=>{
         event.preventDefault();
@@ -88,7 +88,7 @@ function TeacherCourses(){
                 <div class='t_students_info'>
                     <div>
                         <div class='t_course_title'>{students.students_title}</div>                        
-                        <div class='t_course_title'> {students.no_students}</div>
+                        <div class='no_student'> {students.no_students}</div>
                     </div>
                     <div class='students_grid'>
                         <div class={className[0]}>{students.title_name}</div>
@@ -119,7 +119,10 @@ function TeacherCourses(){
                 </div> 
                 <div class='t_statistics'>
                     <div class='mean_grades'>
-                        <div class='t_course_title'>{statistics.mean_grades_title} {statistics.no_students}</div>
+                        <div >
+                           <div class='no_student'>{statistics.no_students}</div> 
+                           <div class='t_course_title'>{statistics.mean_grades_title}</div>
+                        </div>
                         <div >{statistics.mean_grades} </div>
                         <div >{statistics.max_grade} </div>
                         <div >{statistics.min_grade} </div>

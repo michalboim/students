@@ -14,7 +14,9 @@
     </div>
     {% for form in jinja.form1 %}
         <div class="messages_form">
+            
             <form action="" method="post">
+                <div class="add_message_title">Add message:</div>
                 <textarea name="message" id="" cols="30" rows="5" placeholder="Write the message here" required autofocus></textarea>
                 <div>Choose where to post the message:</div>
                 <div><input class="choose_course_message" type="text" name="" id="search" oninput="mySearch()" placeholder="Enter course name"></div>

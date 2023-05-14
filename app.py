@@ -65,6 +65,37 @@ def users_details():# get user datails for react
                 details['courses']=[]
             else:
                 details['courses']=courses
+        if details['role']=='student':
+            courses=crud.read_if('course_id, grade', 'students_courses', 'student_id', session['id'])
+            if len(courses)==0:
+                details['no_courses']='You are not enrolled to eny fo the courses'
+                details['courses']=[]
+            else:
+                details['courses']=[]
+                for course in courses:
+                    info={}
+                    info['course_id']=course[0]
+                    info['course_name']=crud.course_name(course[0])
+                    info['course_grade']=f'Your grade is: {course[1]}'
+                    course_attend=crud.read_two_if('attendance','students_attendance', 'student_id', session['id'], 'course_id', course[0])
+                    if len(course_attend)==0:
+                        info['course_attend']='There is no record in the system for your attendance in this course'
+                    else:
+                        average_attend=[]
+                        average_not_attend=[]
+                        average_unknown=[]
+                        for a in course_attend:
+                            if a[0]=='yes':
+                                average_attend.append(a)
+                            if a[0]=='no':
+                                average_not_attend.append(a)
+                            if a[0]=='unknown':
+                                average_unknown.append(a)
+                        try:
+                            info['course_attend']=f"Your Average attendance: {round(len(average_attend)*100/(len(average_attend)+len(average_not_attend)))}%"
+                        except:
+                            info['course_attend']='No record was found in the system for your attendance or non-attendance'
+                    details['courses'].append(info)
     return details
 
 @app.route('/courses_details')
@@ -83,9 +114,19 @@ def courses(): # get all courses datails for react
         course_dict['time']=course.time
         course_dict['line']='|'        
         course_dict['class']=['students_grid_title','students_grid_email','students_grid_phone','students_grid_grade']
+        course_messages=crud.read_if('message_id', 'messages_courses', 'course_id', course.tid)
+        if len(course_messages)==0:
+            course_dict['no_messages']=f'There are no messages to {crud.course_name(course.tid)} course'
+            course_dict['messages']=[]
+        else:
+            course_dict['messages_title']=f'{crud.course_name(course.tid)} messages:'
+            course_dict['messages']=[]
+            for message in course_messages:
+                mes=crud.read_if('message', 'messages', 'id', message[0])
+                course_dict['messages'].append(mes[0][0])
         students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course.tid)
         if len(students_ids)==0:
-            course_dict['no_students']=[f'There are no students enrolled to {crud.course_name(course.tid)} course']
+            course_dict['no_students']=f'There are no students enrolled to {crud.course_name(course.tid)}'
             course_dict['students']=[]
             course_dict['class']=[]
             course_dict['average_attend_title']=''
@@ -96,9 +137,9 @@ def courses(): # get all courses datails for react
             course_dict['title_phone']='Phone'
             course_dict['title_grade']='Grade'
             course_dict['title_grade']='Grade'
-            course_dict['average_attend_title']='Attendance:'
-            course_dict['mean_grades_title']='Grades:'
-            course_dict['students_title']=f'Students who are enrolled to {crud.course_name(course.tid)} course:'
+            course_dict['average_attend_title']=f'{crud.course_name(course.tid)} Attendance:'
+            course_dict['mean_grades_title']=f'{crud.course_name(course.tid)} Grades:'
+            course_dict['students_title']=f'Students who are enrolled to {crud.course_name(course.tid)}:'
             course_dict['students']=[]
             grades=[]
             for student in students_ids:
@@ -116,9 +157,9 @@ def courses(): # get all courses datails for react
                         pass
                     course_dict['students'].append(info_student)
             if len(grades)==0:
-                course_dict['mean_grades']='No records was found in the system'
+                course_dict['mean_grades']='*No records was found in the system'
             else:
-                course_dict['mean_grades']=f'The average grades for the course is: {round(statistics.mean(grades),2)}'
+                course_dict['mean_grades']=f'*The average grades is: {round(statistics.mean(grades),2)}'
                 course_dict['max_grade']=f'The hiest grade is: {max(grades)}'
                 course_dict['min_grade']=f'The lowest grade is: {min(grades)}'
             average_attend=[]
@@ -136,10 +177,10 @@ def courses(): # get all courses datails for react
                     if a[2]=='unknown':
                         average_unknown.append(a)
                 try:
-                    course_dict['average_attend']=f"Course attendance average: {round(len(average_attend)*100/(len(average_attend)+len(average_not_attend)))}%"
+                    course_dict['average_attend']=f"*Average attendance: {round(len(average_attend)*100/(len(average_attend)+len(average_not_attend)))}%"
                 except:
                     course_dict['average_attend']='No record was found in the system for student attendance or non-attendance'
-                course_dict['average_note']='*Excludes students with unknown status'
+            course_dict['average_note']='*Excludes students with unknown status'
         courses_list.append(course_dict)
     return courses_list
 
@@ -913,190 +954,6 @@ def chosen_teacher_update(teacher_id):
     else:
         return render_template('update_teachers.html', log=log, info=info, admin_id=session['id'], teacher_dict='', title='Edit the Changes:' ,teacher_object=teacher_object) 
 
-# admin features:
-@app.route('/add_message', methods=['get', 'post'])
-def add_messages():
-    log=check_log()
-    info=info_user()
-    jinja={}
-    jinja['form1']=['create']
-    courses=crud.read_all('courses')
-    jinja['courses']=create_courses_objects(courses)
-    current_time=datetime.datetime.now()
-    current_time=current_time.strftime("%d/%m/%Y %H:%M")
-    if request.method=='GET':
-        return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-    else:
-        try:
-            crud.create('messages', 'message, time', f"'{request.form['message']}','{current_time}'")
-        except:
-            jinja['note']='Message already posted'
-            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-        message_id=crud.read_two_if('id', 'messages', 'message', request.form['message'], 'time', current_time)
-        message_id=message_id[0][0]
-        loctions=request.form.getlist('choose_loction')
-        if len(loctions)==0:
-            jinja['note']='No location to post the message was chosen'
-            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-        else:
-            for l in loctions:
-                try:
-                    l=int(l)
-                    crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{l}'")
-                except:
-                    pass
-                if l=='home_page':
-                    crud.update_if('messages', 'location', "'home_page'", 'id', message_id)
-                if l=='all_courses':
-                       for course in jinja['courses']:
-                            try:
-                               crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{course.tid}'" )
-                            except:
-                               pass
-        return redirect(url_for('show_message', message_id=message_id))
-
-@app.route('/show_message/<message_id>')
-def show_message(message_id):
-    log=check_log()
-    info=info_user()
-    jinja={}
-    jinja['form2']=['create']
-    message=crud.read_if('message','messages', 'id', message_id)
-    if len(message)==0:
-        jinja['note']='An error occurred while posting the message'
-    jinja['note']=f'"{message[0][0]}" message published successfully'
-    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-
-# student features:
-@app.route('/student_profile/<student_id>', methods=['get', 'post'])
-def student_profile(student_id):
-    log=check_log()
-    info=info_user()
-    form2=["create"]
-    email=crud.read_if('email','students', 'id', student_id)
-    if request.method=='POST':
-        new_password=request.form['new_password']
-        crud.update_if('new_users', 'password', new_password, 'username', email[0][0])
-        return redirect(url_for('student_profile', student_id=student_id))
-    else:
-        password=crud.read_if('password', 'new_users', 'username', email[0][0])
-        if password[0][0]=='123456':
-            return render_template('login.html', log=log, info=info, form2=form2, jinja='', note='You need to change the initial password you received:')
-        else:
-            return render_template('profile_student.html', log=log, info=info, jinja='', hello= f"hello {crud.student_name(student_id)}") 
-
-# teacher features:
-@app.route('/teacher_profile/<teacher_id>', methods=['get', 'post'])
-def teacher_profile(teacher_id): # a teacher user sees his profile
-    log=check_log()
-    info=info_user()
-    form2=["create"]
-    jinja={}
-    email=crud.read_if('email','teachers', 'id', teacher_id)
-    if request.method=='POST':
-        new_password=request.form['new_password']
-        crud.update_if('new_users', 'password', new_password, 'username', email[0][0])
-        return redirect(url_for('teacher_profile', teacher_id=teacher_id))
-    else:
-        password=crud.read_if('password', 'new_users', 'username', email[0][0])
-        if password[0][0]=='123456':
-            return render_template('login.html', log=log, info=info, form2=form2, jinja='', note='You need to change the initial password you received:')
-        else:
-            jinja={}
-            jinja['js']=['teacher','teacher_courses']
-            jinja['section']=['create']
-            return render_template('profile_teacher.html', log=log, info=info, jinja=jinja) 
-
-@app.route('/attendance/<course_id>', methods=['get', 'post'])
-def course_attendance(course_id): # a teacher user mark attendance 
-    log=check_log()
-    info=info_user()
-    jinja={}
-    jinja['course_id']=course_id
-    jinja['attend']=['create']
-    jinja['attend_title']=f"Attendance for {crud.course_name(course_id)}"
-    current_date=datetime.date.today()
-    current_date=current_date.strftime("%d/%m/%Y")
-    current_date=current_date.replace('/','-')
-    jinja['current_date']=f"Date: {current_date}"
-    teacher_id=crud.read_if('teacher_id', 'courses', 'id', course_id)
-    jinja['teacher_id']=teacher_id[0][0]
-    if request.method=='GET':
-        students_ids=crud.read_if('student_id', 'students_courses', 'course_id', course_id)
-        if len(students_ids)==0:
-            jinja['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
-            jinja['link']='Back'
-            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
-        else:
-            jinja['link']='Done'
-            answer_attend=crud.read_two_if('date', 'students_attendance', 'course_id', course_id, 'date', current_date)
-            if len(answer_attend)==0:    
-                for s_id in students_ids:
-                    crud.create('students_attendance', 'student_id, course_id, date', f"'{s_id[0]}', '{course_id}', '{current_date}'")
-            else:
-                students_ids_atten=crud.read_two_if('student_id','students_attendance','course_id', course_id, 'date', current_date)
-                if len(students_ids)==len(students_ids_atten):
-                    pass
-                else:
-                    for s_i in students_ids:    
-                            if s_i in students_ids_atten:
-                                pass
-                            else:
-                                crud.create('students_attendance', 'student_id, course_id, date', f"'{s_i[0]}', '{course_id}', '{current_date}'")                
-            course_atten=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
-            jinja['students_attend']=[]
-            for s_a in course_atten:
-                student_a=namedtuple('S_Attend',['id','name','attend'])
-                student_a.id=s_a[0]
-                student_a.name=f"{crud.student_name(s_a[0])}:"
-                student_a.attend={}
-                if s_a[1]=='yes':
-                    student_a.attend['yes']='checked'
-                    student_a.attend['no']=''
-                elif s_a[1]=='no':
-                    student_a.attend['yes']=''
-                    student_a.attend['no']='checked'
-                else:
-                    student_a.attend['yes']=''
-                    student_a.attend['no']=''
-                jinja['students_attend'].append(student_a)
-            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
-    else:   
-        if request.method=='POST':
-            answer=request.form['attendance']
-            student_id=request.form['student_id']
-            crud.update_three_if('students_attendance', 'attendance',f"'{answer}'", 'student_id', student_id, 'course_id', course_id, 'date', current_date)    
-            return redirect(url_for('course_attendance',course_id=course_id))
-
-@app.route('/updeat_grade/<course_id>', methods=['get','post'])
-def updeat_grade(course_id): # a teacher user update grade
-    log=check_log()
-    info=info_user()
-    jinja={}
-    jinja['grades']=['create']
-    jinja['course_id']=course_id
-    teacher_id=crud.read_if('teacher_id', 'courses', 'id', course_id)
-    jinja['teacher_id']=teacher_id[0][0]
-    jinja['grades_title']=f'Update grades for {crud.course_name(course_id)}:'
-    if request.method=='GET':
-        students_grades=crud.read_if('student_id, grade', 'students_courses', 'course_id', course_id)
-        if len(students_grades)==0:
-            jinja['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
-            jinja['link']='Back'
-        else:
-            jinja['link']='Done'
-            jinja['students_grades']=[]
-            for student in students_grades:
-                inf=namedtuple('S_G',['id','name','grade'])
-                inf.id=student[0]
-                inf.name=crud.student_name(student[0])
-                inf.grade=student[1]
-                jinja['students_grades'].append(inf)                
-        return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
-    else:
-        crud.change_grade(request.form['grade'], request.form['student_id'], course_id)
-        return redirect(url_for('updeat_grade',course_id=course_id))
-
 # features for all users:
 @app.route('/user_info_update/<user_id>', methods=['get', 'post'])
 def user_info_update(user_id): # a user update his info
@@ -1237,6 +1094,193 @@ def forgot_password_user(user_id, table, new_user_id): # Verification process to
             crud.update_if('new_users','password', f"'{request.form['password']}'", 'id', new_user_id)
             return redirect(url_for('login'))
         return render_template('login.html', log=log, info=info, jinja=jinja)
+
+# admin features:
+@app.route('/add_message', methods=['get', 'post'])
+def add_messages():
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form1']=['create']
+    courses=crud.read_all('courses')
+    jinja['courses']=create_courses_objects(courses)
+    current_time=datetime.datetime.now()
+    current_time=current_time.strftime("%d/%m/%Y %H:%M")
+    if request.method=='GET':
+        return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+    else:
+        try:
+            crud.create('messages', 'message, time', f"'{request.form['message']}','{current_time}'")
+        except:
+            jinja['note']='Message already posted'
+            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+        message_id=crud.read_two_if('id', 'messages', 'message', request.form['message'], 'time', current_time)
+        message_id=message_id[0][0]
+        loctions=request.form.getlist('choose_loction')
+        if len(loctions)==0:
+            jinja['note']='No location to post the message was chosen'
+            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+        else:
+            for l in loctions:
+                try:
+                    l=int(l)
+                    crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{l}'")
+                except:
+                    pass
+                if l=='home_page':
+                    crud.update_if('messages', 'location', "'home_page'", 'id', message_id)
+                if l=='all_courses':
+                       for course in jinja['courses']:
+                            try:
+                               crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{course.tid}'" )
+                            except:
+                               pass
+        return redirect(url_for('show_message', message_id=message_id))
+
+@app.route('/show_message/<message_id>')
+def show_message(message_id):
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form2']=['create']
+    message=crud.read_if('message','messages', 'id', message_id)
+    if len(message)==0:
+        jinja['note']='An error occurred while posting the message'
+    jinja['note']=f'"{message[0][0]}" message published successfully'
+    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
+# student features:
+@app.route('/student_profile/<student_id>', methods=['get', 'post'])
+def student_profile(student_id):
+    log=check_log()
+    info=info_user()
+    form2=["create"]
+    jinja={}
+    email=crud.read_if('email','students', 'id', student_id)
+    if request.method=='POST':
+        new_password=request.form['new_password']
+        crud.update_if('new_users', 'password', new_password, 'username', email[0][0])
+        return redirect(url_for('student_profile', student_id=student_id))
+    else:
+        password=crud.read_if('password', 'new_users', 'username', email[0][0])
+        if password[0][0]=='123456':
+            return render_template('login.html', log=log, info=info, form2=form2, jinja='', note='You need to change the initial password you received:')
+        else:
+            jinja['js']=['teacher','teacher_courses']
+            jinja['section']=['create']
+            return render_template('profile_student.html', log=log, info=info, jinja=jinja, hello= f"hello {crud.student_name(student_id)}") 
+
+# teacher features:
+@app.route('/teacher_profile/<teacher_id>', methods=['get', 'post'])
+def teacher_profile(teacher_id): # a teacher user sees his profile
+    log=check_log()
+    info=info_user()
+    form2=["create"]
+    jinja={}
+    email=crud.read_if('email','teachers', 'id', teacher_id)
+    if request.method=='POST':
+        new_password=request.form['new_password']
+        crud.update_if('new_users', 'password', new_password, 'username', email[0][0])
+        return redirect(url_for('teacher_profile', teacher_id=teacher_id))
+    else:
+        password=crud.read_if('password', 'new_users', 'username', email[0][0])
+        if password[0][0]=='123456':
+            return render_template('login.html', log=log, info=info, form2=form2, jinja='', note='You need to change the initial password you received:')
+        else:
+            jinja['js']=['teacher','teacher_courses']
+            jinja['section']=['create']
+            return render_template('profile_teacher.html', log=log, info=info, jinja=jinja) 
+
+@app.route('/attendance/<course_id>', methods=['get', 'post'])
+def course_attendance(course_id): # a teacher user mark attendance 
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['course_id']=course_id
+    jinja['attend']=['create']
+    jinja['attend_title']=f"Attendance for {crud.course_name(course_id)}"
+    current_date=datetime.date.today()
+    current_date=current_date.strftime("%d/%m/%Y")
+    current_date=current_date.replace('/','-')
+    jinja['current_date']=f"Date: {current_date}"
+    teacher_id=crud.read_if('teacher_id', 'courses', 'id', course_id)
+    jinja['teacher_id']=teacher_id[0][0]
+    if request.method=='GET':
+        students_ids=crud.read_if('student_id', 'students_courses', 'course_id', course_id)
+        if len(students_ids)==0:
+            jinja['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
+            jinja['link']='Back'
+            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
+        else:
+            jinja['link']='Done'
+            answer_attend=crud.read_two_if('date', 'students_attendance', 'course_id', course_id, 'date', current_date)
+            if len(answer_attend)==0:    
+                for s_id in students_ids:
+                    crud.create('students_attendance', 'student_id, course_id, date', f"'{s_id[0]}', '{course_id}', '{current_date}'")
+            else:
+                students_ids_atten=crud.read_two_if('student_id','students_attendance','course_id', course_id, 'date', current_date)
+                if len(students_ids)==len(students_ids_atten):
+                    pass
+                else:
+                    for s_i in students_ids:    
+                            if s_i in students_ids_atten:
+                                pass
+                            else:
+                                crud.create('students_attendance', 'student_id, course_id, date', f"'{s_i[0]}', '{course_id}', '{current_date}'")                
+            course_atten=crud.read_two_if('student_id, attendance','students_attendance','course_id', course_id, 'date', current_date)
+            jinja['students_attend']=[]
+            for s_a in course_atten:
+                student_a=namedtuple('S_Attend',['id','name','attend'])
+                student_a.id=s_a[0]
+                student_a.name=f"{crud.student_name(s_a[0])}:"
+                student_a.attend={}
+                if s_a[1]=='yes':
+                    student_a.attend['yes']='checked'
+                    student_a.attend['no']=''
+                elif s_a[1]=='no':
+                    student_a.attend['yes']=''
+                    student_a.attend['no']='checked'
+                else:
+                    student_a.attend['yes']=''
+                    student_a.attend['no']=''
+                jinja['students_attend'].append(student_a)
+            return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
+    else:   
+        if request.method=='POST':
+            answer=request.form['attendance']
+            student_id=request.form['student_id']
+            crud.update_three_if('students_attendance', 'attendance',f"'{answer}'", 'student_id', student_id, 'course_id', course_id, 'date', current_date)    
+            return redirect(url_for('course_attendance',course_id=course_id))
+
+@app.route('/updeat_grade/<course_id>', methods=['get','post'])
+def updeat_grade(course_id): # a teacher user update grade
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['grades']=['create']
+    jinja['course_id']=course_id
+    teacher_id=crud.read_if('teacher_id', 'courses', 'id', course_id)
+    jinja['teacher_id']=teacher_id[0][0]
+    jinja['grades_title']=f'Update grades for {crud.course_name(course_id)}:'
+    if request.method=='GET':
+        students_grades=crud.read_if('student_id, grade', 'students_courses', 'course_id', course_id)
+        if len(students_grades)==0:
+            jinja['no_students']=[f'There are no students enrolled to {crud.course_name(course_id)} course']
+            jinja['link']='Back'
+        else:
+            jinja['link']='Done'
+            jinja['students_grades']=[]
+            for student in students_grades:
+                inf=namedtuple('S_G',['id','name','grade'])
+                inf.id=student[0]
+                inf.name=crud.student_name(student[0])
+                inf.grade=student[1]
+                jinja['students_grades'].append(inf)                
+        return render_template ('profile_teacher.html', log=log, info=info, jinja=jinja)
+    else:
+        crud.change_grade(request.form['grade'], request.form['student_id'], course_id)
+        return redirect(url_for('updeat_grade',course_id=course_id))
+
 
 
 

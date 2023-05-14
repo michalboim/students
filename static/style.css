@@ -224,6 +224,11 @@ textarea{
     flex-direction: column;
     gap: 10px;
 }
+.add_message_title{
+    font-size: large;
+    font-weight: bold;
+    text-decoration: underline;
+}
 .message_loction{
     display: flex;
     flex-direction: column;
