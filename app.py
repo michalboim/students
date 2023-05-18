@@ -1138,7 +1138,7 @@ def add_messages():
         return redirect(url_for('show_message', message_id=message_id))
 
 @app.route('/show_message/<message_id>')
-def show_message(message_id):
+def show_message(message_id): #returns whether a message has been added or not
     log=check_log()
     info=info_user()
     jinja={}
@@ -1147,6 +1147,25 @@ def show_message(message_id):
     if len(message)==0:
         jinja['note']='An error occurred while posting the message'
     jinja['note']=f'"{message[0][0]}" message published successfully'
+    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
+@app.route('/advertising_courses')
+def advertising_courses(): # shows a list of courses to publish 
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form3']=['create']
+    courses_list=crud.read_all('publish')
+    if len(courses_list)==0:
+        jinja['note']='No courses found'
+    else:
+        jinja['courses']=[]
+        for course in courses_list:
+            c=namedtuple('C_P',['id','name','status'])
+            c.id=course[0]
+            c.name=course[1].title()
+            c.status=course[4].title()
+            jinja['courses'].append(c)
     return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
 
 # student features:

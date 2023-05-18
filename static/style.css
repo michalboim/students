@@ -247,6 +247,58 @@ textarea{
     font-size: large;
     font-weight: bold;
 }
+.published_main{
+    grid-row: 2;
+    grid-column: 2;
+}
+.poblish_options{
+    padding-bottom: 25px;
+    display: flex;
+    justify-content: space-between;
+    width: 330px; 
+}
+.option_link{
+    margin-top: 5px;
+}
+.poblish_options div a{
+    color: black;
+    text-decoration: none;
+    margin-top: 5px;
+    border-width: 0.5px;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: gray;
+    padding: 1px 3px 1px 2px;
+    background-color: rgb(233, 229, 229);
+    text-align: center;
+}
+.published_form{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.published_course{
+    display: flex;
+}
+.published_name{
+    width: 150px;
+    border-bottom: solid;
+    border-width: 1px;
+}
+.published_status{
+    width: 120px;
+    border-bottom: solid;
+    border-width: 1px;
+}
+.published_update{
+    width: max-content;
+    border-bottom: solid;
+    border-width: 1px;
+}
+.published_update a{
+    color: black;
+    font-weight: bold;
+}
 /*admin_courses*/
 .admin_courses_main{
     grid-column: 2;

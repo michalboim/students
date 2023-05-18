@@ -47,27 +47,28 @@
         <div class="published_message">{{jinja.note}}</div>
     {% endfor %}
     {% for from in jinja.form3 %}
-            <div class="published_main">  
-                <div class="poblish_options">
-                    <form action="">
-                        <div><input class="choose_course_publish" type="text" name="" id="search" oninput="CourseSearch(this.value)" placeholder="Enter course name" autofocus></div>
-                    </form>
-                    <div class="option_link">
-                        <a href="/add_publish_course">Add course</a>
-                    </div>
+        <div class="published_main">        
+            <form action="">
+                <div><input class="choose_course_publish" type="text" name="" id="search" oninput="Search()" placeholder="Enter course name" autofocus></div>
+            </form>
+            {% for course in jinja.courses %}
+                <div class="published_course">
+                    <div>{{course.name}}</div>
+                    <div>{{course.status}}</div>
+                    <div><a href="/advertising_update/{{course.id}}">Update</a></div>
                 </div>
-
-                <div class="published_form" id="published_form">
-                {% for course in jinja.courses %}
-                    <div class="published_course" >
-                        <div class="published_name">{{course.name}}</div>
-                        <div class="published_status">{{course.status}}</div>
-                        <div class="published_update"><a href="/advertising_update/{{course.id}}">Update</a></div>
-                    </div>
-                {% endfor %}  
-            </div>
-            <div id="result"></div>
+            {% endfor %}
+            {% for course in jinja.courses %}
+                <div class="published_name">
+                    {{course.name}}
+                </div>
+                <div class="published_status">
+                    {{course.status}}
+                </div>
+                <div class="published_update">
+                    <a href="/advertising_update/{{course.id}}">Update</a>
+                </div>
+            {% endfor %}
         </div>
     {% endfor %}
-</div>
 {% endblock %}
