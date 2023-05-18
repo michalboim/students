@@ -22,10 +22,16 @@ def create_courses_objects(courses: list):
 
 def create_teachers_objects(teachers: list):
     teachers_objects=[classes.Teacher(teacher[0], teacher[1], teacher[2], teacher[3], teacher[4]) for teacher in teachers]
+    for t in teachers_objects:
+        if type(t.phone)!=str or t.phone=='':
+            t.phone='Still not updated'
     return teachers_objects
 
 def create_students_objects(students: list):
     students_objects=[classes.Student(student[0], student[1], student[2], student[3], student[4]) for student in students]
+    for s in students_objects:
+        if type(s.phone)!=str or s.phone=='':
+            s.phone='Still not updated'
     return students_objects
 
 def create_admins_objects(admins: list):

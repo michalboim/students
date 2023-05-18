@@ -85,6 +85,11 @@ function TeacherCourses(){
                         <div>{coursesInfo.day} </div>
                         <div>{coursesInfo.line}</div>
                         <div>{coursesInfo.time}</div>
+                        <div>{coursesInfo.line}</div>
+                        <div>{coursesInfo.teacher_title}</div>
+                        <div>{coursesInfo.teacher_name}</div>
+                        <div>{coursesInfo.teacher_email}</div>
+                        <div>{coursesInfo.teacher_phone}</div>
                     </div>
                 </div>
                 <div class='t_statistics'>

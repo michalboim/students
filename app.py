@@ -57,7 +57,10 @@ def users_details():# get user datails for react
         if details['role']=='student' or details['role']=='teacher':
             e_p=crud.read_if('email, phone', f"{session['role']}s", 'id', session['id'])
             details['email']=e_p[0][0]
-            details['phone']=e_p[0][1]
+            if type(e_p[0][1])!=str or e_p[0][1]=='':
+                details['phone']='Phone still not updated'
+            else:
+                details['phone']=e_p[0][1]
         if details['role']=='teacher':
             courses=crud.read_if('id, name', 'courses', 'teacher_id', session['id'])
             if len(courses)==0:
@@ -106,12 +109,23 @@ def courses(): # get all courses datails for react
         course_dict={}
         course_dict['id']=course.tid
         course_dict['course_name']=f'{course.name} Information:'
-        course_dict['desc']=course.description
-        course_dict['teacher_id']=course.teacher_id[0]
-        course_dict['teacher_name']=course.teacher_id[1]
-        course_dict['start']=course.start
-        course_dict['day']=course.day
-        course_dict['time']=course.time
+        course_dict['desc']=f"Description: {course.description}"
+        if course.teacher_id[0]=='':
+            course_dict['teacher_title']='Teacher not yet assigned'
+        else:
+            info_teacher=crud.read_if('*', 'teachers', 'id', course.teacher_id[0])
+            for t in create_teachers_objects(info_teacher):
+                course_dict['teacher_title']='Teacher information:'
+                course_dict['teacher_id']=t.tid
+                course_dict['teacher_name']=f'{t.name},'
+                course_dict['teacher_email']=f'{t.email},'
+                if t.phone=='Still not updated':
+                    course_dict['teacher_phone']='Phone still not updated'
+                else:
+                    course_dict['teacher_phone']=t.phone
+        course_dict['start']=f'Start: {course.start}'
+        course_dict['day']=f'Day: {course.day}'
+        course_dict['time']=f'Time: {course.time}'
         course_dict['line']='|'        
         course_dict['class']=['students_grid_title','students_grid_email','students_grid_phone','students_grid_grade']
         course_messages=crud.read_if('message_id', 'messages_courses', 'course_id', course.tid)
@@ -478,7 +492,6 @@ def chosen_course_update(course_id):
         c.start=crud.read_if('start',"courses","id", course_id)[0]
     chosen_course['course_info']=course_info
     chosen_course['teachers']=create_teachers_objects(crud.read_all('teachers'))
-    teacher_info=[]
     if request.method=='POST':
         name=request.form['name'].title()
         description=request.form['description']
@@ -487,12 +500,12 @@ def chosen_course_update(course_id):
         day=request.form['day']
         time=request.form['time']
         if name=='':
-            return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form='', form2=form2 ,chosen_course=chosen_course, teacher_info=teacher_info, course_dict='', note="Course Name is required fields")
+            return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form='', form2=form2 ,chosen_course=chosen_course,  course_dict='', note="Course Name is required fields")
         else:
             crud.update_if('courses', 'name, description, teacher_id, start, day, time', f"'{name}', '{description}', '{teacher_id}', '{start}', '{day}', '{time}'",'id', course_id)
             return redirect(url_for('course_info', course_id=course_id))
     else:
-        return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form='', form2=form2 ,chosen_course=chosen_course, teacher_info=teacher_info, course_dict='') 
+        return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form='', form2=form2 ,chosen_course=chosen_course, course_dict='') 
 
 @app.route('/course_registration', methods=['GET', 'POST'])
 def course_registrationt(): # Choosing a specific course for student registration 
@@ -1061,14 +1074,14 @@ def forgot_password():
             user_id=crud.read_if('id', table_name, 'user_id', username[0][0])
             return redirect(url_for('forgot_password_user', user_id=user_id[0][0], table=table_name,new_user_id=username[0][0] ))
 
-@app.route('/forgot_password/id=<user_id>table=<table>new=<new_user_id>', methods=['get','post']) 
+@app.route('/forgot_password/i=<user_id>t=<table>n=<new_user_id>', methods=['get','post']) 
 def forgot_password_user(user_id, table, new_user_id): # Verification process to create new password for a user who forgot his password
     log=check_log()
     info=info_user()
     jinja={}
     jinja['form4']=['create']
     user_info=crud.read_if('name, phone', table, 'id', user_id)
-    if type(user_info[0][1])!=str or user_info[0][1]=='':
+    if user_info[0][1]=='':
         jinja['input_info']=['name', 'Enter your registration name']        
     else:
         jinja['input_info']=['phone', 'Enter mobile number']
@@ -1111,7 +1124,6 @@ def show_messages(): # shows a list of messages
             m.status=message[4].title()
             jinja['messages'].append(m)
     return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-
 
 @app.route('/add_message', methods=['get', 'post'])
 def add_messages():
