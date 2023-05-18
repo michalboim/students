@@ -3,7 +3,7 @@ app = Flask(__name__)
 from setup_db import query
 import classes
 import crud
-from functions import create_courses_objects, create_students_objects, create_teachers_objects, create_admins_objects, courses_teachers, authenticate
+from functions import create_courses_objects, create_students_objects, create_teachers_objects, create_admins_objects, authenticate
 from collections import namedtuple
 import datetime, statistics
 
@@ -107,8 +107,8 @@ def courses(): # get all courses datails for react
         course_dict['id']=course.tid
         course_dict['course_name']=f'{course.name} Information:'
         course_dict['desc']=course.description
-        course_dict['teacher_id']=course.teacher_id
-        course_dict['teacher_name']=crud.teacher_name(course.teacher_id) 
+        course_dict['teacher_id']=course.teacher_id[0]
+        course_dict['teacher_name']=course.teacher_id[1]
         course_dict['start']=course.start
         course_dict['day']=course.day
         course_dict['time']=course.time
@@ -273,11 +273,9 @@ def admin_courses(): # courses information and actions for admin
         if len(courses_list)==0:
             return render_template('admin_courses.html',log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, result='No such course was found', admin_id=session['id'])
         else:
-            courses_object=create_courses_objects(courses_list)
-            for course in courses_object:
-                course.teacher_id=crud.teacher_name(course.teacher_id)  
+            courses_object=create_courses_objects(courses_list)  
             return render_template('admin_courses.html',log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, courses_objects=courses_object, admin_id=session['id'])
-    return render_template('admin_courses.html', log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, courses_teachers=courses_teachers(), admin_id=session['id'])
+    return render_template('admin_courses.html', log=log, info=info, course_dict='', course_attend='', attend_update='', attend_date_update='', form=form, courses_teachers=create_courses_objects(crud.read_all('courses')), admin_id=session['id'])
 
 @app.route('/course_info/<course_id>')
 def course_info(course_id): # specific course information
@@ -289,7 +287,11 @@ def course_info(course_id): # specific course information
     course=crud.read_if('*',"courses","id", course_id)
     course=create_courses_objects(course)
     for c in course:
-        c.teacher_id=[c.teacher_id, crud.teacher_name(c.teacher_id)]
+        if c.teacher_id[1]=='Not yet assigned':
+            c.teacher_id=['','Not yet assigned- choose teacher']
+            course_dict['teacher_update']=['create']
+        else:
+            course_dict['teacher_link']=['create']
     course_dict['course']=course
     course_dict['students_title']='Students: '
     course_dict['student_name']='Name'
@@ -461,7 +463,7 @@ def update_courses(): # Choosing a course to update
             course_object=create_courses_objects(courses_list)  
             return render_template('update_courses.html', log=log, info=info, admin_id=session['id'], form=form, chosen_course='',teacher_info='', courses_objects=course_object, course_dict='')
     else:    
-        return render_template('update_courses.html', log=log, info=info, form=form, admin_id=session['id'], chosen_course='',teacher_info='', courses=courses_teachers(), course_dict='')
+        return render_template('update_courses.html', log=log, info=info, form=form, admin_id=session['id'], chosen_course='',teacher_info='', courses=create_courses_objects(crud.read_all('courses')), course_dict='')
 
 @app.route('/chosen_course/<course_id>', methods=['GET', 'POST'])
 def chosen_course_update(course_id):
@@ -477,11 +479,6 @@ def chosen_course_update(course_id):
     chosen_course['course_info']=course_info
     chosen_course['teachers']=create_teachers_objects(crud.read_all('teachers'))
     teacher_info=[]
-    for course in course_info:
-        for teacher in create_teachers_objects(crud.read_all('teachers')):
-            if course.teacher_id==str(teacher.tid):
-                teacher_info.append(teacher.tid)
-                teacher_info.append(teacher.name)
     if request.method=='POST':
         name=request.form['name'].title()
         description=request.form['description']
@@ -1096,6 +1093,26 @@ def forgot_password_user(user_id, table, new_user_id): # Verification process to
         return render_template('login.html', log=log, info=info, jinja=jinja)
 
 # admin features:
+@app.route('/show_messages')
+def show_messages(): # shows a list of messages 
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form']=['create']
+    messages_list=crud.read_all('messages')
+    if len(messages_list)==0:
+        jinja['note']='No messages found'
+    else:
+        jinja['messages']=[]
+        for message in messages_list:
+            m=namedtuple('M_P',['id','message','status'])
+            m.id=message[0]
+            m.message=message[1]
+            m.status=message[4].title()
+            jinja['messages'].append(m)
+    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
+
 @app.route('/add_message', methods=['get', 'post'])
 def add_messages():
     log=check_log()
@@ -1109,18 +1126,18 @@ def add_messages():
     if request.method=='GET':
         return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
     else:
-        try:
-            crud.create('messages', 'message, time', f"'{request.form['message']}','{current_time}'")
-        except:
-            jinja['note']='Message already posted'
-            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-        message_id=crud.read_two_if('id', 'messages', 'message', request.form['message'], 'time', current_time)
-        message_id=message_id[0][0]
         loctions=request.form.getlist('choose_loction')
         if len(loctions)==0:
             jinja['note']='No location to post the message was chosen'
             return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
         else:
+            try:
+                crud.create('messages', 'message, time, status', f"'{request.form['message']}','{current_time}','{request.form['status']}'")
+            except:
+                jinja['note']='Message already posted'
+                return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+            message_id=crud.read_two_if('id', 'messages', 'message', request.form['message'], 'time', current_time)
+            message_id=message_id[0][0]                
             for l in loctions:
                 try:
                     l=int(l)
@@ -1150,12 +1167,12 @@ def show_message(message_id): #returns whether a message has been added or not
     return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
 
 @app.route('/advertising_courses')
-def advertising_courses(): # shows a list of courses to publish 
+def advertising_courses(): # shows a list of  publish courses 
     log=check_log()
     info=info_user()
     jinja={}
     jinja['form3']=['create']
-    courses_list=crud.read_all('publish')
+    courses_list=crud.read_all('publish_courses')
     if len(courses_list)==0:
         jinja['note']='No courses found'
     else:
@@ -1305,17 +1322,3 @@ def updeat_grade(course_id): # a teacher user update grade
 
            
 
-@app.route('/messages')
-def messages():
-    all_messages=crud.read_all('messages')
-    messages_list=[message[0] for message in all_messages]
-    return messages_list
-
-@app.route('/add', methods=['post'])
-def add():
-    crud.create('messages', 'message',request.json['message'] ) 
-    return 'ok'
-
-@app.route('/num_messages')
-def num_messages():
-    return str(len(crud.read_all('messages')))

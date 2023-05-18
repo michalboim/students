@@ -105,13 +105,14 @@ def create_tables():
         id INTEGER PRIMARY KEY,
         message_id INTEGER,
         course_id INTEGER,
+        status TEXT DEFAULT "publish",
         UNIQUE (message_id, course_id),
         FOREIGN KEY (message_id) REFERENCES messages (id),
         FOREIGN KEY (course_id) REFERENCES courses (id)
     )
     """)
     query("""
-    CREATE TABLE IF NOT EXISTS publish (
+    CREATE TABLE IF NOT EXISTS publish_courses (
         id INTEGER PRIMARY KEY,
         course_name TEXT,
         description TEXT DEFAULT "Still not updated",
@@ -145,7 +146,7 @@ def create_fake_data(students_num=10, teachers_num=4):
         trachers_ids=[tup[0] for tup in query("SELECT id FROM teachers")]
         query(f"INSERT INTO courses (name, teacher_id, start) VALUES ('{course.title()}', '{random.choice(trachers_ids)}','2000-01-01' )")
     for course in range(courses):
-        query(f"INSERT INTO publish (course_name) VALUES ('{random.choice(courses)}')")
+        query(f"INSERT INTO publish_courses (course_name) VALUES ('{random.choice(courses)}')")
 
     query(f"INSERT INTO new_users (username, role_id) VALUES ('d@d', '1')")
     user_id=query(f"SELECT id FROM new_users WHERE username='d@d'")

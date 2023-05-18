@@ -31,12 +31,14 @@
             <form class="info_chosen_course" action="" method="POST">
                 {% for course in chosen_course.course_info %}
                 Course Name: <input type="text" name="name" value="{{course.name}}" required autofocus>
-                Course Description: <input type="text" name="description" value="{{course.description}}">
+                Course Description: <textarea type="text" name="description" placeholder="Write description" cols="30" rows="5">{{course.description}}</textarea>
                 Course Teacher:
                 {% endfor %}
                 {% for f in form2 %}
                     <select name="teacher_id" id="">
-                        <option value="{{teacher_info[0]}}">{{teacher_info[1]}}</option>
+                    {% for course in chosen_course.course_info %}
+                        <option value="{{course.teacher_id[0]}}">{{course.teacher_id[1]}}</option>
+                    {% endfor %}
                     {% for teacher in chosen_course.teachers %}
                         <option name="" value="{{teacher.tid}}">{{teacher.name}}</option>
                     {% endfor %}

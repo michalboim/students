@@ -103,7 +103,7 @@ function TeacherCourses(){
                 <div class='t_no_messages' >{noMessages.no_messages}</div>
                 <div class='t_messages'>
                     <div class='t_course_title'>{noMessages.messages_title}</div>
-                    {messages.map((message)=>
+                    {messages.reverse().map((message)=>
                     <div>{message}</div>
                     )}
                 </div>

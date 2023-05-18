@@ -9,11 +9,32 @@
         <div class="link"><a href="/admin_students">Students</a></div>
         <div class="link"><a href="/admin_teachers">Teachers</a></div> 
         <div class="link"><a href="/advertising_courses">Courses to Advertising </a></div>
-        <div class="link"><a href="/add_message">Add message</a></div>
+        <div class="link"><a href="/show_messages">Messages</a></div>
         <div class="link"><a href="/user_info_update/{{admin_id}}">Update Information</a></div>
     </div>
-    <div class="info_more_links">
-    </div>
+    <div class="info_more_links"></div>
+    {% for f in jinja.form %}
+            <div class="published_main">  
+                <div class="poblish_options">
+                    <form action="">
+                        <div><input class="choose_course_publish" type="text" name="" id="search" oninput="CourseSearch(this.value)" placeholder="Enter message" autofocus></div>
+                    </form>
+                    <div class="option_link">
+                        <a href="/add_message">Add message</a>
+                    </div>
+                </div>
+                <div class="published_form" id="published_form">
+                {% for message in jinja.messages %}
+                    <div class="published_course" >
+                        <div class="published_name">{{message.message}}</div>
+                        <div class="published_status">{{message.status}}</div>
+                        <div class="published_update"><a href="/message_update/{{message.id}}">Update</a></div>
+                    </div>
+                {% endfor %}  
+            </div>
+            <div id="result"></div>
+        </div>
+    {% endfor %}
     {% for form in jinja.form1 %}
         <div class="messages_form">            
             <form action="" method="post">
@@ -38,6 +59,10 @@
                     {% endfor %}
                 </div>
                 <div id="result"></div>
+                <div class="choose_status">
+                    <div>Publish<input type="radio" name="status" value="publish" checked></div> 
+                    <div>Not Publish <input type="radio" name="status" value="non_publish"></div>
+                </div>
                 <input class="choose_course_message" type="submit" value="Post">
                 <div class="note">{{jinja.note}}</div>
             </form>
@@ -56,7 +81,6 @@
                         <a href="/add_publish_course">Add course</a>
                     </div>
                 </div>
-
                 <div class="published_form" id="published_form">
                 {% for course in jinja.courses %}
                     <div class="published_course" >

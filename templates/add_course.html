@@ -3,15 +3,17 @@
     <div class="main_add_courses">
         <form class="add_course" action="" method="POST">
             New Course Name: <input type="text" name="new_name" required autofocus >
-            New Course Description<input type="text" name="new_description" >
+            New Course Description:<textarea name="new_description" cols="30" rows="5"></textarea>
             Choose New Course Teacher:
                 <select class="show_teacher" name="teacher_tid" id="">
+                    <option name="" value=""></option>
                 {% for teacher in teachers_object %}
                     <option name="" value="{{teacher.tid}}">{{teacher.name}}</option>
                 {% endfor %}
                 </select>
             New Course Start Date:<input type="date" name="new_start" >
             New Course Day: <select name="new_day" id="">
+                <option value=""></option>
                 <option value="Sunday">Sunday</option>
                 <option value="Monday">Monday</option>
                 <option value="Tuesday">Tuesday</option>

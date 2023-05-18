@@ -15,7 +15,7 @@
                 <div class="course_info">
                     <span class="course_name"> {{course.name}}:</span>
                     <span class="course_start">{{course.start}}</span>
-                    <span class="course_teacher">{{course.teacher_id}}</span>
+                    <span class="course_teacher">{{course.teacher_id[1]}}</span>
                     <a href="/course_info/{{course.tid}}">Information</a>
                 </div>
                 {% endfor %}
@@ -23,7 +23,7 @@
                 <div class="course_info">
                     <div class="course_name"> {{course.name}}:</div>
                     <div class="course_start">{{course.start}}</div>
-                    <div class="course_teacher">{{course.teacher_id}}</div>
+                    <div class="course_teacher">{{course.teacher_id[1]}}</div>
                     <a href="/course_info/{{course.tid}}">Information</a>
                 </div>
                 {% endfor %}
@@ -120,7 +120,14 @@
             <div class="info_course_name">{{c.name}}</div>          
             <div class="main_course_detail">
                 <div class="basic_course_info" >
-                    <div class="info_course_teacher"><span class="title_course">Teacher: </span><a href="/teacher_info/{{c.teacher_id[0]}}">{{c.teacher_id[1]}}</a></div>
+                    <div class="info_course_teacher"><span class="title_course">Teacher: </span>
+                        {% for taecher in course_dict.teacher_update %}
+                            <a href="/chosen_course/{{course_dict.id}}">{{c.teacher_id[1]}}</a>
+                        {% endfor %}
+                        {% for teacher in course_dict.teacher_link %} 
+                            <a href="/teacher_info/{{c.teacher_id[0]}}">{{c.teacher_id[1]}}</a>
+                        {% endfor %}
+                    </div>
                     <div class="info_course_start"><span class="title_course">Start: </span>{{c.start}}</div>
                     <div class="info_course_day"><span class="title_course">Day: </span>{{c.day}}</div>
                     <div class="info_course_time"><span class="title_course">Time: </span>{{c.time}}</div>                

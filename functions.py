@@ -4,7 +4,20 @@ from setup_db import query
 def create_courses_objects(courses: list):
     courses_objects=[classes.Course(course[0], course[1], course[2], course[3], course[4], course[5], course[6] ) for course in courses]
     for c in courses_objects:
-        c.start=f'{c.start[8:]}-{c.start[5:7]}-{c.start[0:4]}'
+        if c.description=='':
+            c.description='Still not updated'
+        if c.teacher_id=='':
+            c.teacher_id=['','Not yet assigned']
+        else:
+            c.teacher_id=[c.teacher_id, crud.teacher_name(c.teacher_id)]
+        if c.start=='':
+            c.start='Still not updated'
+        else:
+            c.start=f'{c.start[8:]}-{c.start[5:7]}-{c.start[0:4]}'
+        if c.day=='':
+            c.day='Still not updated'
+        if c.time=='':
+            c.time='Still not updated'
     return courses_objects
 
 def create_teachers_objects(teachers: list):
@@ -22,10 +35,13 @@ def create_admins_objects(admins: list):
 def courses_teachers():
     courses_teachers=[]
     for course in create_courses_objects(crud.read_all('courses')):
-        for teacher in create_teachers_objects(crud.read_all('teachers')):
-            if course.teacher_id==str(teacher.tid):
-                course_teacher=classes.Course(course.tid, course.name, course.description, teacher.name, course.start, course.day, course.time)
-                courses_teachers.append(course_teacher)
+        if course.teacher_id=='Not yet assigned':
+            courses_teachers.append(course)
+        else:
+            for teacher in create_teachers_objects(crud.read_all('teachers')):
+                if course.teacher_id==str(teacher.tid):
+                    course_teacher=classes.Course(course.tid, course.name, course.description, teacher.name, course.start, course.day, course.time)
+                    courses_teachers.append(course_teacher)
     return courses_teachers
 
 def authenticate(email,password):
