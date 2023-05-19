@@ -140,8 +140,11 @@ def courses(): # get all courses datails for react
             course_dict['messages_title']=f'{crud.course_name(course.tid)} messages:'
             course_dict['messages']=[]
             for message in course_messages:
-                mes=crud.read_if('message', 'messages', 'id', message[0])
-                course_dict['messages'].append(mes[0][0])
+                message_info={}
+                mes=crud.read_if('message, time', 'messages', 'id', message[0])
+                message_info['text']=mes[0][0]
+                message_info['time']=mes[0][1]
+                course_dict['messages'].append(message_info)
         students_ids=crud.read_if('student_id, grade', 'students_courses', 'course_id', course.tid)
         if len(students_ids)==0:
             course_dict['no_students']=f'There are no students enrolled to {crud.course_name(course.tid)}'

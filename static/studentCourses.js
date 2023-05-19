@@ -108,11 +108,20 @@ function TeacherCourses(){
                 <div class='t_no_messages' >{noMessages.no_messages}</div>
                 <div class='t_messages'>
                     <div class='t_course_title'>{noMessages.messages_title}</div>
-                    {messages.reverse().map((message)=>
-                    <div>{message}</div>
-                    )}
-                </div>
-            </div>    
-        );
+                    <div class='messages_grid'>
+                        <div class='message_text'>
+                            {messages.reverse().map((message)=>  
+                            <div >{message.text}</div>    
+                            )}
+                        </div>
+                        <div class='message_time'>
+                            {messages.reverse().map((message)=>                    
+                                <div >{message.time}</div>                               
+                            )}
+                        </div>
+                    </div>
+                </div>    
+            </div>
+             );
 }
 ReactDOM.render(<TeacherCourses/>, document.getElementById('teacher_courses'))

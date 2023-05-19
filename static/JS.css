@@ -264,7 +264,25 @@
     flex-direction: column;
     gap: 10px;
 }
-
 .t_student_grade{
     width: 40px;
+}
+
+/*more studentCourses*/
+.messages_grid{
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap: 15px;
+}
+.message_text{
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.message_time{
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
