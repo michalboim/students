@@ -152,5 +152,21 @@
     {% for course_added in jinja.form7 %} 
         <div class="published_message">{{jinja.note}}</div>
     {% endfor %}
+    {% for update_course in jinja.form8 %}
+    <div class="course_form">            
+        <form action="" method="post" enctype=multipart/form-data>
+            <div class="add_message_title">Update course:</div>
+            <input type="text" name="course_name" value="{{jinja.name}}" autofocus required>
+            <textarea name="description" id="" cols="30" rows="5" placeholder="Write course description here" >{{jinja.description}}</textarea>
+            Choose a background picture: <input type="file" name="picture">
+            <div class="choose_course_status">
+                <div>Publish<input type="radio" name="status" value="Publish" {{jinja.publish}}></div> 
+                <div>Not Publish <input type="radio" name="status" value="Not Publish" {{jinja.no_publish}}></div>
+            </div>
+            <input class="post_course" type="submit" value="Post">
+            <div class="note">{{jinja.note}}</div>
+        </form>
+    </div> 
+    {% endfor %}
 </div>
 {% endblock %}

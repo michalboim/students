@@ -1255,8 +1255,7 @@ def message_update(message_id):
                     crud.query(f"DELETE FROM messages_courses WHERE message_id='{message_id}' and course_id='{old}'")
         return redirect(url_for('message_update', message_id=message_id))
     else:
-        return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-    
+        return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)   
 
 @app.route('/advertising_courses')
 def advertising_courses(): # shows a list of  publish courses 
@@ -1325,9 +1324,38 @@ def advertising_update(course_id):
     log=check_log()
     info=info_user()
     jinja={}
-    jinja['form5']=['create']
-    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-
+    jinja['form8']=['create']
+    info_course=crud.read_if('*', 'publish_courses','id', course_id)
+    for c in info_course:
+        jinja['name']=c[1]
+        jinja['description']=c[2]
+        jinja['picture']=c[3]
+        if c[4]=='publish'.title():
+            jinja['publish']='checked'
+            jinja['no_publish']=''
+        if c[4]=='not publish'.title():
+            jinja['publish']=''
+            jinja['no_publish']='checked'
+    if request.method=='POST':
+        file = request.files['picture']
+        if file.filename=="":
+            picture=jinja['picture']
+        else:
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                picture=file.filename
+            else:
+                jinja['note']='This type of file  is not allowed'
+                return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+        if request.form['description']=='':
+            description= 'Stiil not update'
+        else:
+            description=request.form['description']
+        crud.update_if('publish_courses', 'course_name, description, picture, status', f"'{request.form['course_name']}','{description}','{picture}','{request.form['status']}'", 'id', course_id)
+        return redirect(url_for('advertising_update', course_id=course_id))
+    else:    
+        return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
 
 # student features:
 @app.route('/student_profile/<student_id>', methods=['get', 'post'])
