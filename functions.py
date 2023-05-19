@@ -20,6 +20,8 @@ def create_courses_objects(courses: list):
             c.time='Still not updated'
     return courses_objects
 
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 def create_teachers_objects(teachers: list):
     teachers_objects=[classes.Teacher(teacher[0], teacher[1], teacher[2], teacher[3], teacher[4]) for teacher in teachers]
     for t in teachers_objects:
@@ -55,3 +57,7 @@ def authenticate(email,password):
     if len(result)!=0:
         return result
     return []
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

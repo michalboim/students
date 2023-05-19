@@ -91,7 +91,24 @@
                 {% endfor %}  
             </div>
             <div id="result"></div>
+            <div class="note">{{jinja.note}}</div>
         </div>
+    {% endfor %}
+    {% for form in jinja.form4 %}
+    <div class="course_form">            
+        <form action="" method="post" enctype=multipart/form-data>
+            <div class="add_message_title">Add course:</div>
+            <input type="text" name="course_name" placeholder="Enter course name" autofocus required>
+            <textarea name="description" id="" cols="30" rows="5" placeholder="Write course description here" ></textarea>
+            Choose a background picture: <input type="file" name="picture">
+            <div class="choose_course_status">
+                <div>Publish<input type="radio" name="status" value="publish" checked></div> 
+                <div>Not Publish <input type="radio" name="status" value="non publish"></div>
+            </div>
+            <input class="post_course" type="submit" value="Post">
+            <div class="note">{{jinja.note}}</div>
+        </form>
+    </div> 
     {% endfor %}
 </div>
 {% endblock %}

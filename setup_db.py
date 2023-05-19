@@ -117,7 +117,8 @@ def create_tables():
         course_name TEXT,
         description TEXT DEFAULT "Still not updated",
         picture TEXT,
-        status TEXT DEFAULT "publish"
+        status TEXT DEFAULT "publish",
+        UNIQUE (course_name, picture)
     )
     """)
 
@@ -145,8 +146,6 @@ def create_fake_data(students_num=10, teachers_num=4):
     for course in courses:
         trachers_ids=[tup[0] for tup in query("SELECT id FROM teachers")]
         query(f"INSERT INTO courses (name, teacher_id, start) VALUES ('{course.title()}', '{random.choice(trachers_ids)}','2000-01-01' )")
-    for course in range(courses):
-        query(f"INSERT INTO publish_courses (course_name) VALUES ('{random.choice(courses)}')")
 
     query(f"INSERT INTO new_users (username, role_id) VALUES ('d@d', '1')")
     user_id=query(f"SELECT id FROM new_users WHERE username='d@d'")

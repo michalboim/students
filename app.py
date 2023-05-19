@@ -1,12 +1,16 @@
-from flask import Flask, redirect, url_for, render_template, request, session
-app = Flask(__name__)
-from setup_db import query
-import classes
+from flask import Flask, redirect, url_for, render_template, request, session, flash
 import crud
-from functions import create_courses_objects, create_students_objects, create_teachers_objects, create_admins_objects, authenticate
+from functions import create_courses_objects, create_students_objects, create_teachers_objects, create_admins_objects, authenticate, allowed_file
 from collections import namedtuple
 import datetime, statistics
+import os
+from werkzeug.utils import secure_filename
 
+UPLOAD_FOLDER = './static/images'
+
+app = Flask(__name__)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
@@ -1195,6 +1199,35 @@ def advertising_courses(): # shows a list of  publish courses
             c.name=course[1].title()
             c.status=course[4].title()
             jinja['courses'].append(c)
+    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
+@app.route("/add_publish_course", methods=['get','post'])
+def add_publish_course():
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form4']=['create']
+    if request.method=='POST':
+        file = request.files['picture']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(url_for('add_publish_course'))
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            if request.form['description']=='':
+                description='Stiil not update'
+            else:
+                description=request.form['description']
+            try:            
+                crud.create('publish_courses','course_name, description, picture, status', f"'{request.form['course_name']}','{description}','{file.filename}','{request.form['status']}'")
+                return redirect(url_for('advertising_courses'))
+            except:
+                jinja['note']='Course already posted'
+                return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+        else:
+            jinja['note']='This type of file  is not allowed'
+            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
     return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
 
 # student features:
