@@ -88,11 +88,11 @@
                     <div >All courses</div>                      
                 </div>
                 {% for course in jinja.courses %}
-                    <div class="choose_loction">
-                        <input type="checkbox" name="choose_loction" value="{{course.tid}}">
-                        <div >{{course.name}}</div>                      
-                    </div>
-                {% endfor %}
+                        <div class="choose_loction">
+                            <input type="checkbox" name="choose_loction" value="{{course.tid}}">
+                            <div >{{course.name}}</div>                      
+                        </div>
+                    {% endfor %}
                 {% for course in jinja.chosen_course %}
                     <div class="choose_loction">
                         <input type="checkbox" name="choose_loction" value="{{course.id}}" {{course.checked}}>

@@ -1189,7 +1189,8 @@ def message_update(message_id):
     jinja={}
     jinja['form4']=['create']
     courses=crud.read_all('courses')
-    jinja['chosen_course']=create_courses_objects(courses)
+    courses=create_courses_objects(courses)
+    jinja['courses']=courses
     message=crud.read_if('*', 'messages', 'id', message_id)
     for m in message:
         jinja['message']=m[1]
@@ -1211,18 +1212,18 @@ def message_update(message_id):
         jinja['all_courses']='checked'
     if 0 < len(old_location_id) < len(courses):
         jinja['all_courses']=''
-
+        jinja['courses']=''
         jinja['chosen_course']=[]
         for course in courses:
             chosen={}
-            if course[0] in old_location_id:
-                chosen['id']=course[0]
-                chosen['name']=crud.course_name(course[0])
+            if course.tid in old_location_id:
+                chosen['id']=course.tid
+                chosen['name']=crud.course_name(course.tid)
                 chosen['checked']='checked'
                 jinja['chosen_course'].append(chosen)
             else:
-                chosen['id']=course[0]
-                chosen['name']=crud.course_name(course[0])
+                chosen['id']=course.tid
+                chosen['name']=crud.course_name(course.tid)
                 chosen['checked']=''
                 jinja['chosen_course'].append(chosen)
     if request.method=='POST':
@@ -1244,12 +1245,14 @@ def message_update(message_id):
                 if new=='home_page':
                     crud.update_if('messages', 'location', "'home_page'", 'id', message_id)
                 if new=='all_courses':
-                       for course in jinja['chosen_course']:
+                       for course in courses:
                             try:
-                               crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{course['id']}'" )
+                               crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{course.tid}'" )
                             except:
                                pass
-            
+            for old in old_location_id:
+                if str(old) not in new_loctions:
+                    crud.query(f"DELETE FROM messages_courses WHERE message_id='{message_id}' and course_id='{old}'")
         return redirect(url_for('message_update', message_id=message_id))
     else:
         return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
