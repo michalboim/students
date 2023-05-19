@@ -13,7 +13,7 @@
         <div class="link"><a href="/user_info_update/{{admin_id}}">Update Information</a></div>
     </div>
     <div class="info_more_links"></div>
-    {% for f in jinja.form %}
+    {% for show_message in jinja.form1 %}
             <div class="published_main">  
                 <div class="poblish_options">
                     <form action="">
@@ -35,7 +35,7 @@
             <div id="result"></div>
         </div>
     {% endfor %}
-    {% for form in jinja.form1 %}
+    {% for add_message in jinja.form2 %}
         <div class="messages_form">            
             <form action="" method="post">
                 <div class="add_message_title">Add message:</div>
@@ -60,18 +60,57 @@
                 </div>
                 <div id="result"></div>
                 <div class="choose_status">
-                    <div>Publish<input type="radio" name="status" value="publish" checked></div> 
-                    <div>Not Publish <input type="radio" name="status" value="non_publish"></div>
+                    <div>Publish<input type="radio" name="status" value="Publish" checked></div> 
+                    <div>Not Publish <input type="radio" name="status" value="Not Publish"></div>
                 </div>
                 <input class="choose_course_message" type="submit" value="Post">
                 <div class="note">{{jinja.note}}</div>
             </form>
         </div> 
     {% endfor %}
-    {% for form in jinja.form2 %} 
+    {% for message_added in jinja.form3 %} 
         <div class="published_message">{{jinja.note}}</div>
     {% endfor %}
-    {% for from in jinja.form3 %}
+    {% for message_update in jinja.form4 %}
+    <div class="messages_form">            
+        <form action="" method="post">
+            <div class="add_message_title">Update message:</div>
+            <textarea name="message" id="" cols="30" rows="5" required autofocus>{{jinja.message}}</textarea>
+            <div>Choose where to post the message:</div>
+            <div><input class="choose_course_message" type="text" name="" id="search" oninput="loctionSearch()" placeholder="Enter course name"></div>
+            <div class="message_loction" id="message_loction">
+                <div class="choose_loction">
+                    <div><input type="checkbox" name="choose_loction" value="home_page" {{jinja.home_page}}></div>
+                    <div >Home page</div>                      
+                </div>
+                <div class="choose_loction">
+                    <input type="checkbox" name="choose_loction" value="all_courses" {{jinja.all_courses}}>
+                    <div >All courses</div>                      
+                </div>
+                {% for course in jinja.courses %}
+                    <div class="choose_loction">
+                        <input type="checkbox" name="choose_loction" value="{{course.tid}}">
+                        <div >{{course.name}}</div>                      
+                    </div>
+                {% endfor %}
+                {% for course in jinja.chosen_course %}
+                    <div class="choose_loction">
+                        <input type="checkbox" name="choose_loction" value="{{course.id}}" {{course.checked}}>
+                        <div >{{course.name}}</div>                      
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="result"></div>
+            <div class="choose_status">
+                <div>Publish<input type="radio" name="status" value="Publish" {{jinja.publish}}></div> 
+                <div>Not Publish <input type="radio" name="status" value="Not Publish" {{jinja.no_publish}}></div>
+            </div>
+            <input class="choose_course_message" type="submit" value="Post">
+            <div class="note">{{jinja.note}}</div>
+        </form>
+    </div> 
+    {% endfor %}
+    {% for show_courses in jinja.form5 %}
             <div class="published_main">  
                 <div class="poblish_options">
                     <form action="">
@@ -94,7 +133,7 @@
             <div class="note">{{jinja.note}}</div>
         </div>
     {% endfor %}
-    {% for form in jinja.form4 %}
+    {% for add_course in jinja.form6 %}
     <div class="course_form">            
         <form action="" method="post" enctype=multipart/form-data>
             <div class="add_message_title">Add course:</div>
@@ -102,13 +141,16 @@
             <textarea name="description" id="" cols="30" rows="5" placeholder="Write course description here" ></textarea>
             Choose a background picture: <input type="file" name="picture">
             <div class="choose_course_status">
-                <div>Publish<input type="radio" name="status" value="publish" checked></div> 
-                <div>Not Publish <input type="radio" name="status" value="non publish"></div>
+                <div>Publish<input type="radio" name="status" value="Publish" checked></div> 
+                <div>Not Publish <input type="radio" name="status" value="Not Publish"></div>
             </div>
             <input class="post_course" type="submit" value="Post">
             <div class="note">{{jinja.note}}</div>
         </form>
     </div> 
+    {% endfor %}
+    {% for course_added in jinja.form7 %} 
+        <div class="published_message">{{jinja.note}}</div>
     {% endfor %}
 </div>
 {% endblock %}

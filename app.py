@@ -1115,7 +1115,7 @@ def show_messages(): # shows a list of messages
     log=check_log()
     info=info_user()
     jinja={}
-    jinja['form']=['create']
+    jinja['form1']=['create']
     messages_list=crud.read_all('messages')
     if len(messages_list)==0:
         jinja['note']='No messages found'
@@ -1134,7 +1134,7 @@ def add_messages():
     log=check_log()
     info=info_user()
     jinja={}
-    jinja['form1']=['create']
+    jinja['form2']=['create']
     courses=crud.read_all('courses')
     jinja['courses']=create_courses_objects(courses)
     current_time=datetime.datetime.now()
@@ -1175,19 +1175,92 @@ def show_message(message_id): #returns whether a message has been added or not
     log=check_log()
     info=info_user()
     jinja={}
-    jinja['form2']=['create']
+    jinja['form3']=['create']
     message=crud.read_if('message','messages', 'id', message_id)
     if len(message)==0:
         jinja['note']='An error occurred while posting the message'
-    jinja['note']=f'"{message[0][0]}" message published successfully'
+    jinja['note']=f'"{message[0][0]}" message added successfully'
     return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
+@app.route('/message_update/<message_id>', methods=['get','post'])
+def message_update(message_id):
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form4']=['create']
+    courses=crud.read_all('courses')
+    jinja['chosen_course']=create_courses_objects(courses)
+    message=crud.read_if('*', 'messages', 'id', message_id)
+    for m in message:
+        jinja['message']=m[1]
+        if m[2]=='home_page':
+            jinja['home_page']='checked'
+        else:
+            jinja['home_page']=''
+        if m[4]=='publish'.title():
+            jinja['publish']='checked'
+            jinja['no_publish']=''
+        if m[4]=='not publish'.title():
+            jinja['publish']=''
+            jinja['no_publish']='checked'
+    old_l=crud.read_if('course_id', 'messages_courses', 'message_id', message_id)
+    old_location_id=[l[0] for l in old_l]
+    if len(old_location_id)==0:
+        jinja['all_courses']=''
+    if len(courses)==len(old_location_id):
+        jinja['all_courses']='checked'
+    if 0 < len(old_location_id) < len(courses):
+        jinja['all_courses']=''
+
+        jinja['chosen_course']=[]
+        for course in courses:
+            chosen={}
+            if course[0] in old_location_id:
+                chosen['id']=course[0]
+                chosen['name']=crud.course_name(course[0])
+                chosen['checked']='checked'
+                jinja['chosen_course'].append(chosen)
+            else:
+                chosen['id']=course[0]
+                chosen['name']=crud.course_name(course[0])
+                chosen['checked']=''
+                jinja['chosen_course'].append(chosen)
+    if request.method=='POST':
+        new_loctions=request.form.getlist('choose_loction')
+        if len(new_loctions)==0:
+            jinja['note']='No location to post the message was chosen'
+            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+        else:
+            crud.update_if('messages', 'message, location, status',f"'{request.form['message']}', '','{request.form['status']}'", 'id', message_id)
+            for new in new_loctions:
+                try:
+                    new=int(new)
+                    if new in old_location_id:
+                        pass
+                    else:
+                        crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{new}'")
+                except:
+                    pass
+                if new=='home_page':
+                    crud.update_if('messages', 'location', "'home_page'", 'id', message_id)
+                if new=='all_courses':
+                       for course in jinja['chosen_course']:
+                            try:
+                               crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{course['id']}'" )
+                            except:
+                               pass
+            
+        return redirect(url_for('message_update', message_id=message_id))
+    else:
+        return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+    
 
 @app.route('/advertising_courses')
 def advertising_courses(): # shows a list of  publish courses 
     log=check_log()
     info=info_user()
     jinja={}
-    jinja['form3']=['create']
+    jinja['form5']=['create']
     courses_list=crud.read_all('publish_courses')
     if len(courses_list)==0:
         jinja['note']='No courses found'
@@ -1206,7 +1279,7 @@ def add_publish_course():
     log=check_log()
     info=info_user()
     jinja={}
-    jinja['form4']=['create']
+    jinja['form6']=['create']
     if request.method=='POST':
         file = request.files['picture']
         if file.filename == '':
@@ -1221,7 +1294,9 @@ def add_publish_course():
                 description=request.form['description']
             try:            
                 crud.create('publish_courses','course_name, description, picture, status', f"'{request.form['course_name']}','{description}','{file.filename}','{request.form['status']}'")
-                return redirect(url_for('advertising_courses'))
+                course_id=crud.read_two_if('id','publish_courses','course_name', request.form['course_name'], 'picture', file.filename)
+                course_id=course_id[0][0]
+                return redirect(url_for('show_course', course_id=course_id))
             except:
                 jinja['note']='Course already posted'
                 return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
@@ -1229,6 +1304,27 @@ def add_publish_course():
             jinja['note']='This type of file  is not allowed'
             return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
     return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
+@app.route('/show_course/<course_id>')
+def show_course(course_id): #returns whether a course has been added or not
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form7']=['create']
+    course=crud.read_if('course_name','publish_courses', 'id', course_id)
+    if len(course)==0:
+        jinja['note']='An error occurred while posting the course'
+    jinja['note']=f'{course[0][0]} course added successfully'
+    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
+@app.route('/advertising_update/<course_id>', methods=['get','post'])
+def advertising_update(course_id):
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form5']=['create']
+    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
 
 # student features:
 @app.route('/student_profile/<student_id>', methods=['get', 'post'])
