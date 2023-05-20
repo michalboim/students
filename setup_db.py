@@ -97,6 +97,7 @@ def create_tables():
 	    message TEXT,
 	    location TEXT,
         time TEXT,
+        status TEXT DEFAULT "Publish",
         UNIQUE (message, time)
     )
     """)
@@ -105,7 +106,7 @@ def create_tables():
         id INTEGER PRIMARY KEY,
         message_id INTEGER,
         course_id INTEGER,
-        status TEXT DEFAULT "publish",
+        status TEXT DEFAULT "Publish",
         UNIQUE (message_id, course_id),
         FOREIGN KEY (message_id) REFERENCES messages (id),
         FOREIGN KEY (course_id) REFERENCES courses (id)
@@ -117,7 +118,7 @@ def create_tables():
         course_name TEXT,
         description TEXT DEFAULT "Still not updated",
         picture TEXT,
-        status TEXT DEFAULT "publish",
+        status TEXT DEFAULT "Publish",
         UNIQUE (course_name, picture)
     )
     """)

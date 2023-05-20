@@ -15,7 +15,7 @@
     <div class="info_more_links"></div>
     {% for show_message in jinja.form1 %}
             <div class="published_main">  
-                <div class="poblish_options">
+                <div class="publish_options">
                     <form action="">
                         <div><input class="choose_course_publish" type="text" name="" id="search" oninput="CourseSearch(this.value)" placeholder="Enter message" autofocus></div>
                     </form>
@@ -33,6 +33,7 @@
                 {% endfor %}  
             </div>
             <div id="result"></div>
+            <div class="note">{{jinja.note}}</div>
         </div>
     {% endfor %}
     {% for add_message in jinja.form2 %}
@@ -68,8 +69,13 @@
             </form>
         </div> 
     {% endfor %}
-    {% for message_added in jinja.form3 %} 
-        <div class="published_message">{{jinja.note}}</div>
+    {% for message_added in jinja.form3 %}
+    <div class="published_message_main"> 
+        <div class="publish_options_added" >
+            <div class="published_message">{{jinja.note}}</div>
+            <a href="/show_messages">Show messages</a>  
+        </div>
+    </div>
     {% endfor %}
     {% for message_update in jinja.form4 %}
     <div class="messages_form">            
@@ -112,7 +118,7 @@
     {% endfor %}
     {% for show_courses in jinja.form5 %}
             <div class="published_main">  
-                <div class="poblish_options">
+                <div class="publish_options">
                     <form action="">
                         <div><input class="choose_course_publish" type="text" name="" id="search" oninput="CourseSearch(this.value)" placeholder="Enter course name" autofocus></div>
                     </form>
@@ -145,12 +151,18 @@
                 <div>Not Publish <input type="radio" name="status" value="Not Publish"></div>
             </div>
             <input class="post_course" type="submit" value="Post">
-            <div class="note">{{jinja.note}}</div>
+            
         </form>
+        <div class="note_added">{{jinja.note}}</div>
     </div> 
     {% endfor %}
     {% for course_added in jinja.form7 %} 
-        <div class="published_message">{{jinja.note}}</div>
+    <div class="published_message_main"> 
+        <div class="publish_options_added" >
+            <div class="published_message">{{jinja.note}}</div>
+            <a href="/advertising_courses">Show courses</a>  
+        </div>
+    </div>
     {% endfor %}
     {% for update_course in jinja.form8 %}
     <div class="course_form">            

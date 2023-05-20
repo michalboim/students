@@ -1,0 +1,20 @@
+.home_main{
+    display: grid;
+    grid-template-columns:25vh ;
+    grid-template-rows: 80vh 40vh ;
+}
+.messages_main{
+    grid-column: 1;
+    grid-row: span 2;
+    background-color: aqua;
+}
+.courses_main{
+    grid-column: 2;
+    grid-row: 1;
+    background-color: gray;
+}
+.interested{
+    grid-column: 2;
+    grid-row: 2;
+    background-color: bisque;
+}

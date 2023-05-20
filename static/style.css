@@ -47,7 +47,12 @@ textarea{
     font-weight: bold;
     font-size: large;
     width: max-content;
-
+}
+.note_added{
+    padding-top: 10px;
+    font-weight: bold;
+    font-size: large;
+    width: max-content;
 }
 .more_links{
     display: flex;
@@ -244,17 +249,34 @@ textarea{
 .choose_course_message{
     width: 160px;
 }
-.published_message{
+.published_message_main{
     grid-row: 2;
     grid-column: 2;
+}
+.publish_options_added{
+    display: flex;
+    gap: 20px;
+}
+.published_message{
     font-size: large;
     font-weight: bold;
+}
+.publish_options_added a{
+    color: black;
+    text-decoration: none;
+    border-width: 0.5px;
+    border-style: solid;
+    border-radius: 3px;
+    border-color: gray;
+    padding: 1px 3px 1px 2px;
+    background-color: rgb(233, 229, 229);
+    text-align: center;
 }
 .published_main{
     grid-row: 2;
     grid-column: 2;
 }
-.poblish_options{
+.publish_options{
     padding-bottom: 25px;
     display: flex;
     justify-content: space-between;
@@ -263,7 +285,7 @@ textarea{
 .option_link{
     margin-top: 5px;
 }
-.poblish_options div a{
+.option_link a{
     color: black;
     text-decoration: none;
     margin-top: 5px;

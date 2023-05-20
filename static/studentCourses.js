@@ -115,7 +115,7 @@ function TeacherCourses(){
                             )}
                         </div>
                         <div class='message_time'>
-                            {messages.reverse().map((message)=>                    
+                            {messages.map((message)=>                    
                                 <div >{message.time}</div>                               
                             )}
                         </div>

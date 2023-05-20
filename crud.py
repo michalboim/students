@@ -24,6 +24,9 @@ def create(table, column, values):
 def update_if(table, column, new_value, value, condition):
     return query(f"UPDATE {table} SET ({column})=({new_value}) WHERE {value}='{condition}'")
 
+def update_two_if(table, column, new_value, value1, condition1, value2, condition2):
+    return query(f"UPDATE {table} SET ({column})=({new_value}) WHERE {value1}='{condition1}' and {value2}='{condition2}'")
+
 def update_three_if(table, column, new_value, value1, condition1, value2, condition2, value3, condition3):
     return query(f"UPDATE {table} SET ({column})=({new_value}) WHERE {value1}='{condition1}' and {value2}='{condition2}' and {value3} ='{condition3}'")
 
