@@ -224,9 +224,8 @@ def published_courses():
 def home():
     log=check_log()
     info=info_user()
-    jinja={}
-    jinja['search_form']=['create']
-    return render_template('home.html', log=log, info=info, jinja=jinja)
+    search_form=['create']
+    return render_template('home.html', log=log, info=info, search_form=search_form)
 
 @app.route('/home')
 def go_home():
