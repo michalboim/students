@@ -1,7 +1,7 @@
 .home_main{
     display: grid;
-    grid-template-columns:25vh ;
-    grid-template-rows: 80vh 40vh ;
+    grid-template-columns:25vh;
+    grid-template-rows: 70vh 30vh ;
 }
 .messages_main{
     grid-column: 1;
@@ -11,10 +11,83 @@
 .courses_main{
     grid-column: 2;
     grid-row: 1;
-    background-color: gray;
+    background-repeat:no-repeat;
+    display: flex;
+    justify-content: center;
+}
+.courses_main button{
+    text-decoration: underline;
+    background-color: white;
+    border-style: none;
+}
+.home_courses{
+    display: flex;
+    width: max-content;
+    height: 70vh;
+    justify-self: center;
+    gap:10;
+}
+.back{
+    width: 20vh;
+    display: flex;
+    justify-content:center;
+}
+
+.one_course{
+    width: 60vh;
+    background-position: center;
+    background-size: cover;
+    background-attachment:local;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    background-color: aquamarine;
+    gap: 40px;
+}
+.course_name_home{
+    font-size: xx-large;
+    font-weight: bolder;
+    height: max-content;
+}
+.course_desc_home{
+    font-size: x-large;
+    font-weight: bold;
+    border-style:double;
+    border-width: 3px;
+}
+.forward{
+    width: 20vh;
+    display: flex;
+    justify-content:center;
+    
 }
 .interested{
     grid-column: 2;
     grid-row: 2;
     background-color: bisque;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /*justify-content: center;*/
+}
+.interested div{ 
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+.interested form{ 
+    display: flex;
+    gap: 20px;
+    width: max-content;
+}
+.ad1{
+    font-size: x-large;
+    font-weight: bolder;
+    font-style: italic;
+}
+.ad2{
+    font-size: larger;
+    font-weight: bold;
+
 }

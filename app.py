@@ -206,7 +206,7 @@ def courses(): # get all courses datails for react
     return courses_list
 
 @app.route('/published_courses')
-def published_courses():
+def published_courses():  # get course fo publish datails for react
     info_course=crud.read_if('*', 'publish_courses', 'status', 'Publish')
     course_list=[]
     for c in info_course:
@@ -215,9 +215,12 @@ def published_courses():
         course_dict['name']=c[1]
         course_dict['description']=c[2]
         course_dict['picture']=c[3]
+        course_dict['link_picture']=f"'url('/static/images/{c[3]}'"
+        'url("/static/images/Python.png")'
         course_dict['status']=c[4]
         course_list.append(course_dict)
     return course_list
+
 
 # start routes:
 @app.route('/')
