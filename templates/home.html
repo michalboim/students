@@ -2,6 +2,7 @@
 {% block content %}
 <link rel="stylesheet" href="../static/home.css">
 <script type="text/babel" src="/static/homeCourses.js"></script>
+<script type="text/babel" src="/static/interested.js"></script>
 <div class="home_main" >
     <div class="messages_main" id="messages" > 
     </div>
@@ -9,19 +10,7 @@
 
     </div>
     <div class="interested" id="interested">
-        <div class="ad">
-            <div class="ad1">interested?</div>  
-            <div class="ad1">Intrigued?</div> 
-            <div class="ad2">Leave details and we will get back to you:</div> 
-        </div>
-        <div>
-            <form action="">
-                <input type="text" name="name" placeholder="Your name" autofocus>
-                <input type="email" name="email" placeholder="Email" title="example@example.com" >
-                <input type="tel" name="phone" placeholder="Phone" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}" >
-                <input type="submit" value="Send">
-            </form>
-        </div>
+
     </div>
 </div>
 {% endblock %}

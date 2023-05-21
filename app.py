@@ -221,6 +221,12 @@ def published_courses():  # get course fo publish datails for react
         course_list.append(course_dict)
     return course_list
 
+@app.route('/add_interested', methods=['POST'])
+def add_interested():
+    name=request.json['name']
+    email=request.json['email']
+    phone=request.json['phone']
+    return [f"Thank you {name}, We will contact you soon"]
 
 # start routes:
 @app.route('/')

@@ -1,7 +1,7 @@
 .home_main{
     display: grid;
     grid-template-columns:25vh;
-    grid-template-rows: 70vh 30vh ;
+    grid-template-rows: 70vh 40vh ;
 }
 .messages_main{
     grid-column: 1;
@@ -68,6 +68,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding-top: 10px;
     /*justify-content: center;*/
 }
 .interested div{ 
@@ -89,5 +90,8 @@
 .ad2{
     font-size: larger;
     font-weight: bold;
-
+}
+.added_info{
+    font-size: xx-large;
+    font-weight: bolder;   
 }
