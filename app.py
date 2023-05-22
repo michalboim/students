@@ -38,6 +38,7 @@ def info_user(): # get user info
             info['link']=f"/administrator/{session['id']}"
             info['word']='Administrator'
             info['hello']=f"Hello {crud.admin_name(session['id'])}- what do you want to do?"
+            info['class']='user_hello'
         if session['role']=='teacher':
             info['id']=session['id']
             info['link']=f"/teacher_profile/{session['id']}"
@@ -215,8 +216,6 @@ def published_courses():  # get course fo publish datails for react
         course_dict['name']=c[1]
         course_dict['description']=c[2]
         course_dict['picture']=c[3]
-        course_dict['link_picture']=f"'url('/static/images/{c[3]}'"
-        'url("/static/images/Python.png")'
         course_dict['status']=c[4]
         course_list.append(course_dict)
     return course_list
@@ -233,38 +232,29 @@ def add_interested():
 def home():
     log=check_log()
     info=info_user()
-    search_form=['create']
-    return render_template('home.html', log=log, info=info, search_form=search_form)
+    id_word='courses'
+    search_link=['create']
+    return render_template('home.html', log=log, info=info, id_word=id_word, search_link=search_link)
 
 @app.route('/home')
 def go_home():
     return redirect(url_for('home'))
 
-@app.route('/search')
+@app.route('/search_course')
 def search():
     log=check_log()
     info=info_user()
-    title=['Courses Resulte:', 'Students Resulte:', 'Teachers Resulte:']
-    courses_list=crud.read_like('*', 'courses', 'name', request.args['search'].title())
-    course_object=[]
-    if len(courses_list)==0:
-        course_object=['No results found']
-    else:
-        course_object.append(create_courses_objects(courses_list))
-    students_list=crud.read_like('*', 'students', 'name', request.args['search'].title())
-    student_object=[]
-    if len (students_list)==0:
-        student_object=['No results found']
-    else:
-        student_object.append(create_students_objects(students_list))
-    teachers_list=crud.read_like('*', 'teachers', 'name', request.args['search'].title())
-    teacher_object=[]
-    if len(teachers_list)==0:
-        teacher_object=['No results found']
-    if len(teachers_list)>=1:
-        teacher_object.append(create_students_objects(teachers_list)) 
-    return render_template('search.html', log=log, info=info, title=title ,course_object=course_object, student_object=student_object, teacher_object=teacher_object)
-
+    search_form=['create']
+    info_courses=crud.read_if('course_name, description','publish_courses', 'status', 'Publish')
+    id_word='published_form'
+    courses_list=[]
+    for course in info_courses:
+        c=namedtuple('C_P',['name', 'desc'])
+        c.name=course[0]
+        c.desc=course[1]
+        courses_list.append(c)
+    return render_template('home.html', log=log, info=info, search_form=search_form, courses_list=courses_list, id_word=id_word)
+    
 @app.route('/login', methods=['get','post'])
 def login():
     log=check_log()

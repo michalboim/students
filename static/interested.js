@@ -8,10 +8,7 @@ function Interested() {
         const newPhone=event.target.elements.phone.value;
         axios.post("/add_interested", {name:newName, email:newEmail, phone:newPhone}).then(
             response=>setAdded(response.data[0])
-            
-            
         ) 
-        
     }
     return (
         <div >

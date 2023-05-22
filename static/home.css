@@ -32,7 +32,6 @@
     display: flex;
     justify-content:center;
 }
-
 .one_course{
     width: 60vh;
     background-position: center;
@@ -54,6 +53,28 @@
     font-weight: bold;
     border-style:double;
     border-width: 3px;
+}
+.all_courses{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: auto;
+    padding-bottom: 10px;
+}
+.published_search_course{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.search_home_name{
+    grid-column: 1;
+    font-weight: bold;
+    width: max-content;
+    font-size: large;
+    text-decoration: underline;
+}
+.search_home_desc{
+    grid-column: 2;
 }
 .forward{
     width: 20vh;

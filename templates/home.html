@@ -3,14 +3,24 @@
 <link rel="stylesheet" href="../static/home.css">
 <script type="text/babel" src="/static/homeCourses.js"></script>
 <script type="text/babel" src="/static/interested.js"></script>
+<script defer src="/static/searchHome.js"></script>
+
 <div class="home_main" >
-    <div class="messages_main" id="messages" > 
-    </div>
-    <div class="courses_main" id="courses" >
+    <div class="messages_main" id="messages" > </div>
+    <div class="courses_main" id="{{id_word}}">
+        {% for form in search_form %}
+        <div class="all_courses" id="all_courses">
+            {% for course in courses_list %}
+            <div class="published_search_course" >
+                <div class="search_home_name">{{course.name}} course:</div>
+                <div class="search_home_desc">{{course.desc}}</div>
+            </div>
+            {% endfor %}
 
+        </div>
+        {% endfor %}
+        <div class="courses_main" id="result" ></div>
     </div>
-    <div class="interested" id="interested">
-
-    </div>
+    <div class="interested" id="interested"></div>
 </div>
 {% endblock %}
