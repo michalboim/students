@@ -19,9 +19,9 @@ function Interested() {
             </div>
             <div>
                 <form onSubmit={handleSubmit}>
-                    <input type="text" name="name" placeholder="Your name" autoFocus/>
-                    <input type="email" name="email" placeholder="Email" title="example@example.com" />
-                    <input type="tel" name="phone" placeholder="Phone" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}" />
+                    <input type="text" name="name" placeholder="Your name" autoFocus required/>
+                    <input type="email" name="email" placeholder="Email" title="example@example.com" required/>
+                    <input type="tel" name="phone" placeholder="Phone" title="example: 050-1234567"  pattern="[0-9]{3}-[0-9]{7}" required/>
                     <input type="submit" value="Send"/>
                 </form>
             </div>

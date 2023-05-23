@@ -10,6 +10,7 @@
         <div class="link"><a href="/admin_teachers">Teachers</a></div> 
         <div class="link"><a href="/advertising_courses">Courses to Advertising </a></div>
         <div class="link"><a href="/show_messages">Messages</a></div>
+        <!-- <div class="link"><a href="/show_interested">Interested</a></div> -->
         <div class="link"><a href="/user_info_update/{{admin_id}}">Update Information</a></div>
     </div>
     <div class="info_more_links"></div>
@@ -179,6 +180,29 @@
             <div class="note">{{jinja.note}}</div>
         </form>
     </div> 
+    {% endfor %}
+    {% for show_interested in jinja.form9 %}
+    <div class="published_main">  
+        <div class="publish_options">
+            <form action="">
+                <div><input class="choose_course_publish" type="text" name="" id="search" oninput="CourseSearch(this.value)" placeholder="Enter name" autofocus></div>
+            </form>
+        </div>
+        <div class="published_form" id="published_form">
+        {% for i in jinja.interested %}
+            <div class="published_course" >
+                <div class="published_name">{{i.name}}</div>
+                <div class="published_name">{{i.email}}</div>
+                <div class="published_name">{{i.phone}}</div>
+                <div class="published_name">{{i.status}}</div>
+                <div class="published_name">{{i.note}}</div>
+                <div class="published_update"><a href="/interested_update/{{i.id}}">Update</a></div>
+            </div>
+        {% endfor %}  
+        </div>
+        <div id="result"></div>
+        <div class="note">{{jinja.note}}</div>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}

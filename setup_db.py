@@ -122,6 +122,23 @@ def create_tables():
         UNIQUE (course_name, picture)
     )
     """)
+    query("""
+    CREATE TABLE IF NOT EXISTS status (
+        id INTEGER PRIMARY KEY,
+        type TEXT
+    )
+    """)
+    query("""
+    CREATE TABLE IF NOT EXISTS interested (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        email TEXT,
+        phone TEXT,
+        interested_status INTEGER,
+        note TEXT,
+        FOREIGN KEY (interested_status) REFERENCES status (id)
+    )
+    """)
 
 def create_fake_data(students_num=10, teachers_num=4):
     roels={1:'student', 2:'teacher', 3:'admin'}

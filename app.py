@@ -225,7 +225,8 @@ def add_interested():
     name=request.json['name']
     email=request.json['email']
     phone=request.json['phone']
-    return [f"Thank you {name}, We will contact you soon"]
+    crud.create('interested', 'name, email, phone, interested_status, note', f"'{name}','{email}','{phone}','1',''")
+    return [f"Thank you {name}, We will contact you soon!"]
 
 @app.route('/home_messages')
 def home_messages():
@@ -1409,6 +1410,30 @@ def advertising_update(course_id):
         return redirect(url_for('advertising_update', course_id=course_id))
     else:    
         return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+
+@app.route('/show_interested')
+def show_interested():
+    log=check_log()
+    info=info_user()
+    jinja={}
+    jinja['form9']=['create']
+    interested_list=crud.read_all('interested')
+    if len(interested_list)==0:
+        jinja['note']='No results was found'
+    else:
+        jinja['interested']=[]
+        for interested in interested_list:
+            i=namedtuple('I',['id','name', 'email', 'phone', 'status', 'note'])
+            i.id=interested[0]
+            i.name=interested[1]
+            i.email=interested[2]
+            i.phone=interested[3]
+            s=int(interested[4])
+            status=crud.read_if('type', 'status', 'id', s)
+            i.status=status[0][0]
+            i.note=interested[5]
+            jinja['interested'].append(i)
+    return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
 
 # student features:
 @app.route('/student_profile/<student_id>', methods=['get', 'post'])
