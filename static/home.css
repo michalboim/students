@@ -1,12 +1,36 @@
+/*background-color: rgb(247, 239, 228);*/
 .home_main{
     display: grid;
     grid-template-columns:25vh;
-    grid-template-rows: 70vh 40vh ;
+    grid-template-rows: 90vh ;
+    margin-top: 10px;
 }
 .messages_main{
     grid-column: 1;
     grid-row: span 2;
-    background-color: aqua;
+    background-color:rgb(202, 225, 248);
+    border-radius: 3px 3px 3px 3px;
+    overflow: auto;
+    border-style: dashed;
+}
+.home_messages{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-top: 10px;
+    
+}
+.home_message_title{
+    font-size: large;
+    font-weight: bold;
+    text-decoration: underline;
+    text-align: center;
+}
+.list_messages{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
 }
 .courses_main{
     grid-column: 2;
@@ -23,14 +47,14 @@
 .home_courses{
     display: flex;
     width: max-content;
-    height: 70vh;
+    height: 90vh;
     justify-self: center;
     gap:10;
 }
 .back{
-    width: 20vh;
+    width: 10vh;
     display: flex;
-    justify-content:center;
+    justify-content:left;
 }
 .one_course{
     width: 60vh;
@@ -40,19 +64,25 @@
     display: flex;
     flex-direction: column;
     text-align: center;
-    background-color: aquamarine;
-    gap: 40px;
+    gap: 10px;
+    justify-content: center;
+ 
 }
 .course_name_home{
     font-size: xx-large;
     font-weight: bolder;
     height: max-content;
+    color: white;
 }
 .course_desc_home{
     font-size: x-large;
     font-weight: bold;
     border-style:double;
     border-width: 3px;
+    overflow: auto;
+    color: white;
+    border-color: white;
+    background-color:rgb(98, 136, 173);
 }
 .all_courses{
     display: flex;
@@ -60,6 +90,8 @@
     gap: 10px;
     overflow: auto;
     padding-bottom: 10px;
+    margin-left: 10px;
+    margin-top: 10px;
 }
 .published_search_course{
     display: flex;
@@ -77,28 +109,31 @@
     grid-column: 2;
 }
 .forward{
-    width: 20vh;
+    width: 10vh;
     display: flex;
-    justify-content:center;
+    justify-content:right;
     
 }
 .interested{
     grid-column: 2;
     grid-row: 2;
-    background-color: bisque;
+    /*justify-content: center;*/
+}
+.in_interested{
+    border-style:double;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding-top: 10px;
-    /*justify-content: center;*/
+    margin-top: 10px;
+    margin-left: 10px;
 }
-.interested div{ 
+.in_interested div{ 
     display: flex;
     flex-direction: column;
     gap: 15px;
     align-items: center;
 }
-.interested form{ 
+.in_interested form{ 
     display: flex;
     gap: 20px;
     width: max-content;

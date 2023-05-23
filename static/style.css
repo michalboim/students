@@ -34,7 +34,7 @@ textarea{
     color: black;
 }
 .link>a:hover{
-    background-color:rgb(193, 99, 99);
+    background-color:rgb(202, 225, 248);
     border-radius: 2px;
 }
 #submit{
@@ -63,16 +63,15 @@ textarea{
     width: 120px;
 }
 .more_links a:hover{
-    background-color:rgb(234, 181, 181);
+    background-color:rgb(221, 234, 247);
 }
 /*header*/
 .navbar{
-    width: 100%;
     height: 55px;
     text-decoration: none;
     display: flex;
     justify-content: space-around;
-    background-color: rgb(249, 220, 220);
+    background-color:rgb(202, 225, 248);
     border-radius: 3px 3px 3px 3px;
 }
 .navbar>*{
@@ -80,11 +79,9 @@ textarea{
     color: black;
     height: max-content;
     margin-top: 15px;
+    text-decoration: underline;
 }
-.navbar>a:hover{
-    background-color:rgb(193, 99, 99);
-    border-radius: 2px;
-}
+
 .user_hello{
     font-weight: bolder;
     font-size: larger;

@@ -11,7 +11,7 @@ function Interested() {
         ) 
     }
     return (
-        <div >
+        <div class='in_interested' >
             <div >
                 <div class="ad1">interested?</div>  
                 <div class="ad1">Intrigued?</div> 

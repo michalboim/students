@@ -227,6 +227,17 @@ def add_interested():
     phone=request.json['phone']
     return [f"Thank you {name}, We will contact you soon"]
 
+@app.route('/home_messages')
+def home_messages():
+    messages=crud.read_two_if('message, time', 'messages', 'location', 'home_page', 'status', 'Publish')
+    messages_list=[]
+    for mess in messages:
+        m={}
+        m['text']=mess[0]
+        m['time']=mess[1]
+        messages_list.append(m)
+    return messages_list
+
 # start routes:
 @app.route('/')
 def home():
@@ -1206,7 +1217,6 @@ def show_message(message_id): #returns whether a message has been added or not
             jinja['note']='An error occurred while posting the message'
         else:
             jinja['note']=f'"{message[0][0]}" message added successfully'
-            return message[0][1]
     return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
 
 @app.route('/message_update/<message_id>', methods=['get','post'])
@@ -1262,33 +1272,38 @@ def message_update(message_id):
                 chosen['checked']=''
                 jinja['chosen_course'].append(chosen)
     if request.method=='POST':
-        new_loctions=request.form.getlist('choose_loction')
-        if len(new_loctions)==0:
-            jinja['note']='No location to post the message was chosen'
-            return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
-        else:
-            crud.update_if('messages', 'message, location, status',f"'{request.form['message']}', '','{request.form['status']}'", 'id', message_id)
-            for new in new_loctions:
-                try:
-                    new=int(new)
-                    if new in old_location_id:
-                        crud.update_two_if('messages_courses', 'status', request.form['status'], 'message_id', message_id, 'course_id', new)
-                    else:
-                        crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{new}'")
-                except:
-                    pass
-                if new=='home_page':
-                    crud.update_if('messages', 'location', "'home_page'", 'id', message_id)
-                if new=='all_courses':
-                       for course in courses:
-                            try:
-                               crud.create('messages_courses', 'message_id, course_id, status', f"'{message_id}','{course.tid}','{request.form['status']}'")
-                            except:
-                               pass
-            for old in old_location_id:
-                if str(old) not in new_loctions:
-                    crud.update_two_if('messages_courses', 'status', f"'Delete'", 'message_id', message_id, 'course_id', old)
-        return redirect(url_for('message_update', message_id=message_id))
+        if request.form['status']=='Not Publish':
+            crud.update_if('messages', 'location, status', f"'','{request.form['status']}'", 'id', message_id)
+            crud.update_if('messages_courses', 'status', "'Delete'", 'message_id', message_id)
+            return redirect(url_for('message_update', message_id=message_id))
+        else:    
+            new_loctions=request.form.getlist('choose_loction')
+            if len(new_loctions)==0:
+                jinja['note']='No location to post the message was chosen'
+                return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)
+            else:
+                crud.update_if('messages', 'message, location, status',f"'{request.form['message']}', '','{request.form['status']}'", 'id', message_id)
+                for new in new_loctions:
+                    try:
+                        new=int(new)
+                        if new in old_location_id:
+                            crud.update_two_if('messages_courses', 'status', request.form['status'], 'message_id', message_id, 'course_id', new)
+                        else:
+                            crud.create('messages_courses', 'message_id, course_id', f"'{message_id}','{new}'")
+                    except:
+                        pass
+                    if new=='home_page':
+                        crud.update_if('messages', 'location', "'home_page'", 'id', message_id)
+                    if new=='all_courses':
+                        for course in courses:
+                                try:
+                                    crud.create('messages_courses', 'message_id, course_id, status', f"'{message_id}','{course.tid}','{request.form['status']}'")
+                                except:
+                                    pass
+                for old in old_location_id:
+                    if str(old) not in new_loctions:
+                        crud.update_two_if('messages_courses', 'status', f"'Delete'", 'message_id', message_id, 'course_id', old)
+            return redirect(url_for('message_update', message_id=message_id))
     else:
         return render_template ('administrator.html',log=log, info=info, admin_id=session['id'], jinja=jinja)   
 
