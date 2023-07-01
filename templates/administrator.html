@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <script defer src="/static/filter.js"></script>
-
 <div class="hello_admin">{{info.hello}}</div>
 <div class="admin_pages">  
     <div class="links">        
@@ -18,7 +17,7 @@
             <div class="published_main">  
                 <div class="publish_options">
                     <form action="">
-                        <div><input class="choose_course_publish" type="text" name="" id="search" oninput="CourseSearch(this.value)" placeholder="Enter message" autofocus></div>
+                        <div><input class="choose_course_publish" type="text" name="" id="search" oninput="ValSearch(this.value)" placeholder="Enter message" autofocus></div>
                     </form>
                     <div class="option_link">
                         <a href="/add_message">Add message</a>
@@ -121,7 +120,7 @@
             <div class="published_main">  
                 <div class="publish_options">
                     <form action="">
-                        <div><input class="choose_course_publish" type="text" name="" id="search" oninput="CourseSearch(this.value)" placeholder="Enter course name" autofocus></div>
+                        <div><input class="choose_course_publish" type="text" name="" id="search" oninput="ValSearch(this.value)" placeholder="Enter course name" autofocus></div>
                     </form>
                     <div class="option_link">
                         <a href="/add_publish_course">Add course</a>
@@ -185,7 +184,7 @@
     <div class="published_main">  
         <div class="publish_options">
             <form action="">
-                <div><input class="choose_course_publish" type="text" name="" id="search" oninput="CourseSearch(this.value)" placeholder="Enter name" autofocus></div>
+                <div><input class="choose_course_publish" type="text" name="" id="search"  placeholder="Enter name" autofocus></div>
             </form>
         </div>
         <div class="published_form" id="published_form">

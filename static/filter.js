@@ -33,13 +33,13 @@ const loctionSearch=()=>{
         main.append(result);
     })
 }
-const CourseSearch=(courseName)=>{
+const ValSearch=(courseName)=>{
     document.getElementById('published_form').innerHTML='';
     document.getElementById('result').innerHTML='';
     const main = document.createElement('div');
     document.getElementById('result').appendChild(main);
     main.className = "published_form";   
-    const courses = CoursesArray.filter(course => course.word[0].toLowerCase().startsWith(courseName));
+    const courses = CoursesArray.filter(course => course.word[0].toLowerCase().startsWith(courseName.toLowerCase()));
     courses.forEach(function(item, index){
         var result = document.createElement('div');
         result.className = "published_course";
